@@ -60,8 +60,11 @@ if (signInButton) {
         });
       }
     } catch (error) {
-      console.error("Profile save failed:", error.code);
-      alert("Login ho gaya, lekin profile save nahi hua. Please try again.");
+  console.error("Profile save failed:", error);
+
+  alert(
+    "Profile save failed!\n" +
+    "Error code: " + (error.code || "unknown") +
+    "\nMessage: " + (error.message || "No message")
+  );
     }
-  });
-}
