@@ -3,55 +3,40 @@ import { watchAuthState } from "./auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const main = document.querySelector("main");
-  const topMenu = document.querySelector(".site-top");
   const collection = document.querySelector("#collection");
+  const hero = document.querySelector(".hero-inner");
   const products = [...document.querySelectorAll(".product")];
 
-  if (!main || !collection) return;
+  if (!main || !collection || !hero) return;
 
   const savedProducts = new Set();
   let wishlistMode = false;
-  let lastScrollY = window.scrollY;
   let activeCategory = "All";
 
-  // Homepage introduction
-  const intro = document.createElement("section");
-  intro.className = "vf-intro";
-  intro.innerHTML = `
+  // Greeting inside the black VELFORM panel.
+  const greetingBox = document.createElement("div");
+  greetingBox.className = "vf-welcome";
+  greetingBox.innerHTML = `
     <p class="vf-greeting" id="vf-greeting">Hey there!</p>
-    <h2>Wear your own standard.</h2>
-    <p class="vf-tagline">Thoughtful menswear. Everyday confidence.</p>
+    <p class="vf-welcome-message">We're really glad you've come again.</p>
   `;
-  main.insertBefore(intro, collection);
 
-  // Update greeting when Firebase authentication changes
+  hero.appendChild(greetingBox);
+
+  // Personalise the greeting for signed-in customers.
   try {
     watchAuthState((user) => {
       const greeting = document.querySelector("#vf-greeting");
       if (!greeting) return;
 
-      const name = user?.displayName?.trim()?.split(" ")[0];
+      const name = user?.displayName?.trim()?.split(/\s+/)[0];
       greeting.textContent = name ? `Hey, ${name}!` : "Hey there!";
     });
   } catch (error) {
-    console.warn("Could not load the user greeting.", error);
+    console.warn("Could not load the customer greeting.", error);
   }
 
-  // Hide the top menu while scrolling down; restore while scrolling up
-  window.addEventListener("scroll", () => {
-    const currentY = window.scrollY;
-    const scrollingDown = currentY > lastScrollY;
-
-    if (topMenu && currentY > 150) {
-      topMenu.classList.toggle("vf-hidden", scrollingDown);
-    } else if (topMenu) {
-      topMenu.classList.remove("vf-hidden");
-    }
-
-    lastScrollY = currentY;
-  }, { passive: true });
-
-  // Category filters
+  // Category filters.
   const categories = document.createElement("nav");
   categories.className = "vf-categories";
   categories.setAttribute("aria-label", "Product categories");
@@ -79,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   collection.querySelector(".section-head")?.after(categories);
 
-  // Product rating and wishlist buttons
+  // Product ratings and wishlist controls.
   products.forEach((product) => {
     const id = product.dataset.id;
     const media = product.querySelector(".product-media");
@@ -93,11 +78,8 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
     if (media) media.after(tools);
-    else product.prepend(tools);
 
-    const heart = tools.querySelector(".vf-heart");
-
-    heart.addEventListener("click", () => {
+    tools.querySelector(".vf-heart").addEventListener("click", () => {
       if (savedProducts.has(id)) {
         savedProducts.delete(id);
       } else {
@@ -109,10 +91,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Membership preview
+  // Membership preview.
   const membership = document.createElement("section");
   membership.className = "vf-membership";
   membership.id = "vf-membership";
+
   membership.innerHTML = `
     <div class="vf-member-icon" aria-hidden="true">♛</div>
     <h2>Velform Membership</h2>
@@ -122,11 +105,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   collection.after(membership);
 
-  document.querySelector("#vf-membership-info").addEventListener("click", () => {
-    alert("Membership is a preview. Member registration and benefits are not active yet.");
+  document.querySelector("#vf-membership-info")?.addEventListener("click", () => {
+    alert("Membership is a preview. Registration and member benefits are not active yet.");
   });
 
-  // Bottom navigation
+  // Bottom navigation.
   const bottomNav = document.createElement("nav");
   bottomNav.className = "vf-bottom-nav";
   bottomNav.setAttribute("aria-label", "Bottom navigation");
@@ -153,25 +136,28 @@ document.addEventListener("DOMContentLoaded", () => {
       if (item.label === "Home") {
         wishlistMode = false;
         activeCategory = "All";
+        categories.querySelectorAll("button").forEach((categoryButton) => {
+          categoryButton.classList.toggle(
+            "active",
+            categoryButton.textContent === "All"
+          );
+        });
         renderProducts();
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
       if (item.label === "Membership") {
-        document.querySelector("#vf-membership").scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
+        membership.scrollIntoView({ behavior: "smooth", block: "start" });
       }
 
       if (item.label === "Cart") {
-        document.querySelector("#open-cart")?.click();
+        document.querySelector("[data-open-cart]")?.click();
       }
 
       if (item.label === "Wishlist") {
         wishlistMode = true;
         renderProducts();
-        collection.scrollIntoView({ behavior: "smooth" });
+        collection.scrollIntoView({ behavior: "smooth", block: "start" });
       }
 
       if (item.label === "Profile") {
@@ -198,7 +184,6 @@ document.addEventListener("DOMContentLoaded", () => {
     products.forEach((product) => {
       const isSaved = savedProducts.has(product.dataset.id);
       const heart = product.querySelector(".vf-heart");
-
       if (!heart) return;
 
       heart.classList.toggle("saved", isSaved);
@@ -249,4 +234,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderProducts();
 });
-                          
