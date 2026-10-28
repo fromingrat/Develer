@@ -52,9 +52,211 @@ document.addEventListener("DOMContentLoaded", () => {
     <span></span>
   `;
 
+  
+  // Account drawer
+  const menuOverlay = document.createElement("div");
+  menuOverlay.className = "vf-menu-overlay";
+  menuOverlay.setAttribute("aria-hidden", "true");
+
+  const accountDrawer = document.createElement("aside");
+  accountDrawer.className = "vf-account-drawer";
+  accountDrawer.setAttribute("aria-label", "Account menu");
+  accountDrawer.setAttribute("aria-hidden", "true");
+  accountDrawer.innerHTML = `
+    <div class="vf-drawer-header">
+      <div class="vf-profile-avatar" id="vf-profile-avatar">V</div>
+      <div class="vf-profile-info">
+        <p class="vf-profile-name" id="vf-profile-name">Welcome</p>
+        <p class="vf-profile-email" id="vf-profile-email">Sign in to your account</p>
+      </div>
+      <button class="vf-drawer-close" type="button"
+        aria-label="Close menu">×</button>
+    </div>
+
+    <div class="vf-drawer-greeting">
+      <p id="vf-drawer-greeting">Hey there!</p>
+      <span>Welcome to Velform</span>
+    </div>
+
+    <nav class="vf-drawer-links" aria-label="Account options">
+      <a href="setup.html" data-menu-item="info">
+        <span>My Info</span><span aria-hidden="true">›</span>
+      </a>
+      <button type="button" data-menu-item="orders">
+        <span>Orders</span><span aria-hidden="true">›</span>
+      </button>
+      <button type="button" data-menu-item="membership">
+        <span>Membership</span><span aria-hidden="true">›</span>
+      </button>
+      <button type="button" data-menu-item="cart">
+        <span>Cart</span><span aria-hidden="true">›</span>
+      </button>
+      <button type="button" data-menu-item="wishlist">
+        <span>Wishlist</span><span aria-hidden="true">›</span>
+      </button>
+      <a href="#about" data-menu-item="about">
+        <span>About Us</span><span aria-hidden="true">›</span>
+      </a>
+      <a href="privacy.html" data-menu-item="privacy">
+        <span>Privacy Policy</span><span aria-hidden="true">›</span>
+      </a>
+      <button type="button" data-menu-item="account">
+        <span>Account Details</span><span aria-hidden="true">›</span>
+      </button>
+    </nav>
+
+    <button class="vf-drawer-logout" type="button" id="vf-drawer-logout">
+      Log Out
+    </button>
+
+    <div class="vf-drawer-footer">
+      VELFORM
+    </div>
+  `;
+
+  document.body.append(menuOverlay, accountDrawer);
+
+  let drawerOpen = false;
+  let touchStartX = 0;
+  let touchStartY = 0;
+
+  function openAccountDrawer() {
+    drawerOpen = true;
+    menuOverlay.classList.add("is-open");
+    accountDrawer.classList.add("is-open");
+    menuButton.setAttribute("aria-expanded", "true");
+    menuButton.setAttribute("aria-label", "Close menu");
+    menuOverlay.setAttribute("aria-hidden", "false");
+    accountDrawer.setAttribute("aria-hidden", "false");
+    document.body.classList.add("vf-menu-open");
+  }
+
+  function closeAccountDrawer() {
+    drawerOpen = false;
+    menuOverlay.classList.remove("is-open");
+    accountDrawer.classList.remove("is-open");
+    menuButton.setAttribute("aria-expanded", "false");
+    menuButton.setAttribute("aria-label", "Open menu");
+    menuOverlay.setAttribute("aria-hidden", "true");
+    accountDrawer.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("vf-menu-open");
+  }
+
   menuButton.addEventListener("click", () => {
-    // Menu actions can be added later.
+    if (drawerOpen) closeAccountDrawer();
+    else openAccountDrawer();
   });
+
+  accountDrawer.querySelector(".vf-drawer-close")
+    .addEventListener("click", closeAccountDrawer);
+
+  menuOverlay.addEventListener("click", closeAccountDrawer);
+
+  // Swipe right to close the drawer.
+  accountDrawer.addEventListener("touchstart", (event) => {
+    touchStartX = event.changedTouches[0].clientX;
+    touchStartY = event.changedTouches[0].clientY;
+  }, { passive: true });
+
+  accountDrawer.addEventListener("touchend", (event) => {
+    const deltaX = event.changedTouches[0].clientX - touchStartX;
+    const deltaY = event.changedTouches[0].clientY - touchStartY;
+
+    if (deltaX > 70 && Math.abs(deltaX) > Math.abs(deltaY)) {
+      closeAccountDrawer();
+    }
+  }, { passive: true });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && drawerOpen) {
+      closeAccountDrawer();
+    }
+  });
+
+  // Update the drawer when Firebase reports the signed-in user.
+  watchAuthState((user) => {
+    const name = user?.displayName?.trim() || "";
+    const firstName = name.split(/\s+/)[0];
+
+    accountDrawer.querySelector("#vf-profile-name").textContent =
+      name || "Welcome";
+
+    accountDrawer.querySelector("#vf-profile-email").textContent =
+      user?.email || "Sign in to your account";
+
+    accountDrawer.querySelector("#vf-profile-avatar").textContent =
+      firstName ? firstName.charAt(0).toUpperCase() : "V";
+
+    accountDrawer.querySelector("#vf-drawer-greeting").textContent =
+      firstName ? `Hey, ${firstName}!` : "Hey there!";
+
+    accountDrawer.querySelector("#vf-drawer-logout").textContent =
+      user ? "Log Out" : "Sign In";
+  });
+
+  // Connect menu actions to existing homepage features.
+  accountDrawer.querySelectorAll("[data-menu-item]").forEach((item) => {
+    item.addEventListener("click", (event) => {
+      const action = item.dataset.menuItem;
+
+      if (action === "orders") {
+        event.preventDefault();
+        closeAccountDrawer();
+        alert("Your Orders page will be connected in the next step.");
+      }
+
+      if (action === "membership") {
+        event.preventDefault();
+        closeAccountDrawer();
+        membership.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      if (action === "cart") {
+        event.preventDefault();
+        closeAccountDrawer();
+        document.querySelector("[data-open-cart]")?.click();
+      }
+
+      if (action === "wishlist") {
+        event.preventDefault();
+        closeAccountDrawer();
+        wishlistMode = true;
+        renderProducts();
+        collection.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      if (action === "account") {
+        event.preventDefault();
+        closeAccountDrawer();
+        window.location.href = "login.html";
+      }
+
+      if (action === "about" || action === "info" || action === "privacy") {
+        closeAccountDrawer();
+      }
+    });
+  });
+
+  accountDrawer.querySelector("#vf-drawer-logout")
+    .addEventListener("click", async () => {
+      const { signOutUser } = await import("./auth.js");
+
+      try {
+        const { auth } = await import("./firebase.js");
+
+        if (auth.currentUser) {
+          await signOutUser();
+          closeAccountDrawer();
+          window.location.href = "index.html";
+        } else {
+          window.location.href = "login.html";
+        }
+      } catch (error) {
+        console.error("Account action failed:", error);
+        alert("Unable to complete this action. Please try again.");
+      }
+    });
+
 
   categories.appendChild(menuButton);
 
