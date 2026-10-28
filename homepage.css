@@ -12,12 +12,15 @@ body {
   padding-bottom: 76px;
 }
 
-/* Compact black welcome panel */
+/* Black welcome panel: approximately 40% of screen height */
 .hero {
-  display: block;
-  min-height: 0 !important;
-  height: auto;
-  padding: 22px 0 18px !important;
+  display: flex;
+  align-items: stretch;
+  box-sizing: border-box;
+  height: 40svh;
+  min-height: 260px;
+  max-height: 380px;
+  padding: 28px 0 !important;
   background: var(--vf-black);
   color: var(--vf-white);
 }
@@ -25,37 +28,40 @@ body {
 .hero-inner {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  gap: 12px;
+  gap: 24px;
+  width: 100%;
   min-height: 0 !important;
-  text-align: center;
+  box-sizing: border-box;
+  text-align: left;
 }
 
-/* Keep VELFORM on one line and preserve its entrance animation */
+/* Animated VELFORM wordmark on one line */
 .wordmark {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: nowrap;
   gap: 0;
   width: 100%;
   margin: 0;
   font-family: var(--serif);
-  font-size: clamp(2.4rem, 11vw, 4.6rem) !important;
+  font-size: clamp(2.2rem, 10vw, 4.2rem) !important;
   font-weight: 500;
-  line-height: 0.95;
+  line-height: 1;
   letter-spacing: 0.015em;
   white-space: nowrap;
-  text-align: center;
+  text-align: left;
 }
 
 .wordmark .line,
 .wordmark .line-right {
   display: inline-block;
+  flex: 0 0 auto;
   padding: 0;
   overflow: hidden;
-  text-align: center;
+  text-align: left;
 }
 
 .wordmark .line > span {
@@ -81,32 +87,36 @@ body {
   }
 }
 
-/* Customer greeting inside the black panel */
+/* Left-aligned customer greeting */
 .vf-welcome {
   width: 100%;
   margin: 0;
   padding: 0;
   color: var(--vf-white);
+  text-align: left;
 }
 
 .vf-greeting {
   margin: 0;
   font-family: var(--serif);
-  font-size: clamp(1.4rem, 5vw, 1.8rem);
+  font-size: clamp(1.6rem, 6vw, 2.1rem);
   font-weight: 500;
   line-height: 1.2;
+  text-align: left;
 }
 
 .vf-welcome-message {
-  margin: 4px 0 0;
+  margin: 9px 0 0;
   color: #d5d5d5;
-  font-size: 0.85rem;
-  line-height: 1.4;
+  font-size: clamp(0.9rem, 3.5vw, 1rem);
+  line-height: 1.5;
+  text-align: left;
 }
 
-/* Category tabs: compact spacing */
+/* Keep the category tabs close to the intro panel */
 #collection {
   padding-top: 0 !important;
+  margin-top: 0 !important;
 }
 
 #collection > .container {
@@ -265,9 +275,17 @@ body {
   transform: translateY(-1px);
 }
 
+/* Desktop */
 @media (min-width: 760px) {
   .hero {
-    padding: 28px 0 22px !important;
+    height: 40vh;
+    min-height: 300px;
+    max-height: 420px;
+    padding: 32px 0 !important;
+  }
+
+  .hero-inner {
+    gap: 28px;
   }
 
   .vf-bottom-nav {
@@ -281,13 +299,23 @@ body {
   }
 }
 
+/* Small mobile screens */
 @media (max-width: 360px) {
-  .wordmark {
-    font-size: clamp(2.1rem, 10.5vw, 2.5rem) !important;
+  .hero {
+    height: 40svh;
+    min-height: 245px;
+    padding: 22px 0 !important;
   }
 
-  .hero {
-    padding-top: 18px !important;
-    padding-bottom: 15px !important;
+  .hero-inner {
+    gap: 20px;
+  }
+
+  .wordmark {
+    font-size: clamp(2rem, 9.5vw, 2.4rem) !important;
+  }
+
+  .vf-greeting {
+    font-size: 1.5rem;
   }
 }
