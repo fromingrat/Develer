@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let wishlistMode = false;
   let activeCategory = "All";
 
-  // Customer greeting inside the black intro panel.
+  // Welcome greeting
   const greetingBox = document.createElement("div");
   greetingBox.className = "vf-welcome";
   greetingBox.innerHTML = `
@@ -35,12 +35,12 @@ document.addEventListener("DOMContentLoaded", () => {
     console.warn("Could not load the customer greeting.", error);
   }
 
-  // Category bar.
+  // Category bar
   const categories = document.createElement("nav");
   categories.className = "vf-categories";
   categories.setAttribute("aria-label", "Product categories");
 
-  // Three-line menu button, positioned before All.
+  // Three-line menu button before All
   const menuButton = document.createElement("button");
   menuButton.type = "button";
   menuButton.className = "vf-category-menu";
@@ -52,9 +52,8 @@ document.addEventListener("DOMContentLoaded", () => {
     <span></span>
   `;
 
-  // Menu is a placeholder for now; its action will be added later.
   menuButton.addEventListener("click", () => {
-    // Menu behavior will be implemented in the next step.
+    // Menu actions can be added later.
   });
 
   categories.appendChild(menuButton);
@@ -82,19 +81,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   collection.querySelector(".section-head")?.after(categories);
 
-  
-  // Menu appears while scrolling up, but only after leaving the intro.
+  // Show the category bar only while scrolling up after the intro.
   let previousScrollY = window.scrollY;
-  let hasPassedIntro = false;
   let scrollDirection = "down";
+  let ticking = false;
 
   function updateMenuVisibility() {
     const currentScrollY = window.scrollY;
     const heroBottom = hero.getBoundingClientRect().bottom;
-
-    if (heroBottom <= 0) {
-      hasPassedIntro = true;
-    }
 
     if (currentScrollY < previousScrollY) {
       scrollDirection = "up";
@@ -102,29 +96,28 @@ document.addEventListener("DOMContentLoaded", () => {
       scrollDirection = "down";
     }
 
-    // Always hide the menu when the intro is visible.
-    if (heroBottom > 0) {
-      menuButton.classList.remove("is-visible");
-      hasPassedIntro = false;
-    } else {
-      menuButton.classList.toggle(
-        "is-visible",
-        hasPassedIntro && scrollDirection === "up"
-      );
-    }
+    const pastIntro = heroBottom <= 0;
+    const showBar = pastIntro && scrollDirection === "up";
+
+    categories.classList.toggle("vf-categories-floating", showBar);
+    menuButton.classList.toggle("is-visible", showBar);
 
     previousScrollY = currentScrollY;
+    ticking = false;
   }
 
-  window.addEventListener("scroll", updateMenuVisibility, {
-    passive: true
-  });
+  function onScroll() {
+    if (!ticking) {
+      window.requestAnimationFrame(updateMenuVisibility);
+      ticking = true;
+    }
+  }
 
+  window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", updateMenuVisibility);
   updateMenuVisibility();
 
-
-  // Product ratings and wishlist buttons.
+  // Product ratings and wishlist buttons
   products.forEach((product) => {
     const id = product.dataset.id;
     const media = product.querySelector(".product-media");
@@ -151,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Membership preview.
+  // Membership preview
   const membership = document.createElement("section");
   membership.className = "vf-membership";
   membership.id = "vf-membership";
@@ -168,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
     alert("Membership is a preview. Registration and member benefits are not active yet.");
   });
 
-  // Bottom navigation.
+  // Bottom navigation
   const bottomNav = document.createElement("nav");
   bottomNav.className = "vf-bottom-nav";
   bottomNav.setAttribute("aria-label", "Bottom navigation");
