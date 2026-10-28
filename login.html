@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8f7f4">
+  <title>Sign in | Velform</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: #f8f7f4;
+      color: #171717;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .login {
+      width: 100%;
+      max-width: 390px;
+      text-align: center;
+    }
+
+    .brand {
+      font-size: 38px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      color: #666;
+      line-height: 1.6;
+      margin: 0 auto 34px;
+      max-width: 290px;
+    }
+
+    .google-btn {
+      width: 100%;
+      min-height: 54px;
+      padding: 14px;
+      border: 1px solid #222;
+      background: #171717;
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .google-btn:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 25px;
+      color: #555;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .message {
+      min-height: 24px;
+      margin-top: 18px;
+      color: #b42318;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="login">
+    <div class="brand">VELFORM</div>
+
+    <p class="subtitle">
+      Welcome to Velform.<br>
+      Sign in to continue your experience.
+    </p>
+
+    <button class="google-btn" id="google-sign-in">
+      Continue with Google
+    </button>
+
+    <p class="message" id="message" role="status"></p>
+
+    <a class="back" href="index.html">← Back to homepage</a>
+  </main>
+
+  <script type="module">
+    import { signInWithGoogle } from "./auth.js";
+    import { auth, db } from "./firebase.js";
+    import {
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+    import {
+      doc, getDoc
+    } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+
+    const button = document.getElementById("google-sign-in");
+    const message = document.getElementById("message");
+
+    let redirecting = false;
+
+    async function routeUser(user) {
+      if (!user || redirecting) return;
+
+      redirecting = true;
+      button.disabled = true;
+      button.textContent = "Checking your profile...";
+
+      try {
+        const profileRef = doc(db, "users", user.uid);
+        const profileSnapshot = await getDoc(profileRef);
+
+        if (
+          profileSnapshot.exists() &&
+          profileSnapshot.data().profileComplete === true
+        ) {
+          window.location.replace("index.html");
+        } else {
+          window.location.replace("setup.html");
+        }
+      } catch (error) {
+        console.error("Profile check failed:", error.code, error.message);
+        redirecting = false;
+        button.disabled = false;
+        button.textContent = "Continue with Google";
+        message.textContent =
+          "We couldn't check your profile. Please try again.";
+      }
+    }
+
+    button.addEventListener("click", async () => {
+      message.textContent = "";
+      button.disabled = true;
+      button.textContent = "Connecting to Google...";
+
+      try {
+        const user = await signInWithGoogle();
+        await routeUser(user);
+      } catch (error) {
+        console.error("Google sign-in failed:", error.code, error.message);
+        button.disabled = false;
+        button.textContent = "Continue with Google";
+        message.textContent =
+          "Sign-in failed. Please try again.";
+      }
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) routeUser(user);
+    });
+  </script>
+</body>
+</html>
