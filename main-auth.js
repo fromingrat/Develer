@@ -8,15 +8,12 @@ const signInButton = document.getElementById("sign-in-btn");
 
 if (signInButton) {
   watchAuthState((user) => {
-    
-if (user) {
-  signInButton.hidden = true;
-} else {
-  signInButton.hidden = false;
-  signInButton.textContent = "Sign in";
-  signInButton.dataset.signedIn = "false";
-}
+    signInButton.hidden = !!user;
+    signInButton.dataset.signedIn = user ? "true" : "false";
 
+    if (!user) {
+      signInButton.textContent = "Sign in";
+    }
   });
 
   signInButton.addEventListener("click", async (event) => {
@@ -26,10 +23,9 @@ if (user) {
       try {
         await signOutUser();
       } catch (error) {
-        console.error("Sign-out failed:", error.code);
+        console.error("Sign-out failed:", error);
         alert("Sign out nahi hua. Please dobara try karo.");
       }
     }
-    // If signed out, the link opens login.html normally.
   });
 }
