@@ -1,0 +1,254 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f7f4">
+  <title>Complete Your Profile | Velform</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 28px 16px;
+      background: #f8f7f4;
+      color: #171717;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    main {
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .brand {
+      text-align: center;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      margin: 10px 0;
+    }
+
+    .intro {
+      text-align: center;
+      color: #666;
+      line-height: 1.5;
+      margin-bottom: 28px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin: 17px 0 7px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #d5d3ce;
+      border-radius: 2px;
+      background: white;
+      color: #171717;
+      font-size: 15px;
+    }
+
+    input:focus, select:focus {
+      outline: 2px solid #777;
+      outline-offset: 1px;
+    }
+
+    .hint {
+      margin: 6px 0 0;
+      color: #777;
+      font-size: 12px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 15px;
+      border: 0;
+      background: #171717;
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    #message {
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin: 20px 0;
+      color: #555;
+      text-decoration: none;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+<main>
+  <div class="brand">VELFORM</div>
+  <p class="intro">
+    Complete your profile once for a smoother shopping experience.
+  </p>
+
+  <form id="profile-form">
+    <label for="name">Full name *</label>
+    <input id="name" name="name" autocomplete="name"
+      maxlength="80" required>
+
+    <label for="phone">Mobile number *</label>
+    <input id="phone" name="phone" type="tel"
+      inputmode="numeric" autocomplete="tel"
+      pattern="[6-9][0-9]{9}" maxlength="10" required>
+    <p class="hint">Enter your 10-digit Indian mobile number.</p>
+
+    <label for="address">House / flat and street address *</label>
+    <input id="address" name="address"
+      autocomplete="street-address" maxlength="200" required>
+
+    <label for="area">Area / locality in Surat *</label>
+    <input id="area" name="area" maxlength="100" required>
+
+    <label for="landmark">Landmark (optional)</label>
+    <input id="landmark" name="landmark" maxlength="120">
+
+    <label for="alternate">Alternate mobile number (optional)</label>
+    <input id="alternate" name="alternate" type="tel"
+      inputmode="numeric" pattern="[6-9][0-9]{9}"
+      maxlength="10">
+
+    <button id="save-button" type="submit">
+      Save profile
+    </button>
+    <p id="message" role="status" aria-live="polite"></p>
+  </form>
+
+  <a class="back" href="index.html">Back to homepage</a>
+</main>
+
+<script type="module">
+  import { auth, db } from "./firebase.js";
+  import {
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+  import {
+    doc, getDoc, setDoc, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+
+  const form = document.getElementById("profile-form");
+  const saveButton = document.getElementById("save-button");
+  const message = document.getElementById("message");
+
+  let currentUser = null;
+  let ready = false;
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.replace("login.html");
+      return;
+    }
+
+    currentUser = user;
+
+    try {
+      const ref = doc(db, "users", user.uid);
+      const snapshot = await getDoc(ref);
+
+      if (snapshot.exists() &&
+          snapshot.data().profileComplete === true) {
+        window.location.replace("index.html");
+        return;
+      }
+
+      const profile = snapshot.exists() ? snapshot.data() : {};
+
+      document.getElementById("name").value =
+        profile.name || user.displayName || "";
+      document.getElementById("phone").value =
+        profile.phone || "";
+      document.getElementById("address").value =
+        profile.address || "";
+      document.getElementById("area").value =
+        profile.area || "";
+      document.getElementById("landmark").value =
+        profile.landmark || "";
+      document.getElementById("alternate").value =
+        profile.alternatePhone || "";
+
+      ready = true;
+    } catch (error) {
+      console.error("Profile load failed:", error.code);
+      message.textContent =
+        "Could not load your profile. Please refresh and try again.";
+    }
+  });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    if (!ready || !currentUser) return;
+
+    if (!form.reportValidity()) return;
+
+    const phone = document.getElementById("phone").value.trim();
+    const alternatePhone =
+      document.getElementById("alternate").value.trim();
+
+    if (alternatePhone && alternatePhone === phone) {
+      message.textContent =
+        "Alternate number must be different from your main number.";
+      return;
+    }
+
+    saveButton.disabled = true;
+    saveButton.textContent = "Saving...";
+    message.textContent = "";
+
+    try {
+      const ref = doc(db, "users", currentUser.uid);
+      const oldSnapshot = await getDoc(ref);
+      const oldProfile = oldSnapshot.exists()
+        ? oldSnapshot.data()
+        : {};
+
+      await setDoc(ref, {
+        name: document.getElementById("name").value.trim(),
+        email: currentUser.email || "",
+        phone,
+        address: document.getElementById("address").value.trim(),
+        area: document.getElementById("area").value.trim(),
+        landmark: document.getElementById("landmark").value.trim(),
+        alternatePhone,
+        profileComplete: true,
+        createdAt: oldProfile.createdAt || serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+
+      window.location.replace("index.html");
+    } catch (error) {
+      console.error("Profile save failed:", error.code, error.message);
+      message.textContent =
+        "Profile could not be saved. Please try again.";
+      saveButton.disabled = false;
+      saveButton.textContent = "Save profile";
+    }
+  });
+</script>
+</body>
+</html>
