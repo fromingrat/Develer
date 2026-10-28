@@ -336,15 +336,11 @@ body {
   background: #ffffff;
   cursor: pointer;
 
-  /* Hidden until the intro panel has been scrolled past */
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: translateX(-8px);
-  transition:
-    opacity 180ms ease,
-    transform 180ms ease,
-    visibility 180ms ease;
+  transform: translateY(3px);
+  transition: opacity 150ms ease, transform 150ms ease;
 }
 
 .vf-category-menu span {
@@ -359,7 +355,7 @@ body {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transform: translateX(0);
+  transform: translateY(0);
 }
 
 @media (prefers-reduced-motion: reduce) {
