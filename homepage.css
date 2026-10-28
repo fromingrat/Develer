@@ -358,7 +358,7 @@ body {
   transform: translateY(0);
 }
 
-/* Keep the category row visible while scrolling upward */
+/* Smooth category-panel appearance and disappearance */
 .vf-categories.vf-categories-floating {
   position: fixed;
   z-index: 450;
@@ -370,9 +370,26 @@ body {
   background: #ffffff;
   border-bottom: 1px solid #e5e5e5;
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+  animation: vf-category-slide-in 260ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes vf-category-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .vf-categories.vf-categories-floating {
+    animation: none;
+  }
+
   .vf-category-menu {
     transition: none;
   }
