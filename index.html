@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,9 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#000000">
   <meta name="description" content="NOIR FORM is a demo store for premium men's shirts and jeans. Orders and payments are not real.">
-  <title>Velform </title>
+  <title>Velform</title>
 
-  <!-- Fonts: Cormorant Garamond (headings) and Jost (text). If they fail to load, the page uses Georgia and Arial instead. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500&display=swap" rel="stylesheet">
@@ -18,7 +18,6 @@
 
   <a class="skip-link" href="#collection">Skip to the collection</a>
 
-  <!-- Demo notice + header stay at the top while scrolling -->
   <div class="site-top">
     <div class="demo-bar" role="note">
       <strong>Demo store.</strong> Orders and payments are not real.
@@ -37,8 +36,15 @@
         </nav>
 
         <div class="header-actions">
-          <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
-          <button class="cart-toggle" id="open-cart" type="button" aria-label="Open cart, 0 items">
+          <button class="menu-toggle" id="menu-toggle" type="button"
+            aria-expanded="false" aria-controls="site-nav">Menu</button>
+
+          <button class="sign-in-btn" id="sign-in-btn" type="button">
+            Sign in
+          </button>
+
+          <button class="cart-toggle" id="open-cart" type="button"
+            aria-label="Open cart, 0 items">
             Cart <span class="cart-count" id="cart-count" hidden>0</span>
           </button>
         </div>
@@ -81,12 +87,14 @@
             <div class="product-media">
               <span class="fallback" aria-hidden="true">NOIR FORM<small>Shirt</small></span>
               <img src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=900&q=80"
-                   alt="Classic Poplin Shirt" width="900" height="1125" loading="lazy">
+                alt="Classic Poplin Shirt" width="900" height="1125" loading="lazy">
             </div>
+
             <div class="product-top">
               <h3>Classic Poplin Shirt</h3>
               <p class="price">₹2,499</p>
             </div>
+
             <p class="product-note">Crisp cotton poplin with a clean, tailored fit.</p>
 
             <fieldset class="sizes">
@@ -98,6 +106,7 @@
                 <label><input type="radio" name="size-poplin-shirt" value="XL"><span>XL</span></label>
               </div>
             </fieldset>
+
             <p class="size-error" role="alert" hidden>Please choose a size first.</p>
             <button class="btn btn-dark add-to-cart" type="button">Add to cart</button>
           </article>
@@ -107,12 +116,14 @@
             <div class="product-media">
               <span class="fallback" aria-hidden="true">NOIR FORM<small>Shirt</small></span>
               <img src="https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=900&q=80"
-                   alt="Relaxed Linen Shirt" width="900" height="1125" loading="lazy">
+                alt="Relaxed Linen Shirt" width="900" height="1125" loading="lazy">
             </div>
+
             <div class="product-top">
               <h3>Relaxed Linen Shirt</h3>
               <p class="price">₹2,999</p>
             </div>
+
             <p class="product-note">Breathable linen blend with an easy, relaxed drape.</p>
 
             <fieldset class="sizes">
@@ -124,6 +135,7 @@
                 <label><input type="radio" name="size-linen-shirt" value="XL"><span>XL</span></label>
               </div>
             </fieldset>
+
             <p class="size-error" role="alert" hidden>Please choose a size first.</p>
             <button class="btn btn-dark add-to-cart" type="button">Add to cart</button>
           </article>
@@ -133,12 +145,14 @@
             <div class="product-media">
               <span class="fallback" aria-hidden="true">NOIR FORM<small>Jeans</small></span>
               <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=900&q=80"
-                   alt="Slim Taper Jeans" width="900" height="1125" loading="lazy">
+                alt="Slim Taper Jeans" width="900" height="1125" loading="lazy">
             </div>
+
             <div class="product-top">
               <h3>Slim Taper Jeans</h3>
               <p class="price">₹3,499</p>
             </div>
+
             <p class="product-note">Mid-rise stretch denim, slim through the leg and tapered at the ankle.</p>
 
             <fieldset class="sizes">
@@ -150,6 +164,7 @@
                 <label><input type="radio" name="size-taper-jeans" value="XL"><span>XL</span></label>
               </div>
             </fieldset>
+
             <p class="size-error" role="alert" hidden>Please choose a size first.</p>
             <button class="btn btn-dark add-to-cart" type="button">Add to cart</button>
           </article>
@@ -176,6 +191,7 @@
           <h2 id="contact-title">Contact</h2>
           <p class="lede">This is a demo site, so there is no contact form and no message can be sent. The details on the right show how this section would look on a live store.</p>
         </div>
+
         <dl class="contact-list">
           <div>
             <dt>Email</dt>
@@ -214,6 +230,7 @@
           </ul>
         </nav>
       </div>
+
       <p class="footer-demo"><strong>Demo store.</strong> Orders and payments are not real.</p>
       <p class="footer-copy">&copy; 2026 NOIR FORM demo. Sample products, prices and images.</p>
     </div>
@@ -244,7 +261,6 @@
     </div>
   </aside>
 
-  <!-- Small message that appears after adding an item -->
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="script.js"></script>
