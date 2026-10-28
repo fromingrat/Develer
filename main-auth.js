@@ -9,6 +9,7 @@ const signInButton = document.getElementById("sign-in-btn");
 if (signInButton) {
   watchAuthState((user) => {
     signInButton.hidden = !!user;
+    console.log("Auth user:", !!user, "Button hidden:", signInButton.hidden);
     signInButton.dataset.signedIn = user ? "true" : "false";
 
     if (!user) {
