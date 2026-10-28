@@ -624,4 +624,70 @@ document.addEventListener("DOMContentLoaded", () => {
 
     card.append(media, top);
 
-    if (description
+    
+if (description.textContent.trim()) {
+      card.appendChild(description);
+    }
+
+    card.append(sizes, error, addButton);
+
+    const tools = document.createElement("div");
+    tools.className = "vf-product-tools";
+
+    const heart = document.createElement("button");
+    heart.type = "button";
+    heart.className = "vf-heart";
+    heart.textContent = "♡";
+    heart.setAttribute("aria-label", "Add to wishlist");
+    heart.setAttribute("aria-pressed", "false");
+
+    heart.addEventListener("click", () => {
+      if (savedProducts.has(item.id)) {
+        savedProducts.delete(item.id);
+      } else {
+        savedProducts.add(item.id);
+      }
+
+      updateHearts();
+      renderProducts();
+    });
+
+    tools.appendChild(heart);
+    card.appendChild(tools);
+
+    return card;
+  }
+
+  // Load only published products from Firestore.
+  async function loadProducts() {
+    productsArea.replaceChildren();
+
+    const loadingMessage = document.createElement("p");
+    loadingMessage.className = "vf-empty";
+    loadingMessage.textContent = "Loading collection…";
+    productsArea.appendChild(loadingMessage);
+
+    try {
+      firestoreProducts = await getPublishedProducts();
+
+      products = firestoreProducts.map(createProductCard);
+      productsArea.replaceChildren(...products);
+
+      renderProducts();
+    } catch (error) {
+      console.error("Unable to load published products:", error);
+
+      productsArea.replaceChildren();
+
+      const errorMessage = document.createElement("p");
+      errorMessage.className = "vf-empty";
+      errorMessage.textContent =
+        "We couldn't load the collection. Please refresh and try again.";
+
+      productsArea.appendChild(errorMessage);
+    }
+  }
+
+  loadProducts();
+});
+  
