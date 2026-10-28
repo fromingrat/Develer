@@ -82,18 +82,47 @@ document.addEventListener("DOMContentLoaded", () => {
 
   collection.querySelector(".section-head")?.after(categories);
 
-  // Show the menu only after the intro panel has been scrolled past.
+  
+  // Menu appears while scrolling up, but only after leaving the intro.
+  let previousScrollY = window.scrollY;
+  let hasPassedIntro = false;
+  let scrollDirection = "down";
+
   function updateMenuVisibility() {
+    const currentScrollY = window.scrollY;
     const heroBottom = hero.getBoundingClientRect().bottom;
-    const introHasPassed = heroBottom <= 0;
-    menuButton.classList.toggle("is-visible", introHasPassed);
+
+    if (heroBottom <= 0) {
+      hasPassedIntro = true;
+    }
+
+    if (currentScrollY < previousScrollY) {
+      scrollDirection = "up";
+    } else if (currentScrollY > previousScrollY) {
+      scrollDirection = "down";
+    }
+
+    // Always hide the menu when the intro is visible.
+    if (heroBottom > 0) {
+      menuButton.classList.remove("is-visible");
+      hasPassedIntro = false;
+    } else {
+      menuButton.classList.toggle(
+        "is-visible",
+        hasPassedIntro && scrollDirection === "up"
+      );
+    }
+
+    previousScrollY = currentScrollY;
   }
 
   window.addEventListener("scroll", updateMenuVisibility, {
     passive: true
   });
+
   window.addEventListener("resize", updateMenuVisibility);
   updateMenuVisibility();
+
 
   // Product ratings and wishlist buttons.
   products.forEach((product) => {
