@@ -8,19 +8,15 @@ const signInButton = document.getElementById("sign-in-btn");
 
 if (signInButton) {
   watchAuthState((user) => {
-    if (user) {
-      const firstName = user.displayName
-        ? user.displayName.split(" ")[0]
-        : "Account";
+    
+if (user) {
+  signInButton.hidden = true;
+} else {
+  signInButton.hidden = false;
+  signInButton.textContent = "Sign in";
+  signInButton.dataset.signedIn = "false";
+}
 
-      signInButton.textContent = `Hi, ${firstName}`;
-      signInButton.setAttribute("aria-label", "Open sign-in page or sign out");
-      signInButton.dataset.signedIn = "true";
-    } else {
-      signInButton.textContent = "Sign in";
-      signInButton.setAttribute("aria-label", "Sign in with Google");
-      signInButton.dataset.signedIn = "false";
-    }
   });
 
   signInButton.addEventListener("click", async (event) => {
