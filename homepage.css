@@ -1,0 +1,208 @@
+
+/* VELFORM HOMEPAGE */
+
+:root {
+  --vf-black: #111111;
+  --vf-white: #ffffff;
+  --vf-grey: #777777;
+  --vf-light: #f4f3f0;
+}
+
+body {
+  padding-bottom: 76px;
+}
+
+.site-top {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: transform 0.25s ease;
+}
+
+.site-top.vf-hidden {
+  transform: translateY(-110%);
+}
+
+.vf-intro {
+  padding: 30px var(--page-pad) 24px;
+  background: var(--vf-light);
+}
+
+.vf-greeting {
+  margin: 0 0 8px;
+  color: var(--vf-grey);
+  font-size: 13px;
+}
+
+.vf-intro h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(32px, 7vw, 52px);
+  font-weight: 500;
+  line-height: 1.05;
+}
+
+.vf-intro p.vf-tagline {
+  margin: 10px 0 0;
+  color: #555;
+  font-size: 14px;
+}
+
+.vf-categories {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 18px var(--page-pad);
+  scrollbar-width: none;
+}
+
+.vf-categories::-webkit-scrollbar {
+  display: none;
+}
+
+.vf-category {
+  flex: 0 0 auto;
+  padding: 10px 16px;
+  border: 1px solid #d5d5d5;
+  border-radius: 30px;
+  background: white;
+  color: #111;
+  font: inherit;
+  cursor: pointer;
+}
+
+.vf-category.active {
+  background: #111;
+  color: white;
+  border-color: #111;
+}
+
+.product {
+  position: relative;
+}
+
+.vf-product-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 8px 0;
+  font-size: 13px;
+}
+
+.vf-rating {
+  color: #555;
+}
+
+.vf-heart {
+  width: 38px;
+  height: 38px;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  background: white;
+  color: #111;
+  font-size: 21px;
+  cursor: pointer;
+}
+
+.vf-heart.saved {
+  background: #111;
+  color: white;
+}
+
+.vf-membership {
+  margin: 28px var(--page-pad);
+  padding: 26px 22px;
+  background: #111;
+  color: white;
+}
+
+.vf-membership .vf-member-icon {
+  font-size: 30px;
+}
+
+.vf-membership h2 {
+  margin: 10px 0;
+  font-family: var(--serif);
+  font-size: 32px;
+  font-weight: 500;
+}
+
+.vf-membership p {
+  color: #ddd;
+  line-height: 1.6;
+}
+
+.vf-membership button {
+  padding: 12px 18px;
+  border: 1px solid white;
+  background: white;
+  color: #111;
+  font: inherit;
+  cursor: pointer;
+}
+
+.vf-bottom-nav {
+  position: fixed;
+  z-index: 500;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  min-height: 68px;
+  padding: 7px 4px max(7px, env(safe-area-inset-bottom));
+  border-top: 1px solid #e5e5e5;
+  background: #fff;
+}
+
+.vf-bottom-nav button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: #666;
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.vf-bottom-nav button span {
+  font-size: 19px;
+  line-height: 1.2;
+}
+
+.vf-bottom-nav button.active {
+  color: #111;
+  font-weight: 600;
+}
+
+.vf-bottom-nav button.active span {
+  transform: translateY(-1px);
+}
+
+.vf-empty {
+  padding: 30px 20px;
+  text-align: center;
+  color: #666;
+}
+
+@media (min-width: 760px) {
+  .vf-intro {
+    padding-top: 44px;
+    padding-bottom: 36px;
+  }
+
+  .vf-bottom-nav {
+    left: 50%;
+    right: auto;
+    width: min(520px, 100%);
+    transform: translateX(-50%);
+    border: 1px solid #ddd;
+    border-bottom: 0;
+    border-radius: 14px 14px 0 0;
+  }
+  }
