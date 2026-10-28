@@ -358,6 +358,20 @@ body {
   transform: translateY(0);
 }
 
+/* Keep the category row visible while scrolling upward */
+.vf-categories.vf-categories-floating {
+  position: fixed;
+  z-index: 450;
+  top: 0;
+  right: 0;
+  left: 0;
+  box-sizing: border-box;
+  width: 100%;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e5e5;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .vf-category-menu {
     transition: none;
