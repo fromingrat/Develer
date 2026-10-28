@@ -358,7 +358,7 @@ body {
   transform: translateY(0);
 }
 
-/* Smooth category-panel appearance and disappearance */
+/* Smooth floating category bar */
 .vf-categories.vf-categories-floating {
   position: fixed;
   z-index: 450;
@@ -370,23 +370,45 @@ body {
   background: #ffffff;
   border-bottom: 1px solid #e5e5e5;
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
-  animation: vf-category-slide-in 260ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  will-change: transform, opacity;
+  animation: vf-category-slide-in 420ms
+    cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Smooth exit when scrolling down */
+.vf-categories.vf-categories-floating.vf-categories-hiding {
+  pointer-events: none;
+  animation: vf-category-slide-out 320ms
+    cubic-bezier(0.4, 0, 1, 1) both;
 }
 
 @keyframes vf-category-slide-in {
   from {
     opacity: 0;
-    transform: translateY(-100%);
+    transform: translate3d(0, -100%, 0);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes vf-category-slide-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .vf-categories.vf-categories-floating {
+  .vf-categories.vf-categories-floating,
+  .vf-categories.vf-categories-floating.vf-categories-hiding {
     animation: none;
   }
 
