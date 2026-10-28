@@ -81,62 +81,68 @@ document.addEventListener("DOMContentLoaded", () => {
 
   collection.querySelector(".section-head")?.after(categories);
 
-  // Show the category bar only while scrolling up after the intro.
 
-  // Show the category bar while scrolling up after the intro.
+  // Smooth floating category bar with scroll threshold and layout stability.
+  const categorySpacer = document.createElement("div");
+  categorySpacer.className = "vf-category-spacer";
+  categories.before(categorySpacer);
+
   let previousScrollY = window.scrollY;
+  let directionAnchorY = window.scrollY;
   let scrollDirection = "down";
   let ticking = false;
   let hideBarTimer = null;
 
+  const SCROLL_THRESHOLD = 35;
+  const ANIMATION_DURATION = 650;
+
   function updateMenuVisibility() {
     const currentScrollY = window.scrollY;
-    const heroBottom = hero.getBoundingClientRect().bottom;
+    const movement = currentScrollY - directionAnchorY;
 
-    if (currentScrollY < previousScrollY) {
-      scrollDirection = "up";
-    } else if (currentScrollY > previousScrollY) {
-      scrollDirection = "down";
+    // Ignore tiny movements so the bar doesn't flicker.
+    if (Math.abs(movement) >= SCROLL_THRESHOLD) {
+      scrollDirection = movement < 0 ? "up" : "down";
+      directionAnchorY = currentScrollY;
     }
 
-    const pastIntro = heroBottom <= 0;
+    const pastIntro = hero.getBoundingClientRect().bottom <= 0;
     const showBar = pastIntro && scrollDirection === "up";
 
-    // Keep the menu button visible beside All at all times.
     menuButton.classList.add("is-visible");
 
     if (showBar) {
-      // Cancel a pending exit if the user scrolls up again.
       if (hideBarTimer !== null) {
         clearTimeout(hideBarTimer);
         hideBarTimer = null;
       }
 
-      categories.classList.remove("vf-categories-hiding");
-
       if (!categories.classList.contains("vf-categories-floating")) {
+        // Reserve its original space before fixing the bar.
+        categorySpacer.style.height = `${categories.offsetHeight}px`;
+        categorySpacer.classList.add("is-active");
+
+        categories.classList.remove("vf-categories-hiding");
         categories.classList.add("vf-categories-floating");
+      } else {
+        categories.classList.remove("vf-categories-hiding");
       }
-    } else if (categories.classList.contains("vf-categories-floating")) {
-      // Play the exit animation before returning the bar to its normal place.
+    } else if (
+      categories.classList.contains("vf-categories-floating") &&
+      !categories.classList.contains("vf-categories-hiding")
+    ) {
       categories.classList.add("vf-categories-hiding");
 
-      if (hideBarTimer === null) {
-        hideBarTimer = window.setTimeout(() => {
-          if (
-            categories.classList.contains("vf-categories-hiding") &&
-            !(hero.getBoundingClientRect().bottom <= 0 &&
-              scrollDirection === "up")
-          ) {
-            categories.classList.remove(
-              "vf-categories-floating",
-              "vf-categories-hiding"
-            );
-          }
+      hideBarTimer = window.setTimeout(() => {
+        categories.classList.remove(
+          "vf-categories-floating",
+          "vf-categories-hiding"
+        );
 
-          hideBarTimer = null;
-        }, 340);
-      }
+        categorySpacer.classList.remove("is-active");
+        categorySpacer.style.height = "0px";
+        hideBarTimer = null;
+      }, ANIMATION_DURATION);
     }
 
     previousScrollY = currentScrollY;
