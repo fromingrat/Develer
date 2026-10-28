@@ -319,3 +319,51 @@ body {
     font-size: 1.5rem;
   }
 }
+/* Three-line menu button before the All category */
+.vf-category-menu {
+  display: flex;
+  flex: 0 0 42px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 42px;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #d5d5d5;
+  border-radius: 30px;
+  background: #ffffff;
+  cursor: pointer;
+
+  /* Hidden until the intro panel has been scrolled past */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateX(-8px);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease,
+    visibility 180ms ease;
+}
+
+.vf-category-menu span {
+  display: block;
+  width: 17px;
+  height: 2px;
+  border-radius: 2px;
+  background: #111111;
+}
+
+.vf-category-menu.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vf-category-menu {
+    transition: none;
+  }
+}
