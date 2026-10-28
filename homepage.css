@@ -474,3 +474,218 @@ body {
     transition: none;
   }
 }
+
+/* =========================================
+   VELFORM — HALF-SCREEN ACCOUNT DRAWER
+   ========================================= */
+
+.vf-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 800;
+  background: rgba(0, 0, 0, 0.36);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 420ms ease, visibility 420ms ease;
+}
+
+.vf-menu-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.vf-account-drawer {
+  position: fixed;
+  z-index: 801;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  max-width: 480px;
+  min-width: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: max(18px, env(safe-area-inset-top)) 14px
+    max(18px, env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  background: #fff;
+  color: #111;
+  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.12);
+  transform: translate3d(100%, 0, 0);
+  visibility: hidden;
+  transition:
+    transform 560ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 560ms;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+}
+
+.vf-account-drawer.is-open {
+  transform: translate3d(0, 0, 0);
+  visibility: visible;
+}
+
+body.vf-menu-open {
+  overflow: hidden;
+}
+
+.vf-drawer-header {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.vf-profile-avatar {
+  display: grid;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 50%;
+  background: #111;
+  color: #fff;
+  font-family: var(--serif);
+  font-size: 20px;
+}
+
+.vf-profile-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.vf-profile-name,
+.vf-profile-email {
+  overflow: hidden;
+  margin: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vf-profile-name {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.vf-profile-email {
+  margin-top: 3px;
+  color: #777;
+  font-size: 10px;
+}
+
+.vf-drawer-close {
+  flex: 0 0 25px;
+  width: 25px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #111;
+  font-size: 27px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.vf-drawer-greeting {
+  padding: 18px 0 14px;
+}
+
+.vf-drawer-greeting p {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(19px, 4vw, 28px);
+  line-height: 1.2;
+}
+
+.vf-drawer-greeting span {
+  display: block;
+  margin-top: 5px;
+  color: #777;
+  font-size: 10px;
+}
+
+.vf-drawer-links {
+  display: flex;
+  flex-direction: column;
+}
+
+.vf-drawer-links a,
+.vf-drawer-links button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  width: 100%;
+  min-height: 43px;
+  margin: 0;
+  padding: 9px 0;
+  border: 0;
+  border-bottom: 1px solid #ededed;
+  background: transparent;
+  color: #171717;
+  font-family: var(--sans);
+  font-size: 11px;
+  line-height: 1.35;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.vf-drawer-links a span:last-child,
+.vf-drawer-links button span:last-child {
+  color: #888;
+  font-size: 18px;
+}
+
+.vf-drawer-logout {
+  width: 100%;
+  min-height: 40px;
+  margin-top: 18px;
+  padding: 10px;
+  border: 1px solid #222;
+  background: #111;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.vf-drawer-footer {
+  margin-top: auto;
+  padding-top: 22px;
+  color: #888;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-align: center;
+}
+
+@media (min-width: 760px) {
+  .vf-account-drawer {
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+
+  .vf-drawer-links a,
+  .vf-drawer-links button {
+    font-size: 13px;
+  }
+
+  .vf-profile-name {
+    font-size: 14px;
+  }
+
+  .vf-profile-email {
+    font-size: 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vf-menu-overlay,
+  .vf-account-drawer {
+    transition: none;
+  }
+  }
+    
