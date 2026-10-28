@@ -4,26 +4,25 @@ import { watchAuthState } from "./auth.js";
 document.addEventListener("DOMContentLoaded", () => {
   const main = document.querySelector("main");
   const collection = document.querySelector("#collection");
-  const hero = document.querySelector(".hero-inner");
+  const hero = document.querySelector(".hero");
+  const heroInner = document.querySelector(".hero-inner");
   const products = [...document.querySelectorAll(".product")];
 
-  if (!main || !collection || !hero) return;
+  if (!main || !collection || !hero || !heroInner) return;
 
   const savedProducts = new Set();
   let wishlistMode = false;
   let activeCategory = "All";
 
-  // Greeting inside the black VELFORM panel.
+  // Customer greeting inside the black intro panel.
   const greetingBox = document.createElement("div");
   greetingBox.className = "vf-welcome";
   greetingBox.innerHTML = `
     <p class="vf-greeting" id="vf-greeting">Hey there!</p>
     <p class="vf-welcome-message">We're really glad you've come again.</p>
   `;
+  heroInner.appendChild(greetingBox);
 
-  hero.appendChild(greetingBox);
-
-  // Personalise the greeting for signed-in customers.
   try {
     watchAuthState((user) => {
       const greeting = document.querySelector("#vf-greeting");
@@ -36,10 +35,29 @@ document.addEventListener("DOMContentLoaded", () => {
     console.warn("Could not load the customer greeting.", error);
   }
 
-  // Category filters.
+  // Category bar.
   const categories = document.createElement("nav");
   categories.className = "vf-categories";
   categories.setAttribute("aria-label", "Product categories");
+
+  // Three-line menu button, positioned before All.
+  const menuButton = document.createElement("button");
+  menuButton.type = "button";
+  menuButton.className = "vf-category-menu";
+  menuButton.setAttribute("aria-label", "Open menu");
+  menuButton.setAttribute("aria-expanded", "false");
+  menuButton.innerHTML = `
+    <span></span>
+    <span></span>
+    <span></span>
+  `;
+
+  // Menu is a placeholder for now; its action will be added later.
+  menuButton.addEventListener("click", () => {
+    // Menu behavior will be implemented in the next step.
+  });
+
+  categories.appendChild(menuButton);
 
   ["All", "Shirts", "T-shirts", "Jeans", "Trousers"].forEach((category) => {
     const button = document.createElement("button");
@@ -52,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
       activeCategory = category;
       wishlistMode = false;
 
-      categories.querySelectorAll("button").forEach((item) => {
+      categories.querySelectorAll(".vf-category").forEach((item) => {
         item.classList.toggle("active", item === button);
       });
 
@@ -64,7 +82,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   collection.querySelector(".section-head")?.after(categories);
 
-  // Product ratings and wishlist controls.
+  // Show the menu only after the intro panel has been scrolled past.
+  function updateMenuVisibility() {
+    const heroBottom = hero.getBoundingClientRect().bottom;
+    const introHasPassed = heroBottom <= 0;
+    menuButton.classList.toggle("is-visible", introHasPassed);
+  }
+
+  window.addEventListener("scroll", updateMenuVisibility, {
+    passive: true
+  });
+  window.addEventListener("resize", updateMenuVisibility);
+  updateMenuVisibility();
+
+  // Product ratings and wishlist buttons.
   products.forEach((product) => {
     const id = product.dataset.id;
     const media = product.querySelector(".product-media");
@@ -95,7 +126,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const membership = document.createElement("section");
   membership.className = "vf-membership";
   membership.id = "vf-membership";
-
   membership.innerHTML = `
     <div class="vf-member-icon" aria-hidden="true">♛</div>
     <h2>Velform Membership</h2>
@@ -136,12 +166,14 @@ document.addEventListener("DOMContentLoaded", () => {
       if (item.label === "Home") {
         wishlistMode = false;
         activeCategory = "All";
-        categories.querySelectorAll("button").forEach((categoryButton) => {
+
+        categories.querySelectorAll(".vf-category").forEach((categoryButton) => {
           categoryButton.classList.toggle(
             "active",
             categoryButton.textContent === "All"
           );
         });
+
         renderProducts();
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
