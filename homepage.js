@@ -100,7 +100,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const showBar = pastIntro && scrollDirection === "up";
 
     categories.classList.toggle("vf-categories-floating", showBar);
-    menuButton.classList.toggle("is-visible", showBar);
+    // Keep the menu button visible beside All, including at the top.
+menuButton.classList.add("is-visible");
 
     previousScrollY = currentScrollY;
     ticking = false;
