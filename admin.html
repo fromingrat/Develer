@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f7f4">
+  <title>VELFORM | Admin</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px;
+      display: grid;
+      place-items: center;
+      background: #f8f7f4;
+      color: #171717;
+      font-family: Arial, sans-serif;
+    }
+
+    main {
+      width: 100%;
+      max-width: 480px;
+      padding: 28px;
+      background: white;
+      border: 1px solid #e5e2dc;
+    }
+
+    h1 {
+      font-size: 25px;
+      letter-spacing: 4px;
+      margin: 0 0 8px;
+    }
+
+    h2 { font-size: 19px; }
+
+    p {
+      color: #666;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 12px;
+      border: 0;
+      background: #171717;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button:disabled { opacity: 0.6; }
+
+    #account, #sign-out { display: none; }
+
+    code {
+      display: block;
+      padding: 12px;
+      background: #f2f0eb;
+      overflow-wrap: anywhere;
+      user-select: all;
+    }
+
+    a { color: #333; }
+    #message { font-size: 14px; }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>VELFORM</h1>
+    <p>Store administration</p>
+
+    <hr>
+
+    <section id="signed-out">
+      <h2>Admin sign-in</h2>
+      <p>Sign in with the Google account you intend to use for store management.</p>
+      <button id="sign-in" type="button">Continue with Google</button>
+    </section>
+
+    <section id="account">
+      <h2>Signed in</h2>
+      <p id="email"></p>
+      <p>Your Firebase Authentication UID:</p>
+      <code id="uid"></code>
+      <p>
+        Save this UID for the next setup step. Product editing will remain
+        unavailable until administrator permissions are configured and tested.
+      </p>
+      <button id="sign-out" type="button">Sign out</button>
+    </section>
+
+    <p id="message" role="status" aria-live="polite"></p>
+    <p><a href="index.html">← Return to the store</a></p>
+  </main>
+
+  <script type="module">
+    import { auth } from "./firebase.js";
+    import { signInWithGoogle, signOutUser } from "./auth.js";
+    import {
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+
+    const signInButton = document.querySelector("#sign-in");
+    const signOutButton = document.querySelector("#sign-out");
+    const signedOut = document.querySelector("#signed-out");
+    const account = document.querySelector("#account");
+    const email = document.querySelector("#email");
+    const uid = document.querySelector("#uid");
+    const message = document.querySelector("#message");
+
+    signInButton.addEventListener("click", async () => {
+      signInButton.disabled = true;
+      message.textContent = "Connecting to Google…";
+
+      try {
+        await signInWithGoogle();
+        message.textContent = "";
+      } catch (error) {
+        console.error("Admin sign-in failed:", error);
+        message.textContent =
+          "Sign-in failed. Please try again.";
+      } finally {
+        signInButton.disabled = false;
+      }
+    });
+
+    signOutButton.addEventListener("click", async () => {
+      signOutButton.disabled = true;
+
+      try {
+        await signOutUser();
+        message.textContent = "Signed out.";
+      } catch (error) {
+        console.error("Sign-out failed:", error);
+        message.textContent = "Sign-out failed. Please try again.";
+      } finally {
+        signOutButton.disabled = false;
+      }
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      signedOut.style.display = user ? "none" : "block";
+      account.style.display = user ? "block" : "none";
+      signOutButton.style.display = user ? "block" : "none";
+
+      if (user) {
+        email.textContent = user.email || "Email unavailable";
+        uid.textContent = user.uid;
+      } else {
+        email.textContent = "";
+        uid.textContent = "";
+      }
+    });
+  </script>
+</body>
+</html>
