@@ -37,7 +37,7 @@ body {
 .vf-intro h2 {
   margin: 0;
   font-family: var(--serif);
-  font-size: clamp(32px, 7vw, 52px);
+  font-size: clamp(26px, 5vw, 38px);
   font-weight: 500;
   line-height: 1.05;
 }
@@ -206,3 +206,42 @@ body {
     border-radius: 14px 14px 0 0;
   }
   }
+/* SIMPLIFIED VELFORM INTRO */
+
+/* Remove the old top-header spacing and announcement */
+.site-top {
+  display: none !important;
+}
+
+/* Center the VELFORM intro wordmark */
+.hero-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+}
+
+.wordmark {
+  font-size: clamp(2.5rem, 9vw, 5rem) !important;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.wordmark .line > span {
+  transform: scale(0.75);
+}
+
+/* Remove the tagline/button area if any remains */
+.hero-copy {
+  display: none !important;
+}
+
+@media (max-width: 600px) {
+  .hero-inner {
+    min-height: 190px;
+  }
+
+  .wordmark {
+    font-size: clamp(2.2rem, 10vw, 3.5rem) !important;
+  }
+}
