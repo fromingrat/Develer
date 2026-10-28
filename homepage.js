@@ -82,9 +82,12 @@ document.addEventListener("DOMContentLoaded", () => {
   collection.querySelector(".section-head")?.after(categories);
 
   // Show the category bar only while scrolling up after the intro.
+
+  // Show the category bar while scrolling up after the intro.
   let previousScrollY = window.scrollY;
   let scrollDirection = "down";
   let ticking = false;
+  let hideBarTimer = null;
 
   function updateMenuVisibility() {
     const currentScrollY = window.scrollY;
@@ -99,9 +102,42 @@ document.addEventListener("DOMContentLoaded", () => {
     const pastIntro = heroBottom <= 0;
     const showBar = pastIntro && scrollDirection === "up";
 
-    categories.classList.toggle("vf-categories-floating", showBar);
-    // Keep the menu button visible beside All, including at the top.
-menuButton.classList.add("is-visible");
+    // Keep the menu button visible beside All at all times.
+    menuButton.classList.add("is-visible");
+
+    if (showBar) {
+      // Cancel a pending exit if the user scrolls up again.
+      if (hideBarTimer !== null) {
+        clearTimeout(hideBarTimer);
+        hideBarTimer = null;
+      }
+
+      categories.classList.remove("vf-categories-hiding");
+
+      if (!categories.classList.contains("vf-categories-floating")) {
+        categories.classList.add("vf-categories-floating");
+      }
+    } else if (categories.classList.contains("vf-categories-floating")) {
+      // Play the exit animation before returning the bar to its normal place.
+      categories.classList.add("vf-categories-hiding");
+
+      if (hideBarTimer === null) {
+        hideBarTimer = window.setTimeout(() => {
+          if (
+            categories.classList.contains("vf-categories-hiding") &&
+            !(hero.getBoundingClientRect().bottom <= 0 &&
+              scrollDirection === "up")
+          ) {
+            categories.classList.remove(
+              "vf-categories-floating",
+              "vf-categories-hiding"
+            );
+          }
+
+          hideBarTimer = null;
+        }, 340);
+      }
+    }
 
     previousScrollY = currentScrollY;
     ticking = false;
@@ -117,6 +153,7 @@ menuButton.classList.add("is-visible");
   window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", updateMenuVisibility);
   updateMenuVisibility();
+
 
   // Product ratings and wishlist buttons
   products.forEach((product) => {
