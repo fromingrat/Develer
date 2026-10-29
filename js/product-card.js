@@ -190,42 +190,6 @@ if (imageUrls.length) {
   }
 }
 
-
-    fallback.hidden = true;
-    media.append(image);
-
-    if (imageUrls.length > 1) {
-      const dots = document.createElement("div");
-      dots.className = "product-image-dots";
-      dots.setAttribute("aria-label", "Product image navigation");
-
-      imageUrls.forEach((url, index) => {
-        const dot = document.createElement("button");
-        dot.type = "button";
-        dot.className = "product-image-dot";
-        dot.setAttribute("aria-label", `Show image ${index + 1}`);
-        dot.setAttribute("aria-current", String(index === 0));
-
-        dot.addEventListener("click", () => {
-          image.src = url;
-          image.classList.remove("is-hidden");
-          fallback.hidden = true;
-
-          dots.querySelectorAll("button").forEach((button, buttonIndex) => {
-            button.setAttribute(
-              "aria-current",
-              String(buttonIndex === index)
-            );
-          });
-        });
-
-        dots.append(dot);
-      });
-
-      media.append(dots);
-    }
-  }
-
   media.append(fallback);
 
   // Wishlist heart overlays the top-right of the image.
