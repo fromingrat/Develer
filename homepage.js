@@ -610,6 +610,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ? item.imageUrls
         : [item.imageUrl || item.image || ""];
 
+    
     const imageUrls = rawImages
       .filter((value) => typeof value === "string" && value.trim())
       .map((value) => {
@@ -618,77 +619,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           return url.protocol === "https:" || url.protocol === "http:"
             ? url.href
-            if (imageUrls.length > 1) {
-        let currentIndex = 0;
-
-        const dots = document.createElement("div");
-        dots.className = "product-image-dots";
-        dots.setAttribute("aria-label", "Product image navigation");
-
-        const dotButtons = imageUrls.map((url, index) => {
-          const dot = document.createElement("button");
-          dot.type = "button";
-          dot.className = "product-image-dot";
-          dot.setAttribute("aria-label", `Show image ${index + 1}`);
-          dot.setAttribute("aria-current", String(index === 0));
-
-          dot.addEventListener("click", () => {
-            showProductImage(index);
-          });
-
-          dots.appendChild(dot);
-          return dot;
-        });
-
-        function showProductImage(index) {
-          currentIndex =
-            (index + imageUrls.length) % imageUrls.length;
-
-          image.src = imageUrls[currentIndex];
-          image.classList.remove("is-hidden");
-          fallback.hidden = true;
-
-          dotButtons.forEach((dot, dotIndex) => {
-            dot.setAttribute(
-              "aria-current",
-              String(dotIndex === currentIndex)
-            );
-          });
-        }
-
-        let touchStartX = null;
-        let touchStartY = null;
-
-        media.addEventListener("touchstart", (event) => {
-          const touch = event.changedTouches[0];
-          touchStartX = touch.clientX;
-          touchStartY = touch.clientY;
-        }, { passive: true });
-
-        media.addEventListener("touchend", (event) => {
-          if (touchStartX === null || touchStartY === null) {
-            return;
-          }
-
-          const touch = event.changedTouches[0];
-          const deltaX = touch.clientX - touchStartX;
-          const deltaY = touch.clientY - touchStartY;
-
-          if (
-            Math.abs(deltaX) > 40 &&
-            Math.abs(deltaX) > Math.abs(deltaY)
-          ) {
-            showProductImage(
-              currentIndex + (deltaX < 0 ? 1 : -1)
-            );
-          }
-
-          touchStartX = null;
-          touchStartY = null;
-        }, { passive: true });
-
-        media.appendChild(dots);
-          }      : null;
+            : null;
         } catch {
           return null;
         }
@@ -696,11 +627,9 @@ document.addEventListener("DOMContentLoaded", () => {
       .filter(Boolean);
 
     if (imageUrls.length > 0) {
-      fallback.hidden = true;
-
       const image = document.createElement("img");
-image.className = "product-image";
-image.src = imageUrls[0];
+      image.className = "product-image";
+      image.src = imageUrls[0];
       image.alt = item.name || "Velform product";
       image.loading = "lazy";
       image.width = 900;
@@ -711,11 +640,42 @@ image.src = imageUrls[0];
         fallback.hidden = false;
       });
 
+      fallback.hidden = true;
       media.appendChild(image);
 
-      
+      if (imageUrls.length > 1) {
+        const dots = document.createElement("div");
+        dots.className = "product-image-dots";
+        dots.setAttribute("aria-label", "Product image navigation");
 
-        const details = document.createElement("div");
+        imageUrls.forEach((url, index) => {
+          const dot = document.createElement("button");
+          dot.type = "button";
+          dot.className = "product-image-dot";
+          dot.setAttribute("aria-label", `Show image ${index + 1}`);
+          dot.setAttribute("aria-current", String(index === 0));
+
+          dot.addEventListener("click", () => {
+            image.src = url;
+            image.classList.remove("is-hidden");
+            fallback.hidden = true;
+
+            dots.querySelectorAll("button").forEach((button, buttonIndex) => {
+              button.setAttribute(
+                "aria-current",
+                String(buttonIndex === index)
+              );
+            });
+          });
+
+          dots.appendChild(dot);
+        });
+
+        media.appendChild(dots);
+      }
+    }
+
+    const details = document.createElement("div");
     details.className = "product-details";
 
     const category = document.createElement("p");
