@@ -4,7 +4,7 @@ import {
   signOut
 } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
 
-import { auth, googleProvider } from "../firebase.js";
+import { auth, googleProvider } from "./firebase.js";
 export async function signInWithGoogle() {
   try {
     const result = await signInWithPopup(auth, googleProvider);
