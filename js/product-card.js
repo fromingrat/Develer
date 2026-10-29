@@ -1,140 +1,155 @@
 
-/**
- * Velform Product Card
- * Creates a product card for the homepage.
- *
- * Supports:
- * - Multiple product images
- * - Product sizes
- * - Wishlist button
- * - Existing cart selectors and data attributes
- */
+const COLOR_MAP = {
+  black: "#171717",
+  white: "#ffffff",
+  red: "#c62828",
+  blue: "#2457a7",
+  navy: "#172747",
+  green: "#287447",
+  olive: "#777b35",
+  beige: "#d8c5a4",
+  cream: "#f4ead5",
+  brown: "#795548",
+  grey: "#858585",
+  gray: "#858585",
+  pink: "#e9a3b5",
+  purple: "#784b91",
+  yellow: "#f1cf45",
+  orange: "#e78332",
+  maroon: "#702632"
+};
+
+function getColorValue(color) {
+  const key = String(color || "").trim().toLowerCase();
+  return COLOR_MAP[key] || key;
+}
+
+function getAvailableVariants(item) {
+  if (!Array.isArray(item.variants)) return [];
+
+  return item.variants.filter((variant) => {
+    if (!variant || typeof variant !== "object") return false;
+
+    return (
+      String(variant.color || "").trim() !== "" &&
+      String(variant.size || "").trim() !== "" &&
+      Number.isFinite(Number(variant.stock)) &&
+      Number(variant.stock) > 0
+    );
+  });
+}
+
+function formatPrice(value) {
+  const price = Number(value);
+
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0
+  }).format(Number.isFinite(price) && price >= 0 ? price : 0);
+}
 
 export function createProductCard(
   item,
   { isSaved = false, onWishlistToggle = null } = {}
 ) {
-  const product = document.createElement("article");
+  const card = document.createElement("article");
+  card.className = "product";
 
-  product.className = "product";
-  product.dataset.id = item.id || "";
-  product.dataset.name = item.name || item.title || "Product";
-  product.dataset.price = String(item.price ?? 0);
+  card.dataset.id = String(item.id || "");
+  card.dataset.name = String(item.name || item.title || "Unnamed product");
+  card.dataset.price = String(Number(item.price) || 0);
+  card.dataset.category = String(item.category || "");
 
-  const title = item.name || item.title || "Product";
-  const price = Number(item.price ?? 0);
-
-  // Support both the new images array and older single-image products.
-  const images = Array.isArray(item.images)
-    ? item.images.filter(
-        (image) => typeof image === "string" && image.trim()
-      )
-    : [];
-
-  const singleImage = item.imageUrl || item.image || "";
-
-  if (images.length === 0 && singleImage) {
-    images.push(singleImage);
-  }
-
+  // Product image and fallback.
   const media = document.createElement("div");
   media.className = "product-media";
 
-  const image = document.createElement("img");
-  image.className = "product-image";
-  image.alt = title;
-  image.loading = "lazy";
-  image.src = images[0] || "";
-  image.dataset.images = JSON.stringify(images);
-  image.dataset.imageIndex = "0";
+  const fallback = document.createElement("span");
+  fallback.className = "fallback";
+  fallback.setAttribute("aria-hidden", "true");
+  fallback.textContent = "VELFORM";
 
-  if (!images.length) {
-    image.alt = `${title} image unavailable`;
-  }
+  const rawImages = Array.isArray(item.images)
+    ? item.images
+    : Array.isArray(item.imageUrls)
+      ? item.imageUrls
+      : [item.imageUrl || item.image || ""];
 
-  media.appendChild(image);
+  const imageUrls = rawImages.filter((value) => {
+    if (typeof value !== "string" || !value.trim()) return false;
 
-  // Add image navigation only when multiple images exist.
-  if (images.length > 1) {
-    const previousButton = document.createElement("button");
-    previousButton.type = "button";
-    previousButton.className = "product-image-nav product-image-prev";
-    previousButton.setAttribute("aria-label", "Previous product image");
-    previousButton.textContent = "‹";
-
-    const nextButton = document.createElement("button");
-    nextButton.type = "button";
-    nextButton.className = "product-image-nav product-image-next";
-    nextButton.setAttribute("aria-label", "Next product image");
-    nextButton.textContent = "›";
-
-    const imageCount = document.createElement("span");
-    imageCount.className = "product-image-count";
-    imageCount.textContent = `1 / ${images.length}`;
-
-    function showImage(index) {
-      const nextIndex = (index + images.length) % images.length;
-
-      image.src = images[nextIndex];
-      image.dataset.imageIndex = String(nextIndex);
-      imageCount.textContent = `${nextIndex + 1} / ${images.length}`;
+    try {
+      const url = new URL(value.trim());
+      return url.protocol === "https:" || url.protocol === "http:";
+    } catch {
+      return false;
     }
+  }).map((value) => new URL(value.trim()).href);
 
-    previousButton.addEventListener("click", () => {
-      showImage(Number(image.dataset.imageIndex) - 1);
+  if (imageUrls.length) {
+    const image = document.createElement("img");
+    image.className = "product-image";
+    image.src = imageUrls[0];
+    image.alt = item.name || item.title || "VELFORM product";
+    image.loading = "lazy";
+    image.width = 900;
+    image.height = 1200;
+
+    image.addEventListener("error", () => {
+      image.classList.add("is-hidden");
+      fallback.hidden = false;
     });
 
-    nextButton.addEventListener("click", () => {
-      showImage(Number(image.dataset.imageIndex) + 1);
-    });
+    fallback.hidden = true;
+    media.append(image);
 
-    // Allow touch users to swipe between images.
-    let touchStartX = null;
+    if (imageUrls.length > 1) {
+      const dots = document.createElement("div");
+      dots.className = "product-image-dots";
+      dots.setAttribute("aria-label", "Product image navigation");
 
-    media.addEventListener(
-      "touchstart",
-      (event) => {
-        touchStartX = event.changedTouches[0]?.clientX ?? null;
-      },
-      { passive: true }
-    );
+      imageUrls.forEach((url, index) => {
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "product-image-dot";
+        dot.setAttribute("aria-label", `Show image ${index + 1}`);
+        dot.setAttribute("aria-current", String(index === 0));
 
-    media.addEventListener(
-      "touchend",
-      (event) => {
-        if (touchStartX === null) return;
+        dot.addEventListener("click", () => {
+          image.src = url;
+          image.classList.remove("is-hidden");
+          fallback.hidden = true;
 
-        const touchEndX = event.changedTouches[0]?.clientX ?? touchStartX;
-        const difference = touchEndX - touchStartX;
+          dots.querySelectorAll("button").forEach((button, buttonIndex) => {
+            button.setAttribute(
+              "aria-current",
+              String(buttonIndex === index)
+            );
+          });
+        });
 
-        if (Math.abs(difference) > 40) {
-          showImage(
-            Number(image.dataset.imageIndex) +
-              (difference < 0 ? 1 : -1)
-          );
-        }
+        dots.append(dot);
+      });
 
-        touchStartX = null;
-      },
-      { passive: true }
-    );
-
-    media.append(previousButton, nextButton, imageCount);
+      media.append(dots);
+    }
   }
 
-  const top = document.createElement("div");
-  top.className = "product-top";
+  media.append(fallback);
 
+  // Wishlist heart overlays the top-right of the image.
   const wishlistButton = document.createElement("button");
   wishlistButton.type = "button";
   wishlistButton.className = "vf-heart";
-  wishlistButton.setAttribute("aria-label", "Toggle wishlist");
-  wishlistButton.setAttribute("aria-pressed", String(isSaved));
   wishlistButton.textContent = isSaved ? "♥" : "♡";
+  wishlistButton.setAttribute("aria-pressed", String(isSaved));
+  wishlistButton.setAttribute(
+    "aria-label",
+    isSaved ? "Remove from wishlist" : "Add to wishlist"
+  );
 
-  if (isSaved) {
-    wishlistButton.classList.add("is-saved");
-  }
+  if (isSaved) wishlistButton.classList.add("is-saved");
 
   wishlistButton.addEventListener("click", () => {
     if (typeof onWishlistToggle === "function") {
@@ -142,73 +157,105 @@ export function createProductCard(
     }
   });
 
-  top.appendChild(wishlistButton);
+  media.append(wishlistButton);
+
+  // Product details.
+  const details = document.createElement("div");
+  details.className = "product-details";
+
+  const category = document.createElement("p");
+  category.className = "product-category";
+  category.textContent = item.category || "Clothing";
 
   const heading = document.createElement("h3");
-  heading.textContent = title;
+  heading.className = "product-title";
+  heading.textContent = item.name || item.title || "Unnamed product";
 
-  const priceElement = document.createElement("p");
-  priceElement.className = "price";
-  priceElement.textContent = `₹${price.toLocaleString("en-IN")}`;
+  const priceRow = document.createElement("div");
+  priceRow.className = "product-price-row";
 
-  const note = document.createElement("p");
-  note.className = "product-note";
-  note.textContent = item.description || item.note || "";
+  const price = document.createElement("span");
+  price.className = "price";
+  price.textContent = formatPrice(item.price);
+  priceRow.append(price);
 
-  const sizesFieldset = document.createElement("fieldset");
-  sizesFieldset.className = "sizes";
+  const originalPriceValue = Number(item.originalPrice);
+  const sellingPrice = Number(item.price);
 
-  const legend = document.createElement("legend");
-  legend.textContent = "Select size";
-  sizesFieldset.appendChild(legend);
+  if (
+    Number.isFinite(originalPriceValue) &&
+    originalPriceValue > sellingPrice &&
+    sellingPrice > 0
+  ) {
+    const originalPrice = document.createElement("span");
+    originalPrice.className = "product-original-price";
+    originalPrice.textContent = formatPrice(originalPriceValue);
 
-  const variants = Array.isArray(item.variants) ? item.variants : [];
-  const sizes = variants.length
-    ? variants
-        .map((variant) =>
-          typeof variant === "string" ? variant : variant.size
-        )
-        .filter(Boolean)
-    : ["S", "M", "L", "XL"];
+    const discount = document.createElement("span");
+    discount.className = "product-discount";
+    discount.textContent =
+      `${Math.round(
+        ((originalPriceValue - sellingPrice) / originalPriceValue) * 100
+      )}% OFF`;
 
-  sizes.forEach((size, index) => {
-    const label = document.createElement("label");
-    label.className = "size-option";
+    priceRow.append(originalPrice, discount);
+  }
 
-    const radio = document.createElement("input");
-    radio.type = "radio";
-    radio.name = `size-${item.id || "product"}-${Math.random()
-      .toString(36)
-      .slice(2, 8)}`;
-    radio.value = size;
-    radio.checked = index === 0;
+  details.append(category, heading, priceRow);
 
-    const sizeText = document.createElement("span");
-    sizeText.textContent = size;
+  // One swatch per available colour. Sizes stay on the product page.
+  const availableVariants = getAvailableVariants(item);
+  const colors = [
+    ...new Map(
+      availableVariants.map((variant) => [
+        String(variant.color).trim().toLowerCase(),
+        String(variant.color).trim()
+      ])
+    ).values()
+  ];
 
-    label.append(radio, sizeText);
-    sizesFieldset.appendChild(label);
-  });
+  if (colors.length) {
+    const colorGroup = document.createElement("fieldset");
+    colorGroup.className = "product-colors";
 
-  const sizeError = document.createElement("p");
-  sizeError.className = "size-error";
-  sizeError.hidden = true;
+    const legend = document.createElement("legend");
+    legend.textContent = "Colours";
 
-  const addButton = document.createElement("button");
-  addButton.type = "button";
-  addButton.className = "add-to-cart";
-  addButton.textContent = "Add to cart";
+    const options = document.createElement("div");
+    options.className = "color-options";
 
-  product.append(
-    media,
-    top,
-    heading,
-    priceElement,
-    note,
-    sizesFieldset,
-    sizeError,
-    addButton
-  );
+    colors.forEach((color, index) => {
+      const label = document.createElement("label");
+      label.className = "color-option";
+      label.title = color;
 
-    return product;
+      const radio = document.createElement("input");
+      radio.type = "radio";
+      radio.name = `color-${item.id}`;
+      radio.value = color;
+      radio.checked = index === 0;
+      radio.setAttribute("aria-label", color);
+
+      const swatch = document.createElement("span");
+      swatch.className = "color-swatch";
+      swatch.style.backgroundColor = getColorValue(color);
+
+      if (color.toLowerCase() === "white" ||
+          color.toLowerCase() === "cream" ||
+          color.toLowerCase() === "beige" ||
+          color.toLowerCase() === "yellow") {
+        swatch.classList.add("light-swatch");
+      }
+
+      label.append(radio, swatch);
+      options.append(label);
+    });
+
+    colorGroup.append(legend, options);
+    details.append(colorGroup);
+  }
+
+  card.append(media, details);
+
+  return card;
 }
