@@ -1,6 +1,7 @@
 
 import { watchAuthState } from "./auth.js";
 import { getPublishedProducts } from "./product-service.js";
+import { createProductCard } from "./product-card.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const main = document.querySelector("main");
@@ -503,6 +504,7 @@ const { auth } = await import("./firebase.js");
       if (!heart) return;
 
       heart.classList.toggle("saved", isSaved);
+      heart.classList.toggle("is-saved", isSaved);
       heart.textContent = isSaved ? "♥" : "♡";
       heart.setAttribute("aria-pressed", String(isSaved));
       heart.setAttribute(
@@ -551,44 +553,9 @@ const { auth } = await import("./firebase.js");
   }
 
   // --------------------------------------------------
-  // STOCK AND VARIANTS
+  // PRODUCT CARD
   // --------------------------------------------------
-
-  function getAvailableVariants(item) {
-    if (!Array.isArray(item.variants)) return [];
-
-    return item.variants.filter((variant) => {
-      if (!variant || typeof variant !== "object") return false;
-
-      const color = String(variant.color || "").trim();
-      const size = String(variant.size || "").trim();
-      const stock = Number(variant.stock);
-
-      return color !== "" && size !== "" &&
-        Number.isFinite(stock) && stock > 0;
-    });
-  }
-
-  function formatPrice(value) {
-    const price = Number(value);
-
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0
-    }).format(Number.isFinite(price) && price >= 0 ? price : 0);
-  }
-
-  function createProductCard(item) {
-    const card = document.createElement("article");
-    card.className = "product";
-
-    card.dataset.id = String(item.id);
-    card.dataset.name = String(item.name || "Unnamed product");
-    card.dataset.price = String(Number(item.price) || 0);
-    card.dataset.category = String(item.category || "");
-
-   
+  
     // Product images: support an array or a single image URL.
     const media = document.createElement("div");
     media.className = "product-media";
@@ -929,9 +896,28 @@ const { auth } = await import("./firebase.js");
     try {
       const publishedProducts = await getPublishedProducts();
 
-      products = publishedProducts
+            products = publishedProducts
         .filter((item) => item && item.id)
-        .map((item) => createProductCard(item));
+        .map((item) =>
+          createProductCard(item, {
+            isSaved: savedProducts.has(String(item.id)),
+            onWishlistToggle: (product, button) => {
+              const productId = String(product.id);
+
+              if (savedProducts.has(productId)) {
+                savedProducts.delete(productId);
+              } else {
+                savedProducts.add(productId);
+                button.classList.remove("heart-pop");
+                void button.offsetWidth;
+                button.classList.add("heart-pop");
+              }
+
+              updateHearts();
+              renderProducts();
+            }
+          })
+        );
 
       productsArea.replaceChildren();
 
