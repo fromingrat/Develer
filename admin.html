@@ -165,12 +165,16 @@
           </div>
         </div>
 
-        <label for="imageUrl">Product image URL (optional)</label>
-        <input
-          id="imageUrl"
-          type="url"
-          placeholder="https://example.com/product.jpg"
-        >
+        <label for="images">Product image URLs (one per line)</label>
+        <textarea
+          id="images"
+          rows="4"
+          placeholder="https://example.com/shirt-front.jpg&#10;https://example.com/shirt-back.jpg&#10;https://example.com/shirt-detail.jpg"
+        ></textarea>
+        <p class="muted">
+          Add one image URL per line. The first image is shown initially.
+          Use publicly accessible image URLs.
+        </p>
 
         <label for="description">Description</label>
         <textarea
@@ -497,7 +501,16 @@
     const name = $("name").value.trim();
     const category = $("category").value;
     const price = Number($("price").value);
-    const imageUrl = $("imageUrl").value.trim();
+
+    // Read all image URLs, one URL per line.
+    const images = $("images").value
+      .split("\n")
+      .map((url) => url.trim())
+      .filter(Boolean);
+
+    // Keep imageUrl for compatibility with older product cards.
+    const imageUrl = images[0] || "";
+
     const description = $("description").value.trim();
     const published = $("published").checked;
 
@@ -509,7 +522,8 @@
       return;
     }
 
-    if (imageUrl) {
+    // Validate every image URL.
+    for (const imageUrl of images) {
       try {
         const url = new URL(imageUrl);
 
@@ -517,7 +531,7 @@
           throw new Error("Invalid protocol");
         }
       } catch {
-        setMessage("Enter a valid HTTP or HTTPS image URL.", true);
+        setMessage(`Invalid image URL: ${imageUrl}`, true);
         return;
       }
     }
@@ -543,6 +557,7 @@
         category,
         price,
         imageUrl,
+        images,
         description,
         published,
         variants,
@@ -631,6 +646,15 @@
             ).join(" · ") + ` | Total: ${totalStock}`
           : "No inventory variants saved yet.";
 
+        const imageInfo = document.createElement("p");
+        imageInfo.className = "muted";
+
+        const imageCount = Array.isArray(product.images)
+          ? product.images.length
+          : (product.imageUrl || product.image ? 1 : 0);
+
+        imageInfo.textContent = `${imageCount} product image(s) saved`;
+
         const edit = document.createElement("button");
         edit.type = "button";
         edit.textContent = "Edit";
@@ -640,7 +664,12 @@
           $("name").value = product.name || "";
           $("category").value = product.category || "Shirts";
           $("price").value = product.price ?? "";
-          $("imageUrl").value = product.imageUrl || product.image || "";
+
+          // Support both new multi-image and older single-image products.
+          $("images").value = Array.isArray(product.images)
+            ? product.images.join("\n")
+            : product.imageUrl || product.image || "";
+
           $("description").value = product.description || "";
           $("published").checked = product.published === true;
 
@@ -713,7 +742,16 @@
           }
         });
 
-        card.append(title, details, inventory, edit, toggle, remove);
+        card.append(
+          title,
+          details,
+          inventory,
+          imageInfo,
+          edit,
+          toggle,
+          remove
+        );
+
         productList.appendChild(card);
       });
     } catch (error) {
