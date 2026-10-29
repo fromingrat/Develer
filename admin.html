@@ -5,44 +5,113 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>VELFORM | Store Admin</title>
+
   <style>
     * { box-sizing: border-box; }
+
     body {
-      margin: 0; padding: 20px; background: #f7f6f2;
-      color: #171717; font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f7f6f2;
+      color: #171717;
+      font-family: Arial, sans-serif;
     }
-    main { max-width: 850px; margin: auto; }
+
+    main { max-width: 900px; margin: auto; }
     h1 { letter-spacing: 4px; }
+
     section {
-      background: white; border: 1px solid #e3e0d9;
-      padding: 20px; margin: 18px 0;
+      background: white;
+      border: 1px solid #e3e0d9;
+      padding: 20px;
+      margin: 18px 0;
     }
-    label { display: block; margin: 14px 0 6px; font-size: 14px; }
+
+    label {
+      display: block;
+      margin: 14px 0 6px;
+      font-size: 14px;
+    }
+
     input, textarea, select {
-      width: 100%; padding: 12px; border: 1px solid #ccc;
-      border-radius: 0; font: inherit; background: white;
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 0;
+      font: inherit;
+      background: white;
     }
+
     textarea { min-height: 85px; resize: vertical; }
+
     button {
-      padding: 12px 16px; border: 0; cursor: pointer;
-      background: #171717; color: white; margin: 8px 6px 0 0;
+      padding: 12px 16px;
+      border: 0;
+      cursor: pointer;
+      background: #171717;
+      color: white;
+      margin: 8px 6px 0 0;
     }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     button.secondary { background: #e9e7e1; color: #171717; }
     button.danger { background: #9b2525; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
     .product {
-      border-top: 1px solid #ddd; padding: 14px 0;
+      border-top: 1px solid #ddd;
+      padding: 14px 0;
       overflow-wrap: anywhere;
     }
+
     .muted { color: #666; font-size: 14px; }
     .status { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+    .variant-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 100px auto;
+      gap: 10px;
+      align-items: end;
+      border: 1px solid #e3e0d9;
+      padding: 12px;
+      margin: 12px 0;
+    }
+
+    .variant-row label { margin-top: 0; }
+    .variant-row button { margin-bottom: 0; }
+
+    .stock-summary {
+      margin: 8px 0 12px;
+      color: #555;
+      font-size: 14px;
+    }
+
     [hidden] { display: none !important; }
-    @media (max-width: 520px) {
-      .row { grid-template-columns: 1fr; }
+
+    @media (max-width: 600px) {
       body { padding: 12px; }
+      .row { grid-template-columns: 1fr; }
+
+      .variant-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .variant-row .remove-variant {
+        grid-column: 1 / -1;
+      }
     }
   </style>
 </head>
+
 <body>
 <main>
   <h1>VELFORM</h1>
@@ -51,20 +120,26 @@
   <section id="signed-out">
     <h2>Admin sign-in</h2>
     <p>Sign in using your authorised Google account.</p>
-    <button id="sign-in">Continue with Google</button>
+    <button id="sign-in" type="button">Continue with Google</button>
   </section>
 
   <div id="admin-area" hidden>
     <p id="account-info" class="muted"></p>
-    <button id="sign-out" class="secondary">Sign out</button>
+    <button id="sign-out" class="secondary" type="button">Sign out</button>
 
     <section>
       <h2 id="form-title">Add a product</h2>
+
       <form id="product-form">
         <input id="product-id" type="hidden">
 
         <label for="name">Product name *</label>
-        <input id="name" required maxlength="120" placeholder="Classic Oxford Shirt">
+        <input
+          id="name"
+          required
+          maxlength="120"
+          placeholder="Classic Oxford Shirt"
+        >
 
         <div class="row">
           <div>
@@ -76,17 +151,49 @@
               <option value="Trousers">Trousers</option>
             </select>
           </div>
+
           <div>
             <label for="price">Price in INR *</label>
-            <input id="price" type="number" min="1" step="1" required placeholder="999">
+            <input
+              id="price"
+              type="number"
+              min="1"
+              step="1"
+              required
+              placeholder="999"
+            >
           </div>
         </div>
 
         <label for="imageUrl">Product image URL (optional)</label>
-        <input id="imageUrl" type="url" placeholder="https://example.com/product.jpg">
+        <input
+          id="imageUrl"
+          type="url"
+          placeholder="https://example.com/product.jpg"
+        >
 
         <label for="description">Description</label>
-        <textarea id="description" maxlength="1500" placeholder="Fabric, fit and product details"></textarea>
+        <textarea
+          id="description"
+          maxlength="1500"
+          placeholder="Fabric, fit and product details"
+        ></textarea>
+
+        <h3>Colour, size and stock</h3>
+        <p class="muted">
+          Create one row for each colour and size combination.
+          Enter 0 when that combination is out of stock.
+        </p>
+
+        <div id="variant-list"></div>
+
+        <button
+          id="add-variant"
+          type="button"
+          class="secondary"
+        >+ Add colour / size</button>
+
+        <p id="stock-summary" class="stock-summary"></p>
 
         <label>
           <input id="published" type="checkbox" style="width:auto">
@@ -94,14 +201,21 @@
         </label>
 
         <button id="save-button" type="submit">Save product</button>
-        <button id="cancel-edit" type="button" class="secondary" hidden>Cancel edit</button>
+
+        <button
+          id="cancel-edit"
+          type="button"
+          class="secondary"
+          hidden
+        >Cancel edit</button>
       </form>
+
       <p id="message" class="status" role="status"></p>
     </section>
 
     <section>
       <h2>Products</h2>
-      <button id="refresh" class="secondary">Refresh list</button>
+      <button id="refresh" class="secondary" type="button">Refresh list</button>
       <div id="product-list">Loading products…</div>
     </section>
   </div>
@@ -112,43 +226,224 @@
 <script type="module">
   import { auth, db } from "./firebase.js";
   import { signInWithGoogle, signOutUser } from "./auth.js";
+
   import {
     onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+
   import {
-    collection, getDocs, addDoc, updateDoc, deleteDoc, doc,
-    query, orderBy, serverTimestamp
+    collection,
+    getDocs,
+    addDoc,
+    updateDoc,
+    deleteDoc,
+    doc,
+    query,
+    orderBy,
+    serverTimestamp
   } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 
   // Must match the UID authorised in your Firestore rules.
   const ADMIN_UID = "qJDZMxnCuYgf6KQahZ0sXzWYQND3";
 
   const $ = (id) => document.getElementById(id);
+
   const signedOut = $("signed-out");
   const adminArea = $("admin-area");
   const form = $("product-form");
   const message = $("message");
   const productList = $("product-list");
+  const variantList = $("variant-list");
 
   let isAdmin = false;
   let products = [];
 
+  function setMessage(text, error = false) {
+    message.textContent = text;
+    message.style.color = error ? "#9b2525" : "#276738";
+  }
+
+  function updateStockSummary() {
+    const rows = [...variantList.querySelectorAll(".variant-row")];
+    let total = 0;
+    let valid = true;
+
+    rows.forEach((row) => {
+      const stockInput = row.querySelector('[data-field="stock"]');
+      const value = stockInput.value.trim();
+      const quantity = Number(value);
+
+      if (
+        value === "" ||
+        !Number.isSafeInteger(quantity) ||
+        quantity < 0
+      ) {
+        valid = false;
+      } else {
+        total += quantity;
+      }
+    });
+
+    $("stock-summary").textContent =
+      `${rows.length} variant combination(s) · ` +
+      (valid ? `${total} total item(s) in stock` : "Check stock quantities");
+  }
+
+  function addVariantRow(variant = {}) {
+    const row = document.createElement("div");
+    row.className = "variant-row";
+
+    const fields = [
+      {
+        key: "color",
+        label: "Colour",
+        value: variant.color || "",
+        type: "text",
+        placeholder: "Black"
+      },
+      {
+        key: "size",
+        label: "Size",
+        value: variant.size || "",
+        type: "text",
+        placeholder: "M"
+      },
+      {
+        key: "stock",
+        label: "Quantity",
+        value: variant.stock ?? 0,
+        type: "number",
+        placeholder: "0"
+      }
+    ];
+
+    fields.forEach((field) => {
+      const wrapper = document.createElement("div");
+      const label = document.createElement("label");
+      const input = document.createElement("input");
+
+      label.textContent = field.label;
+      input.type = field.type;
+      input.dataset.field = field.key;
+      input.value = field.value;
+      input.required = true;
+      input.placeholder = field.placeholder;
+
+      if (field.key === "stock") {
+        input.min = "0";
+        input.step = "1";
+      } else {
+        input.maxLength = 40;
+      }
+
+      input.addEventListener("input", updateStockSummary);
+
+      wrapper.append(label, input);
+      row.appendChild(wrapper);
+    });
+
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = "danger remove-variant";
+    remove.textContent = "Remove";
+
+    remove.addEventListener("click", () => {
+      row.remove();
+      updateStockSummary();
+    });
+
+    row.appendChild(remove);
+    variantList.appendChild(row);
+    updateStockSummary();
+  }
+
+  function readVariants() {
+    const rows = [...variantList.querySelectorAll(".variant-row")];
+
+    if (rows.length === 0) {
+      throw new Error("Add at least one colour and size combination.");
+    }
+
+    const variants = rows.map((row) => {
+      const get = (key) =>
+        row.querySelector(`[data-field="${key}"]`).value.trim();
+
+      const color = get("color");
+      const size = get("size");
+      const stockText = get("stock");
+      const stock = Number(stockText);
+
+      if (!color || !size) {
+        throw new Error("Enter a colour and size for every row.");
+      }
+
+      if (
+        stockText === "" ||
+        !Number.isSafeInteger(stock) ||
+        stock < 0
+      ) {
+        throw new Error(
+          "Stock must be a whole number greater than or equal to zero."
+        );
+      }
+
+      return { color, size, stock };
+    });
+
+    const combinations = variants.map(
+      (variant) =>
+        `${variant.color.toLowerCase()}|${variant.size.toLowerCase()}`
+    );
+
+    if (new Set(combinations).size !== combinations.length) {
+      throw new Error(
+        "Duplicate colour and size combinations are not allowed."
+      );
+    }
+
+    return variants;
+  }
+
+  function fillVariantRows(variants = []) {
+    variantList.replaceChildren();
+
+    if (variants.length) {
+      variants.forEach(addVariantRow);
+    } else {
+      addVariantRow();
+    }
+
+    updateStockSummary();
+  }
+
+  $("add-variant").addEventListener("click", () => {
+    addVariantRow();
+  });
+
+  fillVariantRows();
+
   $("sign-in").addEventListener("click", async () => {
     try {
-      message.textContent = "";
+      setMessage("");
       await signInWithGoogle();
     } catch (error) {
       console.error(error);
-      alert("Sign-in failed. Please try again.");
+      setMessage("Sign-in failed. Please try again.", true);
     }
   });
 
   $("sign-out").addEventListener("click", async () => {
-    await signOutUser();
+    try {
+      await signOutUser();
+    } catch (error) {
+      console.error(error);
+      setMessage("Unable to sign out. Please try again.", true);
+    }
   });
 
   onAuthStateChanged(auth, async (user) => {
     isAdmin = Boolean(user && user.uid === ADMIN_UID);
+
     signedOut.hidden = Boolean(user && isAdmin);
     adminArea.hidden = !isAdmin;
 
@@ -160,19 +455,20 @@
 
     if (!isAdmin) {
       signedOut.hidden = true;
-      message.textContent = "Access denied: this Google account is not an administrator.";
+      setMessage(
+        "Access denied: this Google account is not an administrator.",
+        true
+      );
+
       await signOutUser();
       return;
     }
 
-    $("account-info").textContent = "Signed in as " + (user.email || "Admin");
+    $("account-info").textContent =
+      "Signed in as " + (user.email || "Admin");
+
     await loadProducts();
   });
-
-  function setMessage(text, error = false) {
-    message.textContent = text;
-    message.style.color = error ? "#9b2525" : "#276738";
-  }
 
   function resetForm() {
     form.reset();
@@ -180,6 +476,7 @@
     $("form-title").textContent = "Add a product";
     $("save-button").textContent = "Save product";
     $("cancel-edit").hidden = true;
+    fillVariantRows();
   }
 
   $("cancel-edit").addEventListener("click", resetForm);
@@ -187,7 +484,12 @@
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    if (!isAdmin || !auth.currentUser || auth.currentUser.uid !== ADMIN_UID) {
+
+    if (
+      !isAdmin ||
+      !auth.currentUser ||
+      auth.currentUser.uid !== ADMIN_UID
+    ) {
       setMessage("Admin access required.", true);
       return;
     }
@@ -200,13 +502,17 @@
     const published = $("published").checked;
 
     if (!name || !Number.isSafeInteger(price) || price < 1) {
-      setMessage("Enter a product name and a valid whole-number price.", true);
+      setMessage(
+        "Enter a product name and a valid whole-number price.",
+        true
+      );
       return;
     }
 
     if (imageUrl) {
       try {
         const url = new URL(imageUrl);
+
         if (url.protocol !== "https:" && url.protocol !== "http:") {
           throw new Error("Invalid protocol");
         }
@@ -216,14 +522,30 @@
       }
     }
 
+    let variants;
+
+    try {
+      variants = readVariants();
+    } catch (error) {
+      setMessage(error.message, true);
+      return;
+    }
+
     const id = $("product-id").value;
     const saveButton = $("save-button");
+
     saveButton.disabled = true;
     setMessage("Saving product…");
 
     try {
       const productData = {
-        name, category, price, imageUrl, description, published,
+        name,
+        category,
+        price,
+        imageUrl,
+        description,
+        published,
+        variants,
         updatedAt: serverTimestamp()
       };
 
@@ -242,7 +564,10 @@
       await loadProducts();
     } catch (error) {
       console.error("Product save failed:", error);
-      setMessage("Could not save. Check Firestore rules and your connection.", true);
+      setMessage(
+        "Could not save. Check Firestore rules and your connection.",
+        true
+      );
     } finally {
       saveButton.disabled = false;
     }
@@ -283,8 +608,33 @@
           `${product.category || "Uncategorised"} · ₹${product.price ?? 0} · ` +
           (product.published ? "Published" : "Draft");
 
+        const variants = Array.isArray(product.variants)
+          ? product.variants
+          : [];
+
+        const totalStock = variants.reduce(
+          (sum, variant) =>
+            sum + (
+              Number.isSafeInteger(variant.stock) && variant.stock > 0
+                ? variant.stock
+                : 0
+            ),
+          0
+        );
+
+        const inventory = document.createElement("p");
+        inventory.className = "muted";
+
+        inventory.textContent = variants.length
+          ? variants.map((variant) =>
+              `${variant.color} / ${variant.size}: ${variant.stock}`
+            ).join(" · ") + ` | Total: ${totalStock}`
+          : "No inventory variants saved yet.";
+
         const edit = document.createElement("button");
+        edit.type = "button";
         edit.textContent = "Edit";
+
         edit.addEventListener("click", () => {
           $("product-id").value = product.id;
           $("name").value = product.name || "";
@@ -293,40 +643,60 @@
           $("imageUrl").value = product.imageUrl || product.image || "";
           $("description").value = product.description || "";
           $("published").checked = product.published === true;
+
+          fillVariantRows(variants);
+
           $("form-title").textContent = "Edit product";
           $("save-button").textContent = "Update product";
           $("cancel-edit").hidden = false;
+
           window.scrollTo({ top: 0, behavior: "smooth" });
         });
 
         const toggle = document.createElement("button");
+        toggle.type = "button";
         toggle.className = "secondary";
         toggle.textContent = product.published ? "Unpublish" : "Publish";
+
         toggle.addEventListener("click", async () => {
-          if (!isAdmin || !auth.currentUser ||
-              auth.currentUser.uid !== ADMIN_UID) return;
+          if (
+            !isAdmin ||
+            !auth.currentUser ||
+            auth.currentUser.uid !== ADMIN_UID
+          ) return;
 
           try {
             await updateDoc(doc(db, "products", product.id), {
               published: !product.published,
               updatedAt: serverTimestamp()
             });
+
             setMessage("Publication status updated.");
             await loadProducts();
           } catch (error) {
             console.error(error);
-            setMessage("Could not change publication status. Check Firestore rules.", true);
+            setMessage(
+              "Could not change publication status. Check Firestore rules.",
+              true
+            );
           }
         });
 
         const remove = document.createElement("button");
+        remove.type = "button";
         remove.className = "danger";
         remove.textContent = "Delete";
-        remove.addEventListener("click", async () => {
-          if (!isAdmin || !auth.currentUser ||
-              auth.currentUser.uid !== ADMIN_UID) return;
 
-          if (!confirm(`Delete "${product.name || "this product"}"? This cannot be undone.`)) {
+        remove.addEventListener("click", async () => {
+          if (
+            !isAdmin ||
+            !auth.currentUser ||
+            auth.currentUser.uid !== ADMIN_UID
+          ) return;
+
+          if (!confirm(
+            `Delete "${product.name || "this product"}"? This cannot be undone.`
+          )) {
             return;
           }
 
@@ -336,17 +706,20 @@
             await loadProducts();
           } catch (error) {
             console.error(error);
-            setMessage("Could not delete. Check Firestore rules.", true);
+            setMessage(
+              "Could not delete. Check Firestore rules.",
+              true
+            );
           }
         });
 
-        card.append(title, details, edit, toggle, remove);
+        card.append(title, details, inventory, edit, toggle, remove);
         productList.appendChild(card);
       });
     } catch (error) {
       console.error("Product list failed:", error);
       productList.textContent =
-        "Could not load products. Check that your Firestore rules allow admins to read products.";
+        "Could not load products. Check that Firestore rules allow admins to read products.";
     }
   }
 </script>
