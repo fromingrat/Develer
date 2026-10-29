@@ -589,7 +589,8 @@ document.addEventListener("DOMContentLoaded", () => {
     card.dataset.price = String(Number(item.price) || 0);
     card.dataset.category = String(item.category || "");
 
-    // Product image
+   
+    // Product images: support an array or a single image URL.
     const media = document.createElement("div");
     media.className = "product-media";
 
@@ -603,28 +604,123 @@ document.addEventListener("DOMContentLoaded", () => {
     fallback.appendChild(fallbackLabel);
     media.appendChild(fallback);
 
-    const imageUrl = String(item.imageUrl || item.image || "").trim();
+    const rawImages = Array.isArray(item.images)
+      ? item.images
+      : Array.isArray(item.imageUrls)
+        ? item.imageUrls
+        : [item.imageUrl || item.image || ""];
 
-    if (imageUrl) {
-      try {
-        const url = new URL(imageUrl);
+    const imageUrls = rawImages
+      .filter((value) => typeof value === "string" && value.trim())
+      .map((value) => {
+        try {
+          const url = new URL(value.trim());
 
-        if (url.protocol === "https:" || url.protocol === "http:") {
-          const image = document.createElement("img");
-          image.src = url.href;
-          image.alt = item.name || "Velform product";
-          image.loading = "lazy";
-          image.width = 900;
-          image.height = 1125;
-
-          image.addEventListener("error", () => {
-            image.classList.add("is-hidden");
-          });
-
-          media.appendChild(image);
+          return url.protocol === "https:" || url.protocol === "http:"
+            ? url.href
+            : null;
+        } catch {
+          return null;
         }
-      } catch {
-        // Keep the fallback when an image URL is invalid.
+      })
+      .filter(Boolean);
+
+    if (imageUrls.length > 0) {
+      fallback.hidden = true;
+
+      const image = document.createElement("img");
+      image.src = imageUrls[0];
+      image.alt = item.name || "Velform product";
+      image.loading = "lazy";
+      image.width = 900;
+      image.height = 1125;
+
+      image.addEventListener("error", () => {
+        image.classList.add("is-hidden");
+        fallback.hidden = false;
+      });
+
+      media.appendChild(image);
+
+      if (imageUrls.length > 1) {
+        let currentIndex = 0;
+
+        const previousButton = document.createElement("button");
+        previousButton.type = "button";
+        previousButton.className =
+          "product-image-nav product-image-prev";
+        previousButton.textContent = "‹";
+        previousButton.setAttribute(
+          "aria-label",
+          "Previous product image"
+        );
+
+        const nextButton = document.createElement("button");
+        nextButton.type = "button";
+        nextButton.className =
+          "product-image-nav product-image-next";
+        nextButton.textContent = "›";
+        nextButton.setAttribute(
+          "aria-label",
+          "Next product image"
+        );
+
+        const counter = document.createElement("span");
+        counter.className = "product-image-count";
+        counter.textContent = `1 / ${imageUrls.length}`;
+
+        function showProductImage(index) {
+          currentIndex =
+            (index + imageUrls.length) % imageUrls.length;
+
+          image.src = imageUrls[currentIndex];
+          image.classList.remove("is-hidden");
+          fallback.hidden = true;
+          counter.textContent =
+            `${currentIndex + 1} / ${imageUrls.length}`;
+        }
+
+        previousButton.addEventListener("click", () => {
+          showProductImage(currentIndex - 1);
+        });
+
+        nextButton.addEventListener("click", () => {
+          showProductImage(currentIndex + 1);
+        });
+
+        let touchStartX = null;
+        let touchStartY = null;
+
+        media.addEventListener("touchstart", (event) => {
+          const touch = event.changedTouches[0];
+          touchStartX = touch.clientX;
+          touchStartY = touch.clientY;
+        }, { passive: true });
+
+        media.addEventListener("touchend", (event) => {
+          if (touchStartX === null || touchStartY === null) {
+            return;
+          }
+
+          const touch = event.changedTouches[0];
+          const deltaX = touch.clientX - touchStartX;
+          const deltaY = touch.clientY - touchStartY;
+
+          // Swipe only when the gesture is mainly horizontal.
+          if (
+            Math.abs(deltaX) > 40 &&
+            Math.abs(deltaX) > Math.abs(deltaY)
+          ) {
+            showProductImage(
+              currentIndex + (deltaX < 0 ? 1 : -1)
+            );
+          }
+
+          touchStartX = null;
+          touchStartY = null;
+        }, { passive: true });
+
+        media.append(previousButton, nextButton, counter);
       }
     }
 
