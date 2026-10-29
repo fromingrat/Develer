@@ -629,7 +629,8 @@ document.addEventListener("DOMContentLoaded", () => {
       fallback.hidden = true;
 
       const image = document.createElement("img");
-      image.src = imageUrls[0];
+image.className = "product-image";
+image.src = imageUrls[0];
       image.alt = item.name || "Velform product";
       image.loading = "lazy";
       image.width = 900;
