@@ -1,6 +1,6 @@
 
 import { watchAuthState } from "../auth.js";
-import { getPublishedProducts } from "../product-service.js";
+import { getPublishedProducts } from "./product-service.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const main = document.querySelector("main");
