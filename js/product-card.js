@@ -87,19 +87,109 @@ export function createProductCard(
     }
   }).map((value) => new URL(value.trim()).href);
 
-  if (imageUrls.length) {
-    const image = document.createElement("img");
-    image.className = "product-image";
-    image.src = imageUrls[0];
-    image.alt = item.name || item.title || "VELFORM product";
-    image.loading = "lazy";
-    image.width = 900;
-    image.height = 1200;
+  
+if (imageUrls.length) {
+  const image = document.createElement("img");
+  image.className = "product-image";
+  image.src = imageUrls[0];
+  image.alt = item.name || item.title || "VELFORM product";
+  image.loading = "lazy";
+  image.width = 900;
+  image.height = 1200;
 
-    image.addEventListener("error", () => {
-      image.classList.add("is-hidden");
-      fallback.hidden = false;
+  image.addEventListener("error", () => {
+    image.classList.add("is-hidden");
+    fallback.hidden = false;
+  });
+
+  fallback.hidden = true;
+  media.append(image);
+
+  let currentImageIndex = 0;
+  let touchStartX = 0;
+  let touchStartY = 0;
+
+  const dots = document.createElement("div");
+  dots.className = "product-image-dots";
+  dots.setAttribute("aria-label", "Product image navigation");
+
+  function changeImage(nextIndex, direction = "next") {
+    currentImageIndex =
+      (nextIndex + imageUrls.length) % imageUrls.length;
+
+    image.classList.remove(
+      "is-hidden",
+      "image-swipe-next",
+      "image-swipe-prev"
+    );
+
+    fallback.hidden = true;
+    image.src = imageUrls[currentImageIndex];
+
+    // Restart the animation for every image change.
+    void image.offsetWidth;
+    image.classList.add(
+      direction === "prev" ? "image-swipe-prev" : "image-swipe-next"
+    );
+
+    dots.querySelectorAll("button").forEach((button, index) => {
+      button.setAttribute(
+        "aria-current",
+        String(index === currentImageIndex)
+      );
     });
+  }
+
+  if (imageUrls.length > 1) {
+    imageUrls.forEach((url, index) => {
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "product-image-dot";
+      dot.setAttribute("aria-label", `Show image ${index + 1}`);
+      dot.setAttribute("aria-current", String(index === 0));
+
+      dot.addEventListener("click", () => {
+        if (index === currentImageIndex) return;
+
+        changeImage(
+          index,
+          index > currentImageIndex ? "next" : "prev"
+        );
+      });
+
+      dots.append(dot);
+    });
+
+    media.addEventListener("touchstart", (event) => {
+      const touch = event.changedTouches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+    }, { passive: true });
+
+    media.addEventListener("touchend", (event) => {
+      const touch = event.changedTouches[0];
+      const deltaX = touch.clientX - touchStartX;
+      const deltaY = touch.clientY - touchStartY;
+
+      // Ignore vertical scrolling and short accidental movements.
+      if (
+        Math.abs(deltaX) < 45 ||
+        Math.abs(deltaX) < Math.abs(deltaY)
+      ) {
+        return;
+      }
+
+      if (deltaX < 0) {
+        changeImage(currentImageIndex + 1, "next");
+      } else {
+        changeImage(currentImageIndex - 1, "prev");
+      }
+    }, { passive: true });
+
+    media.append(dots);
+  }
+}
+
 
     fallback.hidden = true;
     media.append(image);
