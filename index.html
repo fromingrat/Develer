@@ -1,771 +1,324 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>VELFORM | Store Admin</title>
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="Velform menswear.">
+  <title>Velform | Premium Menswear</title>
 
-  <style>
-    * { box-sizing: border-box; }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500&display=swap" rel="stylesheet">
 
-    body {
-      margin: 0;
-      padding: 20px;
-      background: #f7f6f2;
-      color: #171717;
-      font-family: Arial, sans-serif;
-    }
-
-    main { max-width: 900px; margin: auto; }
-    h1 { letter-spacing: 4px; }
-
-    section {
-      background: white;
-      border: 1px solid #e3e0d9;
-      padding: 20px;
-      margin: 18px 0;
-    }
-
-    label {
-      display: block;
-      margin: 14px 0 6px;
-      font-size: 14px;
-    }
-
-    input, textarea, select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 0;
-      font: inherit;
-      background: white;
-    }
-
-    textarea { min-height: 85px; resize: vertical; }
-
-    button {
-      padding: 12px 16px;
-      border: 0;
-      cursor: pointer;
-      background: #171717;
-      color: white;
-      margin: 8px 6px 0 0;
-    }
-
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    button.secondary { background: #e9e7e1; color: #171717; }
-    button.danger { background: #9b2525; }
-
-    .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .product {
-      border-top: 1px solid #ddd;
-      padding: 14px 0;
-      overflow-wrap: anywhere;
-    }
-
-    .muted { color: #666; font-size: 14px; }
-    .status { white-space: pre-wrap; overflow-wrap: anywhere; }
-
-    .variant-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr 100px auto;
-      gap: 10px;
-      align-items: end;
-      border: 1px solid #e3e0d9;
-      padding: 12px;
-      margin: 12px 0;
-    }
-
-    .variant-row label { margin-top: 0; }
-    .variant-row button { margin-bottom: 0; }
-
-    .stock-summary {
-      margin: 8px 0 12px;
-      color: #555;
-      font-size: 14px;
-    }
-
-    [hidden] { display: none !important; }
-
-    @media (max-width: 600px) {
-      body { padding: 12px; }
-      .row { grid-template-columns: 1fr; }
-
-      .variant-row {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .variant-row .remove-variant {
-        grid-column: 1 / -1;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="homepage.css">
+  <link rel="stylesheet" href="css/product-card.css">
 </head>
 
-<body>
-<main>
-  <h1>VELFORM</h1>
-  <p>Store administration</p>
+<body id="top">
 
-  <section id="signed-out">
-    <h2>Admin sign-in</h2>
-    <p>Sign in using your authorised Google account.</p>
-    <button id="sign-in" type="button">Continue with Google</button>
-  </section>
+  <a class="skip-link" href="#collection">Skip to products</a>
 
-  <div id="admin-area" hidden>
-    <p id="account-info" class="muted"></p>
-    <button id="sign-out" class="secondary" type="button">Sign out</button>
+  <main>
 
-    <section>
-      <h2 id="form-title">Add a product</h2>
+    <!-- HERO: BRAND WORDMARK ONLY -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero-inner">
 
-      <form id="product-form">
-        <input id="product-id" type="hidden">
+        <h1 class="wordmark" id="hero-title" aria-label="Velform">
+          <span class="line" aria-hidden="true">
+            <span>VEL</span>
+          </span>
+          <span class="line line-right" aria-hidden="true">
+            <span>FORM</span>
+          </span>
+        </h1>
 
-        <label for="name">Product name *</label>
-        <input
-          id="name"
-          required
-          maxlength="120"
-          placeholder="Classic Oxford Shirt"
-        >
+      </div>
+    </section>
 
-        <div class="row">
-          <div>
-            <label for="category">Category *</label>
-            <select id="category" required>
-              <option value="Shirts">Shirts</option>
-              <option value="T-shirts">T-shirts</option>
-              <option value="Jeans">Jeans</option>
-              <option value="Trousers">Trousers</option>
-            </select>
-          </div>
+    <!-- PRODUCTS -->
+    <section class="section" id="collection" aria-label="Products">
+      <div class="container">
 
-          <div>
-            <label for="price">Price in INR *</label>
-            <input
-              id="price"
-              type="number"
-              min="1"
-              step="1"
-              required
-              placeholder="999"
-            >
-          </div>
+        <!-- Kept empty so homepage.js can insert category filters here -->
+        <div class="section-head"></div>
+
+        <div class="products">
+
+          <!-- PRODUCT 1 -->
+          <article
+            class="product"
+            data-id="poplin-shirt"
+            data-name="Classic Poplin Shirt"
+            data-price="2499">
+
+            <div class="product-media">
+              <span class="fallback" aria-hidden="true">
+                VELFORM
+                <small>Shirt</small>
+              </span>
+
+              <img
+                src="https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=900&q=80"
+                alt="Classic Poplin Shirt"
+                width="900"
+                height="1125"
+                loading="lazy">
+            </div>
+
+            <div class="product-top">
+              <h3>Classic Poplin Shirt</h3>
+              <p class="price">₹2,499</p>
+            </div>
+
+            <p class="product-note">
+              Crisp cotton poplin with a clean, tailored fit.
+            </p>
+
+            <fieldset class="sizes">
+              <legend>Size</legend>
+              <div class="size-options">
+                <label><input type="radio" name="size-poplin-shirt" value="S"><span>S</span></label>
+                <label><input type="radio" name="size-poplin-shirt" value="M"><span>M</span></label>
+                <label><input type="radio" name="size-poplin-shirt" value="L"><span>L</span></label>
+                <label><input type="radio" name="size-poplin-shirt" value="XL"><span>XL</span></label>
+              </div>
+            </fieldset>
+
+            <p class="size-error" role="alert" hidden>Please choose a size first.</p>
+
+            <button class="btn btn-dark add-to-cart" type="button">
+              Add to cart
+            </button>
+          </article>
+
+          <!-- PRODUCT 2 -->
+          <article
+            class="product"
+            data-id="linen-shirt"
+            data-name="Relaxed Linen Shirt"
+            data-price="2999">
+
+            <div class="product-media">
+              <span class="fallback" aria-hidden="true">
+                VELFORM
+                <small>Shirt</small>
+              </span>
+
+              <img
+                src="https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=900&q=80"
+                alt="Relaxed Linen Shirt"
+                width="900"
+                height="1125"
+                loading="lazy">
+            </div>
+
+            <div class="product-top">
+              <h3>Relaxed Linen Shirt</h3>
+              <p class="price">₹2,999</p>
+            </div>
+
+            <p class="product-note">
+              Breathable linen blend with an easy, relaxed drape.
+            </p>
+
+            <fieldset class="sizes">
+              <legend>Size</legend>
+              <div class="size-options">
+                <label><input type="radio" name="size-linen-shirt" value="S"><span>S</span></label>
+                <label><input type="radio" name="size-linen-shirt" value="M"><span>M</span></label>
+                <label><input type="radio" name="size-linen-shirt" value="L"><span>L</span></label>
+                <label><input type="radio" name="size-linen-shirt" value="XL"><span>XL</span></label>
+              </div>
+            </fieldset>
+
+            <p class="size-error" role="alert" hidden>Please choose a size first.</p>
+
+            <button class="btn btn-dark add-to-cart" type="button">
+              Add to cart
+            </button>
+          </article>
+
+          <!-- PRODUCT 3 -->
+          <article
+            class="product"
+            data-id="taper-jeans"
+            data-name="Slim Taper Jeans"
+            data-price="3499">
+
+            <div class="product-media">
+              <span class="fallback" aria-hidden="true">
+                VELFORM
+                <small>Jeans</small>
+              </span>
+
+              <img
+                src="https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=900&q=80"
+                alt="Slim Taper Jeans"
+                width="900"
+                height="1125"
+                loading="lazy">
+            </div>
+
+            <div class="product-top">
+              <h3>Slim Taper Jeans</h3>
+              <p class="price">₹3,499</p>
+            </div>
+
+            <p class="product-note">
+              Mid-rise denim with a slim leg and tapered ankle.
+            </p>
+
+            <fieldset class="sizes">
+              <legend>Size</legend>
+              <div class="size-options">
+                <label><input type="radio" name="size-taper-jeans" value="S"><span>S</span></label>
+                <label><input type="radio" name="size-taper-jeans" value="M"><span>M</span></label>
+                <label><input type="radio" name="size-taper-jeans" value="L"><span>L</span></label>
+                <label><input type="radio" name="size-taper-jeans" value="XL"><span>XL</span></label>
+              </div>
+            </fieldset>
+
+            <p class="size-error" role="alert" hidden>Please choose a size first.</p>
+
+            <button class="btn btn-dark add-to-cart" type="button">
+              Add to cart
+            </button>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="section section-grey" id="about" aria-labelledby="about-title">
+      <div class="container about-grid">
+
+        <h2 class="about-statement" id="about-title">
+          Fewer pieces. A higher standard.
+        </h2>
+
+        <div class="about-text">
+          <p>
+            Velform is built around considered menswear,
+            clean design and everyday versatility.
+          </p>
+
+          <p>
+            Our collection is designed to make getting dressed
+            feel simple, comfortable and confident.
+          </p>
         </div>
 
-        <label for="images">Product image URLs (one per line)</label>
-<textarea
-  id="images"
-  rows="4"
-  placeholder="Paste first image URL here&#10;Paste second image URL here&#10;Paste third image URL here"
-></textarea>
-<p class="muted">Add one image URL per line.</p>
-        <textarea
-          id="images"
-          rows="4"
-          placeholder="https://example.com/shirt-front.jpg&#10;https://example.com/shirt-back.jpg&#10;https://example.com/shirt-detail.jpg"
-        ></textarea>
-        <p class="muted">
-          Add one image URL per line. The first image is shown initially.
-          Use publicly accessible image URLs.
-        </p>
-
-        <label for="description">Description</label>
-        <textarea
-          id="description"
-          maxlength="1500"
-          placeholder="Fabric, fit and product details"
-        ></textarea>
-
-        <h3>Colour, size and stock</h3>
-        <p class="muted">
-          Create one row for each colour and size combination.
-          Enter 0 when that combination is out of stock.
-        </p>
-
-        <div id="variant-list"></div>
-
-        <button
-          id="add-variant"
-          type="button"
-          class="secondary"
-        >+ Add colour / size</button>
-
-        <p id="stock-summary" class="stock-summary"></p>
-
-        <label>
-          <input id="published" type="checkbox" style="width:auto">
-          Publish on the customer website
-        </label>
-
-        <button id="save-button" type="submit">Save product</button>
-
-        <button
-          id="cancel-edit"
-          type="button"
-          class="secondary"
-          hidden
-        >Cancel edit</button>
-      </form>
-
-      <p id="message" class="status" role="status"></p>
+      </div>
     </section>
 
-    <section>
-      <h2>Products</h2>
-      <button id="refresh" class="secondary" type="button">Refresh list</button>
-      <div id="product-list">Loading products…</div>
+    <!-- CONTACT -->
+    <section class="section" id="contact" aria-labelledby="contact-title">
+      <div class="container contact-grid">
+
+        <div>
+          <h2 id="contact-title">Contact</h2>
+          <p class="lede">
+            Questions about products or orders?
+            Contact information will be added before launch.
+          </p>
+        </div>
+
+        <dl class="contact-list">
+          <div>
+            <dt>Email</dt>
+            <dd>Contact details coming soon</dd>
+          </div>
+
+          <div>
+            <dt>Delivery</dt>
+            <dd>Surat, Gujarat</dd>
+          </div>
+
+          <div>
+            <dt>Customer support</dt>
+            <dd>Details coming soon</dd>
+          </div>
+        </dl>
+
+      </div>
     </section>
-  </div>
 
-  <p><a href="index.html">← Return to the store</a></p>
-</main>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+
+        <p class="footer-brand">VELFORM</p>
+
+        <nav aria-label="Footer">
+          <ul>
+            <li><a href="#collection">Products</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li>
+              <button class="link-button" type="button" data-open-cart>
+                Cart
+              </button>
+            </li>
+            <li><a href="#top">Back to top</a></li>
+          </ul>
+        </nav>
+
+      </div>
+
+      <p class="footer-demo">
+        Demo store. Orders and payments are not active.
+      </p>
+
+      <p class="footer-copy">
+        &copy; 2026 Velform. All rights reserved.
+      </p>
+    </div>
+  </footer>
+
+  <!-- CART DRAWER -->
+  <div class="overlay" id="overlay"></div>
+
+  <aside class="cart" id="cart" aria-label="Shopping cart" aria-hidden="true">
+    <div class="cart-head">
+      <h2>Your cart</h2>
+      <button class="cart-close" id="close-cart" type="button">Close</button>
+    </div>
+
+    <p class="cart-demo">
+      Demo store: checkout and payment are not enabled.
+    </p>
+
+    <div class="cart-body">
+      <p class="cart-empty" id="cart-empty">
+        Your cart is empty. Choose a size and add a product.
+      </p>
+      <ul class="cart-items" id="cart-items"></ul>
+    </div>
+
+    <div class="cart-foot">
+      <div class="total-row">
+        <span>Total</span>
+        <strong id="cart-total">₹0</strong>
+      </div>
+
+      <button class="btn btn-outline" id="clear-cart" type="button">
+        Clear cart
+      </button>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+  <script type="module" src="main-auth.js"></script>
+  <script type="module" src="homepage.js"></script>
 
-<script type="module">
-  import { auth, db } from "./firebase.js";
-  import { signInWithGoogle, signOutUser } from "./auth.js";
-
-  import {
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
-
-  import {
-    collection,
-    getDocs,
-    addDoc,
-    updateDoc,
-    deleteDoc,
-    doc,
-    query,
-    orderBy,
-    serverTimestamp
-  } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
-
-  // Must match the UID authorised in your Firestore rules.
-  const ADMIN_UID = "qJDZMxnCuYgf6KQahZ0sXzWYQND3";
-
-  const $ = (id) => document.getElementById(id);
-
-  const signedOut = $("signed-out");
-  const adminArea = $("admin-area");
-  const form = $("product-form");
-  const message = $("message");
-  const productList = $("product-list");
-  const variantList = $("variant-list");
-
-  let isAdmin = false;
-  let products = [];
-
-  function setMessage(text, error = false) {
-    message.textContent = text;
-    message.style.color = error ? "#9b2525" : "#276738";
-  }
-
-  function updateStockSummary() {
-    const rows = [...variantList.querySelectorAll(".variant-row")];
-    let total = 0;
-    let valid = true;
-
-    rows.forEach((row) => {
-      const stockInput = row.querySelector('[data-field="stock"]');
-      const value = stockInput.value.trim();
-      const quantity = Number(value);
-
-      if (
-        value === "" ||
-        !Number.isSafeInteger(quantity) ||
-        quantity < 0
-      ) {
-        valid = false;
-      } else {
-        total += quantity;
-      }
-    });
-
-    $("stock-summary").textContent =
-      `${rows.length} variant combination(s) · ` +
-      (valid ? `${total} total item(s) in stock` : "Check stock quantities");
-  }
-
-  function addVariantRow(variant = {}) {
-    const row = document.createElement("div");
-    row.className = "variant-row";
-
-    const fields = [
-      {
-        key: "color",
-        label: "Colour",
-        value: variant.color || "",
-        type: "text",
-        placeholder: "Black"
-      },
-      {
-        key: "size",
-        label: "Size",
-        value: variant.size || "",
-        type: "text",
-        placeholder: "M"
-      },
-      {
-        key: "stock",
-        label: "Quantity",
-        value: variant.stock ?? 0,
-        type: "number",
-        placeholder: "0"
-      }
-    ];
-
-    fields.forEach((field) => {
-      const wrapper = document.createElement("div");
-      const label = document.createElement("label");
-      const input = document.createElement("input");
-
-      label.textContent = field.label;
-      input.type = field.type;
-      input.dataset.field = field.key;
-      input.value = field.value;
-      input.required = true;
-      input.placeholder = field.placeholder;
-
-      if (field.key === "stock") {
-        input.min = "0";
-        input.step = "1";
-      } else {
-        input.maxLength = 40;
-      }
-
-      input.addEventListener("input", updateStockSummary);
-
-      wrapper.append(label, input);
-      row.appendChild(wrapper);
-    });
-
-    const remove = document.createElement("button");
-    remove.type = "button";
-    remove.className = "danger remove-variant";
-    remove.textContent = "Remove";
-
-    remove.addEventListener("click", () => {
-      row.remove();
-      updateStockSummary();
-    });
-
-    row.appendChild(remove);
-    variantList.appendChild(row);
-    updateStockSummary();
-  }
-
-  function readVariants() {
-    const rows = [...variantList.querySelectorAll(".variant-row")];
-
-    if (rows.length === 0) {
-      throw new Error("Add at least one colour and size combination.");
-    }
-
-    const variants = rows.map((row) => {
-      const get = (key) =>
-        row.querySelector(`[data-field="${key}"]`).value.trim();
-
-      const color = get("color");
-      const size = get("size");
-      const stockText = get("stock");
-      const stock = Number(stockText);
-
-      if (!color || !size) {
-        throw new Error("Enter a colour and size for every row.");
-      }
-
-      if (
-        stockText === "" ||
-        !Number.isSafeInteger(stock) ||
-        stock < 0
-      ) {
-        throw new Error(
-          "Stock must be a whole number greater than or equal to zero."
-        );
-      }
-
-      return { color, size, stock };
-    });
-
-    const combinations = variants.map(
-      (variant) =>
-        `${variant.color.toLowerCase()}|${variant.size.toLowerCase()}`
-    );
-
-    if (new Set(combinations).size !== combinations.length) {
-      throw new Error(
-        "Duplicate colour and size combinations are not allowed."
-      );
-    }
-
-    return variants;
-  }
-
-  function fillVariantRows(variants = []) {
-    variantList.replaceChildren();
-
-    if (variants.length) {
-      variants.forEach(addVariantRow);
-    } else {
-      addVariantRow();
-    }
-
-    updateStockSummary();
-  }
-
-  $("add-variant").addEventListener("click", () => {
-    addVariantRow();
-  });
-
-  fillVariantRows();
-
-  $("sign-in").addEventListener("click", async () => {
-    try {
-      setMessage("");
-      await signInWithGoogle();
-    } catch (error) {
-      console.error(error);
-      setMessage("Sign-in failed. Please try again.", true);
-    }
-  });
-
-  $("sign-out").addEventListener("click", async () => {
-    try {
-      await signOutUser();
-    } catch (error) {
-      console.error(error);
-      setMessage("Unable to sign out. Please try again.", true);
-    }
-  });
-
-  onAuthStateChanged(auth, async (user) => {
-    isAdmin = Boolean(user && user.uid === ADMIN_UID);
-
-    signedOut.hidden = Boolean(user && isAdmin);
-    adminArea.hidden = !isAdmin;
-
-    if (!user) {
-      signedOut.hidden = false;
-      message.textContent = "";
-      return;
-    }
-
-    if (!isAdmin) {
-      signedOut.hidden = true;
-      setMessage(
-        "Access denied: this Google account is not an administrator.",
-        true
-      );
-
-      await signOutUser();
-      return;
-    }
-
-    $("account-info").textContent =
-      "Signed in as " + (user.email || "Admin");
-
-    await loadProducts();
-  });
-
-  function resetForm() {
-    form.reset();
-    $("product-id").value = "";
-    $("form-title").textContent = "Add a product";
-    $("save-button").textContent = "Save product";
-    $("cancel-edit").hidden = true;
-    fillVariantRows();
-  }
-
-  $("cancel-edit").addEventListener("click", resetForm);
-  $("refresh").addEventListener("click", loadProducts);
-
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    if (
-      !isAdmin ||
-      !auth.currentUser ||
-      auth.currentUser.uid !== ADMIN_UID
-    ) {
-      setMessage("Admin access required.", true);
-      return;
-    }
-
-    const name = $("name").value.trim();
-    const category = $("category").value;
-    const price = Number($("price").value);
-
-    // Read all image URLs, one URL per line.
-    const images = $("images").value
-      .split("\n")
-      .map((url) => url.trim())
-      .filter(Boolean);
-
-    // Keep imageUrl for compatibility with older product cards.
-    const imageUrl = images[0] || "";
-
-    const description = $("description").value.trim();
-    const published = $("published").checked;
-
-    if (!name || !Number.isSafeInteger(price) || price < 1) {
-      setMessage(
-        "Enter a product name and a valid whole-number price.",
-        true
-      );
-      return;
-    }
-
-    // Validate every image URL.
-    for (const imageUrl of images) {
-      try {
-        const url = new URL(imageUrl);
-
-        if (url.protocol !== "https:" && url.protocol !== "http:") {
-          throw new Error("Invalid protocol");
-        }
-      } catch {
-        setMessage(`Invalid image URL: ${imageUrl}`, true);
-        return;
-      }
-    }
-
-    let variants;
-
-    try {
-      variants = readVariants();
-    } catch (error) {
-      setMessage(error.message, true);
-      return;
-    }
-
-    const id = $("product-id").value;
-    const saveButton = $("save-button");
-
-    saveButton.disabled = true;
-    setMessage("Saving product…");
-
-    try {
-      const productData = {
-        name,
-        category,
-        price,
-        imageUrl,
-        images,
-        description,
-        published,
-        variants,
-        updatedAt: serverTimestamp()
-      };
-
-      if (id) {
-        await updateDoc(doc(db, "products", id), productData);
-        setMessage("Product updated successfully.");
-      } else {
-        await addDoc(collection(db, "products"), {
-          ...productData,
-          createdAt: serverTimestamp()
-        });
-        setMessage("Product added successfully.");
-      }
-
-      resetForm();
-      await loadProducts();
-    } catch (error) {
-      console.error("Product save failed:", error);
-      setMessage(
-        "Could not save. Check Firestore rules and your connection.",
-        true
-      );
-    } finally {
-      saveButton.disabled = false;
-    }
-  });
-
-  async function loadProducts() {
-    if (!isAdmin) return;
-
-    productList.textContent = "Loading products…";
-
-    try {
-      const snapshot = await getDocs(
-        query(collection(db, "products"), orderBy("name"))
-      );
-
-      products = snapshot.docs.map((item) => ({
-        id: item.id,
-        ...item.data()
-      }));
-
-      productList.replaceChildren();
-
-      if (!products.length) {
-        productList.textContent = "No products yet.";
-        return;
-      }
-
-      products.forEach((product) => {
-        const card = document.createElement("article");
-        card.className = "product";
-
-        const title = document.createElement("strong");
-        title.textContent = product.name || "Unnamed product";
-
-        const details = document.createElement("p");
-        details.className = "muted";
-        details.textContent =
-          `${product.category || "Uncategorised"} · ₹${product.price ?? 0} · ` +
-          (product.published ? "Published" : "Draft");
-
-        const variants = Array.isArray(product.variants)
-          ? product.variants
-          : [];
-
-        const totalStock = variants.reduce(
-          (sum, variant) =>
-            sum + (
-              Number.isSafeInteger(variant.stock) && variant.stock > 0
-                ? variant.stock
-                : 0
-            ),
-          0
-        );
-
-        const inventory = document.createElement("p");
-        inventory.className = "muted";
-
-        inventory.textContent = variants.length
-          ? variants.map((variant) =>
-              `${variant.color} / ${variant.size}: ${variant.stock}`
-            ).join(" · ") + ` | Total: ${totalStock}`
-          : "No inventory variants saved yet.";
-
-        const imageInfo = document.createElement("p");
-        imageInfo.className = "muted";
-
-        const imageCount = Array.isArray(product.images)
-          ? product.images.length
-          : (product.imageUrl || product.image ? 1 : 0);
-
-        imageInfo.textContent = `${imageCount} product image(s) saved`;
-
-        const edit = document.createElement("button");
-        edit.type = "button";
-        edit.textContent = "Edit";
-
-        edit.addEventListener("click", () => {
-          $("product-id").value = product.id;
-          $("name").value = product.name || "";
-          $("category").value = product.category || "Shirts";
-          $("price").value = product.price ?? "";
-
-          // Support both new multi-image and older single-image products.
-          $("images").value = Array.isArray(product.images)
-            ? product.images.join("\n")
-            : product.imageUrl || product.image || "";
-
-          $("description").value = product.description || "";
-          $("published").checked = product.published === true;
-
-          fillVariantRows(variants);
-
-          $("form-title").textContent = "Edit product";
-          $("save-button").textContent = "Update product";
-          $("cancel-edit").hidden = false;
-
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        });
-
-        const toggle = document.createElement("button");
-        toggle.type = "button";
-        toggle.className = "secondary";
-        toggle.textContent = product.published ? "Unpublish" : "Publish";
-
-        toggle.addEventListener("click", async () => {
-          if (
-            !isAdmin ||
-            !auth.currentUser ||
-            auth.currentUser.uid !== ADMIN_UID
-          ) return;
-
-          try {
-            await updateDoc(doc(db, "products", product.id), {
-              published: !product.published,
-              updatedAt: serverTimestamp()
-            });
-
-            setMessage("Publication status updated.");
-            await loadProducts();
-          } catch (error) {
-            console.error(error);
-            setMessage(
-              "Could not change publication status. Check Firestore rules.",
-              true
-            );
-          }
-        });
-
-        const remove = document.createElement("button");
-        remove.type = "button";
-        remove.className = "danger";
-        remove.textContent = "Delete";
-
-        remove.addEventListener("click", async () => {
-          if (
-            !isAdmin ||
-            !auth.currentUser ||
-            auth.currentUser.uid !== ADMIN_UID
-          ) return;
-
-          if (!confirm(
-            `Delete "${product.name || "this product"}"? This cannot be undone.`
-          )) {
-            return;
-          }
-
-          try {
-            await deleteDoc(doc(db, "products", product.id));
-            setMessage("Product deleted.");
-            await loadProducts();
-          } catch (error) {
-            console.error(error);
-            setMessage(
-              "Could not delete. Check Firestore rules.",
-              true
-            );
-          }
-        });
-
-        card.append(
-          title,
-          details,
-          inventory,
-          imageInfo,
-          edit,
-          toggle,
-          remove
-        );
-
-        productList.appendChild(card);
-      });
-    } catch (error) {
-      console.error("Product list failed:", error);
-      productList.textContent =
-        "Could not load products. Check that Firestore rules allow admins to read products.";
-    }
-  }
-</script>
 </body>
 </html>
