@@ -902,6 +902,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     card.append(media, details);
 
+        const description = document.createElement("p");
+    description.className = "product-description";
+    description.textContent = String(item.description || "");
+
     if (description.textContent.trim()) {
       card.appendChild(description);
     }
