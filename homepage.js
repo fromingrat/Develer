@@ -9,7 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const heroInner = document.querySelector(".hero-inner");
   const productsArea = collection?.querySelector(".products");
 
-  if (!main || !collection || !hero || !heroInner || !productsArea) return;
+  if (!main || !collection || !hero || !heroInner || !productsArea) {
+    console.error("Homepage setup failed: required HTML elements are missing.");
+    return;
+  }
 
   productsArea.replaceChildren();
 
@@ -17,14 +20,30 @@ document.addEventListener("DOMContentLoaded", () => {
   const savedProducts = new Set();
   let wishlistMode = false;
   let activeCategory = "All";
+  let drawerOpen = false;
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let directionAnchorY = window.scrollY;
+  let scrollDirection = "down";
+  let ticking = false;
+  let hideBarTimer = null;
 
-  // Welcome greeting
+  const SCROLL_THRESHOLD = 35;
+  const ANIMATION_DURATION = 650;
+
+  // --------------------------------------------------
+  // WELCOME GREETING
+  // --------------------------------------------------
+
   const greetingBox = document.createElement("div");
   greetingBox.className = "vf-welcome";
   greetingBox.innerHTML = `
     <p class="vf-greeting" id="vf-greeting">Hey there!</p>
-    <p class="vf-welcome-message">We're really glad you've come again.</p>
+    <p class="vf-welcome-message">
+      We're really glad you've come again.
+    </p>
   `;
+
   heroInner.appendChild(greetingBox);
 
   try {
@@ -32,14 +51,19 @@ document.addEventListener("DOMContentLoaded", () => {
       const greeting = document.querySelector("#vf-greeting");
       if (!greeting) return;
 
-      const name = user?.displayName?.trim()?.split(/\s+/)[0];
-      greeting.textContent = name ? `Hey, ${name}!` : "Hey there!";
+      const firstName = user?.displayName?.trim()?.split(/\s+/)[0];
+      greeting.textContent = firstName
+        ? `Hey, ${firstName}!`
+        : "Hey there!";
     });
   } catch (error) {
     console.warn("Could not load the customer greeting.", error);
   }
 
-  // Category navigation
+  // --------------------------------------------------
+  // CATEGORY NAVIGATION
+  // --------------------------------------------------
+
   const categories = document.createElement("nav");
   categories.className = "vf-categories";
   categories.setAttribute("aria-label", "Product categories");
@@ -49,149 +73,17 @@ document.addEventListener("DOMContentLoaded", () => {
   menuButton.className = "vf-category-menu";
   menuButton.setAttribute("aria-label", "Open menu");
   menuButton.setAttribute("aria-expanded", "false");
-  menuButton.innerHTML = `<span></span><span></span><span></span>`;
+  menuButton.innerHTML = "<span></span><span></span><span></span>";
 
-  // Account drawer
-  const menuOverlay = document.createElement("div");
-  menuOverlay.className = "vf-menu-overlay";
-  menuOverlay.setAttribute("aria-hidden", "true");
+  const categoryNames = [
+    "All",
+    "Shirts",
+    "T-shirts",
+    "Jeans",
+    "Trousers"
+  ];
 
-  const accountDrawer = document.createElement("aside");
-  accountDrawer.className = "vf-account-drawer";
-  accountDrawer.setAttribute("aria-label", "Account menu");
-  accountDrawer.setAttribute("aria-hidden", "true");
-
-  accountDrawer.innerHTML = `
-    <div class="vf-drawer-header">
-      <div class="vf-profile-avatar" id="vf-profile-avatar">V</div>
-      <div class="vf-profile-info">
-        <p class="vf-profile-name" id="vf-profile-name">Welcome</p>
-        <p class="vf-profile-email" id="vf-profile-email">Sign in to your account</p>
-      </div>
-      <button class="vf-drawer-close" type="button" aria-label="Close menu">×</button>
-    </div>
-
-    <div class="vf-drawer-greeting">
-      <p id="vf-drawer-greeting">Hey there!</p>
-      <span>Welcome to Velform</span>
-    </div>
-
-    <nav class="vf-drawer-links" aria-label="Account options">
-      <a href="setup.html" data-menu-item="info"><span>My Info</span><span>›</span></a>
-      <button type="button" data-menu-item="orders"><span>Orders</span><span>›</span></button>
-      <button type="button" data-menu-item="membership"><span>Membership</span><span>›</span></button>
-      <button type="button" data-menu-item="cart"><span>Cart</span><span>›</span></button>
-      <button type="button" data-menu-item="wishlist"><span>Wishlist</span><span>›</span></button>
-      <a href="#about" data-menu-item="about"><span>About Us</span><span>›</span></a>
-      <a href="privacy.html" data-menu-item="privacy"><span>Privacy Policy</span><span>›</span></a>
-      <button type="button" data-menu-item="account"><span>Account Details</span><span>›</span></button>
-    </nav>
-
-    <button class="vf-drawer-logout" type="button" id="vf-drawer-logout">Log Out</button>
-    <div class="vf-drawer-footer">VELFORM</div>
-  `;
-
-  document.body.append(menuOverlay, accountDrawer);
-
-  let drawerOpen = false;
-  let touchStartX = 0;
-  let touchStartY = 0;
-
-  function openAccountDrawer() {
-    drawerOpen = true;
-    menuOverlay.classList.add("is-open");
-    accountDrawer.classList.add("is-open");
-    menuButton.setAttribute("aria-expanded", "true");
-    menuButton.setAttribute("aria-label", "Close menu");
-    menuOverlay.setAttribute("aria-hidden", "false");
-    accountDrawer.setAttribute("aria-hidden", "false");
-    document.body.classList.add("vf-menu-open");
-  }
-
-  function closeAccountDrawer() {
-    drawerOpen = false;
-    menuOverlay.classList.remove("is-open");
-    accountDrawer.classList.remove("is-open");
-    menuButton.setAttribute("aria-expanded", "false");
-    menuButton.setAttribute("aria-label", "Open menu");
-    menuOverlay.setAttribute("aria-hidden", "true");
-    accountDrawer.setAttribute("aria-hidden", "true");
-    document.body.classList.remove("vf-menu-open");
-  }
-
-  menuButton.addEventListener("click", () => {
-    drawerOpen ? closeAccountDrawer() : openAccountDrawer();
-  });
-
-  accountDrawer.querySelector(".vf-drawer-close")
-    .addEventListener("click", closeAccountDrawer);
-
-  menuOverlay.addEventListener("click", closeAccountDrawer);
-
-  accountDrawer.addEventListener("touchstart", (event) => {
-    touchStartX = event.changedTouches[0].clientX;
-    touchStartY = event.changedTouches[0].clientY;
-  }, { passive: true });
-
-  accountDrawer.addEventListener("touchend", (event) => {
-    const deltaX = event.changedTouches[0].clientX - touchStartX;
-    const deltaY = event.changedTouches[0].clientY - touchStartY;
-
-    if (deltaX > 70 && Math.abs(deltaX) > Math.abs(deltaY)) {
-      closeAccountDrawer();
-    }
-  }, { passive: true });
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && drawerOpen) closeAccountDrawer();
-  });
-
-  try {
-    watchAuthState((user) => {
-      const name = user?.displayName?.trim() || "";
-      const firstName = name.split(/\s+/)[0];
-
-      accountDrawer.querySelector("#vf-profile-name").textContent =
-        name || "Welcome";
-
-      accountDrawer.querySelector("#vf-profile-email").textContent =
-        user?.email || "Sign in to your account";
-
-      accountDrawer.querySelector("#vf-profile-avatar").textContent =
-        firstName ? firstName.charAt(0).toUpperCase() : "V";
-
-      accountDrawer.querySelector("#vf-drawer-greeting").textContent =
-        firstName ? `Hey, ${firstName}!` : "Hey there!";
-
-      accountDrawer.querySelector("#vf-drawer-logout").textContent =
-        user ? "Log Out" : "Sign In";
-    });
-  } catch (error) {
-    console.warn("Could not update account information.", error);
-  }
-
-  accountDrawer.querySelector("#vf-drawer-logout")
-    .addEventListener("click", async () => {
-      try {
-        const { signOutUser } = await import("./auth.js");
-        const { auth } = await import("./firebase.js");
-
-        if (auth.currentUser) {
-          await signOutUser();
-          closeAccountDrawer();
-          window.location.href = "index.html";
-        } else {
-          window.location.href = "login.html";
-        }
-      } catch (error) {
-        console.error("Account action failed:", error);
-        alert("Unable to complete this action. Please try again.");
-      }
-    });
-
-  categories.appendChild(menuButton);
-
-  ["All", "Shirts", "T-shirts", "Jeans", "Trousers"].forEach((category) => {
+  categoryNames.forEach((category) => {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "vf-category";
@@ -212,19 +104,206 @@ document.addEventListener("DOMContentLoaded", () => {
     categories.appendChild(button);
   });
 
+  categories.prepend(menuButton);
+
   collection.querySelector(".section-head")?.after(categories);
 
   const categorySpacer = document.createElement("div");
   categorySpacer.className = "vf-category-spacer";
   categories.before(categorySpacer);
 
-  let directionAnchorY = window.scrollY;
-  let scrollDirection = "down";
-  let ticking = false;
-  let hideBarTimer = null;
+  // --------------------------------------------------
+  // ACCOUNT DRAWER
+  // --------------------------------------------------
 
-  const SCROLL_THRESHOLD = 35;
-  const ANIMATION_DURATION = 650;
+  const menuOverlay = document.createElement("div");
+  menuOverlay.className = "vf-menu-overlay";
+  menuOverlay.setAttribute("aria-hidden", "true");
+
+  const accountDrawer = document.createElement("aside");
+  accountDrawer.className = "vf-account-drawer";
+  accountDrawer.setAttribute("aria-label", "Account menu");
+  accountDrawer.setAttribute("aria-hidden", "true");
+
+  accountDrawer.innerHTML = `
+    <div class="vf-drawer-header">
+      <div class="vf-profile-avatar" id="vf-profile-avatar">V</div>
+
+      <div class="vf-profile-info">
+        <p class="vf-profile-name" id="vf-profile-name">Welcome</p>
+        <p class="vf-profile-email" id="vf-profile-email">
+          Sign in to your account
+        </p>
+      </div>
+
+      <button
+        class="vf-drawer-close"
+        type="button"
+        aria-label="Close menu"
+      >×</button>
+    </div>
+
+    <div class="vf-drawer-greeting">
+      <p id="vf-drawer-greeting">Hey there!</p>
+      <span>Welcome to Velform</span>
+    </div>
+
+    <nav class="vf-drawer-links" aria-label="Account options">
+      <a href="setup.html" data-menu-item="info">
+        <span>My Info</span><span>›</span>
+      </a>
+
+      <button type="button" data-menu-item="orders">
+        <span>Orders</span><span>›</span>
+      </button>
+
+      <button type="button" data-menu-item="membership">
+        <span>Membership</span><span>›</span>
+      </button>
+
+      <button type="button" data-menu-item="cart">
+        <span>Cart</span><span>›</span>
+      </button>
+
+      <button type="button" data-menu-item="wishlist">
+        <span>Wishlist</span><span>›</span>
+      </button>
+
+      <a href="#about" data-menu-item="about">
+        <span>About Us</span><span>›</span>
+      </a>
+
+      <a href="privacy.html" data-menu-item="privacy">
+        <span>Privacy Policy</span><span>›</span>
+      </a>
+
+      <button type="button" data-menu-item="account">
+        <span>Account Details</span><span>›</span>
+      </button>
+    </nav>
+
+    <button
+      class="vf-drawer-logout"
+      type="button"
+      id="vf-drawer-logout"
+    >Sign In</button>
+
+    <div class="vf-drawer-footer">VELFORM</div>
+  `;
+
+  document.body.append(menuOverlay, accountDrawer);
+
+  function openAccountDrawer() {
+    drawerOpen = true;
+
+    menuOverlay.classList.add("is-open");
+    accountDrawer.classList.add("is-open");
+
+    menuButton.setAttribute("aria-expanded", "true");
+    menuButton.setAttribute("aria-label", "Close menu");
+
+    menuOverlay.setAttribute("aria-hidden", "false");
+    accountDrawer.setAttribute("aria-hidden", "false");
+
+    document.body.classList.add("vf-menu-open");
+  }
+
+  function closeAccountDrawer() {
+    drawerOpen = false;
+
+    menuOverlay.classList.remove("is-open");
+    accountDrawer.classList.remove("is-open");
+
+    menuButton.setAttribute("aria-expanded", "false");
+    menuButton.setAttribute("aria-label", "Open menu");
+
+    menuOverlay.setAttribute("aria-hidden", "true");
+    accountDrawer.setAttribute("aria-hidden", "true");
+
+    document.body.classList.remove("vf-menu-open");
+  }
+
+  menuButton.addEventListener("click", () => {
+    if (drawerOpen) {
+      closeAccountDrawer();
+    } else {
+      openAccountDrawer();
+    }
+  });
+
+  accountDrawer
+    .querySelector(".vf-drawer-close")
+    .addEventListener("click", closeAccountDrawer);
+
+  menuOverlay.addEventListener("click", closeAccountDrawer);
+
+  accountDrawer.addEventListener("touchstart", (event) => {
+    touchStartX = event.changedTouches[0].clientX;
+    touchStartY = event.changedTouches[0].clientY;
+  }, { passive: true });
+
+  accountDrawer.addEventListener("touchend", (event) => {
+    const deltaX = event.changedTouches[0].clientX - touchStartX;
+    const deltaY = event.changedTouches[0].clientY - touchStartY;
+
+    if (deltaX > 70 && Math.abs(deltaX) > Math.abs(deltaY)) {
+      closeAccountDrawer();
+    }
+  }, { passive: true });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && drawerOpen) {
+      closeAccountDrawer();
+    }
+  });
+
+  try {
+    watchAuthState((user) => {
+      const fullName = user?.displayName?.trim() || "";
+      const firstName = fullName.split(/\s+/)[0];
+
+      accountDrawer.querySelector("#vf-profile-name").textContent =
+        fullName || "Welcome";
+
+      accountDrawer.querySelector("#vf-profile-email").textContent =
+        user?.email || "Sign in to your account";
+
+      accountDrawer.querySelector("#vf-profile-avatar").textContent =
+        firstName ? firstName.charAt(0).toUpperCase() : "V";
+
+      accountDrawer.querySelector("#vf-drawer-greeting").textContent =
+        firstName ? `Hey, ${firstName}!` : "Hey there!";
+
+      accountDrawer.querySelector("#vf-drawer-logout").textContent =
+        user ? "Log Out" : "Sign In";
+    });
+  } catch (error) {
+    console.warn("Could not update account information.", error);
+  }
+
+  accountDrawer
+    .querySelector("#vf-drawer-logout")
+    .addEventListener("click", async () => {
+      try {
+        const { signOutUser } = await import("./auth.js");
+        const { auth } = await import("./firebase.js");
+
+        if (auth.currentUser) {
+          await signOutUser();
+          closeAccountDrawer();
+          window.location.href = "index.html";
+        } else {
+          window.location.href = "login.html";
+        }
+      } catch (error) {
+        console.error("Account action failed:", error);
+        alert("Unable to complete this action. Please try again.");
+      }
+    });
+
+  // --------------------------------------------------
+  // FLOATING CATEGORY BAR
+  // --------------------------------------------------
 
   function updateMenuVisibility() {
     const currentScrollY = window.scrollY;
@@ -265,6 +344,7 @@ document.addEventListener("DOMContentLoaded", () => {
           "vf-categories-floating",
           "vf-categories-hiding"
         );
+
         categorySpacer.classList.remove("is-active");
         categorySpacer.style.height = "0px";
         hideBarTimer = null;
@@ -285,66 +365,40 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("resize", updateMenuVisibility);
   updateMenuVisibility();
 
-  // Membership preview
+  // --------------------------------------------------
+  // MEMBERSHIP PREVIEW
+  // --------------------------------------------------
+
   const membership = document.createElement("section");
   membership.className = "vf-membership";
   membership.id = "vf-membership";
+
   membership.innerHTML = `
     <div class="vf-member-icon" aria-hidden="true">♛</div>
     <h2>Velform Membership</h2>
-    <p>Discover member benefits, exclusive offers and a more rewarding way to shop.</p>
-    <button type="button" id="vf-membership-info">Explore membership</button>
+    <p>
+      Discover member benefits, exclusive offers and a more rewarding
+      way to shop.
+    </p>
+    <button type="button" id="vf-membership-info">
+      Explore membership
+    </button>
   `;
 
   collection.after(membership);
 
-  document.querySelector("#vf-membership-info")?.addEventListener("click", () => {
-    alert("Membership is a preview. Registration and member benefits are not active yet.");
-  });
-
-  accountDrawer.querySelectorAll("[data-menu-item]").forEach((item) => {
-    item.addEventListener("click", (event) => {
-      const action = item.dataset.menuItem;
-
-      if (action === "orders") {
-        event.preventDefault();
-        closeAccountDrawer();
-        alert("Your Orders page will be connected in the next step.");
-      }
-
-      if (action === "membership") {
-        event.preventDefault();
-        closeAccountDrawer();
-        membership.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-
-      if (action === "cart") {
-        event.preventDefault();
-        closeAccountDrawer();
-        document.querySelector("[data-open-cart]")?.click();
-      }
-
-      if (action === "wishlist") {
-        event.preventDefault();
-        closeAccountDrawer();
-        wishlistMode = true;
-        renderProducts();
-        collection.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-
-      if (action === "account") {
-        event.preventDefault();
-        closeAccountDrawer();
-        window.location.href = "login.html";
-      }
-
-      if (["about", "info", "privacy"].includes(action)) {
-        closeAccountDrawer();
-      }
+  document.querySelector("#vf-membership-info")
+    ?.addEventListener("click", () => {
+      alert(
+        "Membership is a preview. Registration and member benefits " +
+        "are not active yet."
+      );
     });
-  });
 
-  // Bottom navigation
+  // --------------------------------------------------
+  // BOTTOM NAVIGATION
+  // --------------------------------------------------
+
   const bottomNav = document.createElement("nav");
   bottomNav.className = "vf-bottom-nav";
   bottomNav.setAttribute("aria-label", "Bottom navigation");
@@ -360,7 +414,9 @@ document.addEventListener("DOMContentLoaded", () => {
   navItems.forEach((item, index) => {
     const button = document.createElement("button");
     button.type = "button";
-    button.innerHTML = `<span aria-hidden="true">${item.icon}</span>${item.label}`;
+    button.innerHTML =
+      `<span aria-hidden="true">${item.icon}</span>${item.label}`;
+
     button.classList.toggle("active", index === 0);
 
     button.addEventListener("click", () => {
@@ -384,7 +440,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (item.label === "Membership") {
-        membership.scrollIntoView({ behavior: "smooth", block: "start" });
+        membership.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
       }
 
       if (item.label === "Cart") {
@@ -394,7 +453,11 @@ document.addEventListener("DOMContentLoaded", () => {
       if (item.label === "Wishlist") {
         wishlistMode = true;
         renderProducts();
-        collection.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        collection.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
       }
 
       if (item.label === "Profile") {
@@ -407,16 +470,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.body.appendChild(bottomNav);
 
+  // --------------------------------------------------
+  // PRODUCT HELPERS
+  // --------------------------------------------------
+
   function inferCategory(product) {
-    const category = (product.dataset.category || "").toLowerCase();
-    const id = (product.dataset.id || "").toLowerCase();
-    const name = (product.dataset.name || "").toLowerCase();
+    const category = String(product.dataset.category || "").toLowerCase();
+    const id = String(product.dataset.id || "").toLowerCase();
+    const name = String(product.dataset.name || "").toLowerCase();
     const combined = `${category} ${id} ${name}`;
 
     if (combined.includes("jean")) return "Jeans";
-    if (combined.includes("t-shirt") || combined.includes("tshirt")) {
+
+    if (
+      combined.includes("t-shirt") ||
+      combined.includes("tshirt") ||
+      combined.includes("t shirt")
+    ) {
       return "T-shirts";
     }
+
     if (combined.includes("trouser")) return "Trousers";
     if (combined.includes("shirt")) return "Shirts";
 
@@ -478,29 +551,45 @@ document.addEventListener("DOMContentLoaded", () => {
     updateHearts();
   }
 
-  // Only positive-stock variants are selectable.
+  // --------------------------------------------------
+  // STOCK AND VARIANTS
+  // --------------------------------------------------
+
   function getAvailableVariants(item) {
     if (!Array.isArray(item.variants)) return [];
 
-    return item.variants.filter((variant) =>
-      typeof variant.color === "string" &&
-      variant.color.trim() !== "" &&
-      typeof variant.size === "string" &&
-      variant.size.trim() !== "" &&
-      Number.isSafeInteger(variant.stock) &&
-      variant.stock > 0
-    );
+    return item.variants.filter((variant) => {
+      if (!variant || typeof variant !== "object") return false;
+
+      const color = String(variant.color || "").trim();
+      const size = String(variant.size || "").trim();
+      const stock = Number(variant.stock);
+
+      return color !== "" && size !== "" &&
+        Number.isFinite(stock) && stock > 0;
+    });
+  }
+
+  function formatPrice(value) {
+    const price = Number(value);
+
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0
+    }).format(Number.isFinite(price) && price >= 0 ? price : 0);
   }
 
   function createProductCard(item) {
     const card = document.createElement("article");
     card.className = "product";
 
-    card.dataset.id = item.id;
-    card.dataset.name = item.name || "Unnamed product";
+    card.dataset.id = String(item.id);
+    card.dataset.name = String(item.name || "Unnamed product");
     card.dataset.price = String(Number(item.price) || 0);
-    card.dataset.category = item.category || "";
+    card.dataset.category = String(item.category || "");
 
+    // Product image
     const media = document.createElement("div");
     media.className = "product-media";
 
@@ -514,7 +603,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fallback.appendChild(fallbackLabel);
     media.appendChild(fallback);
 
-    const imageUrl = item.imageUrl || item.image || "";
+    const imageUrl = String(item.imageUrl || item.image || "").trim();
 
     if (imageUrl) {
       try {
@@ -535,10 +624,11 @@ document.addEventListener("DOMContentLoaded", () => {
           media.appendChild(image);
         }
       } catch {
-        // Keep the fallback if the image URL is invalid.
+        // Keep the fallback when an image URL is invalid.
       }
     }
 
+    // Product name and price
     const top = document.createElement("div");
     top.className = "product-top";
 
@@ -547,11 +637,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const price = document.createElement("p");
     price.className = "price";
-    price.textContent = new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0
-    }).format(Number(item.price) || 0);
+    price.textContent = formatPrice(item.price);
 
     top.append(heading, price);
 
@@ -559,6 +645,7 @@ document.addEventListener("DOMContentLoaded", () => {
     description.className = "product-note";
     description.textContent = item.description || "";
 
+    // Colour and size selector
     const sizes = document.createElement("fieldset");
     sizes.className = "sizes";
 
@@ -572,12 +659,14 @@ document.addEventListener("DOMContentLoaded", () => {
       Array.isArray(item.variants) && item.variants.length > 0;
 
     const availableVariants = getAvailableVariants(item);
+    let hasSelectableVariant = false;
 
     if (variantsExist) {
       if (availableVariants.length === 0) {
         const soldOut = document.createElement("p");
         soldOut.className = "product-note";
         soldOut.textContent = "Currently out of stock";
+
         sizes.append(legend, soldOut);
       } else {
         availableVariants.forEach((variant, index) => {
@@ -588,21 +677,272 @@ document.addEventListener("DOMContentLoaded", () => {
           input.type = "radio";
           input.name = `size-${item.id}`;
           input.value = `${variant.color} / ${variant.size}`;
-          input.dataset.color = variant.color;
-          input.dataset.size = variant.size;
-          input.dataset.stock = String(variant.stock);
+          input.dataset.color = String(variant.color).trim();
+          input.dataset.size = String(variant.size).trim();
+          input.dataset.stock = String(Number(variant.stock));
 
           span.textContent =
-            `${variant.color} · ${variant.size} (${variant.stock} available)`;
+            `${String(variant.color).trim()} · ` +
+            `${String(variant.size).trim()}`;
+
+          if (index === 0) {
+            input.checked = true;
+          }
+
+          input.addEventListener("change", () => {
+            options.querySelectorAll("label").forEach((optionLabel) => {
+              optionLabel.classList.toggle(
+                "selected",
+                optionLabel.querySelector("input") === input
+              );
+            });
+          });
 
           label.append(input, span);
+          label.classList.toggle("selected", index === 0);
           options.appendChild(label);
         });
 
         sizes.append(legend, options);
+        hasSelectableVariant = true;
       }
     } else {
-      // Keep old products working until inventory is added in admin.
-      ["S", "M", "L", "XL"].forEach((size) => {
+      // Temporary fallback for older products without inventory.
+      // Add real variants in the admin page for stock tracking.
+      ["S", "M", "L", "XL"].forEach((size, index) => {
         const label = document.createElement("label");
-        const input = document.createEleme
+        const input = document.createElement("input");
+        const span = document.createElement("span");
+
+        input.type = "radio";
+        input.name = `size-${item.id}`;
+        input.value = size;
+        input.dataset.size = size;
+        input.dataset.color = "";
+        input.dataset.stock = "1";
+
+        span.textContent = size;
+
+        if (index === 0) input.checked = true;
+
+        input.addEventListener("change", () => {
+          options.querySelectorAll("label").forEach((optionLabel) => {
+            optionLabel.classList.toggle(
+              "selected",
+              optionLabel.querySelector("input") === input
+            );
+          });
+        });
+
+        label.append(input, span);
+        label.classList.toggle("selected", index === 0);
+        options.appendChild(label);
+      });
+
+      sizes.append(legend, options);
+      hasSelectableVariant = true;
+    }
+
+    // Product actions
+    const actions = document.createElement("div");
+    actions.className = "vf-product-actions";
+
+    const wishlistButton = document.createElement("button");
+    wishlistButton.type = "button";
+    wishlistButton.className = "vf-heart";
+    wishlistButton.textContent = "♡";
+    wishlistButton.setAttribute("aria-pressed", "false");
+    wishlistButton.setAttribute("aria-label", "Add to wishlist");
+    wishlistButton.title = "Wishlist";
+
+    wishlistButton.addEventListener("click", () => {
+      const productId = card.dataset.id;
+
+      if (savedProducts.has(productId)) {
+        savedProducts.delete(productId);
+      } else {
+        savedProducts.add(productId);
+      }
+
+      renderProducts();
+    });
+
+    const addButton = document.createElement("button");
+    addButton.type = "button";
+    addButton.className = "add-to-cart";
+    addButton.textContent = "Add to Cart";
+    addButton.disabled = !hasSelectableVariant;
+
+    if (!hasSelectableVariant) {
+      addButton.textContent = "Out of Stock";
+    }
+
+    addButton.addEventListener("click", () => {
+      const selected = sizes.querySelector('input[type="radio"]:checked');
+
+      if (!selected) {
+        alert("Please select a colour and size first.");
+        return;
+      }
+
+      // Make the chosen variant available to the existing cart handler.
+      card.dataset.selectedSize = selected.dataset.size || selected.value;
+      card.dataset.selectedColor = selected.dataset.color || "";
+      card.dataset.selectedVariant = selected.value;
+
+      // The existing script.js handles cart operations.
+      // Dispatch a normal click only once, after validating selection.
+      card.dataset.cartSelectionReady = "true";
+
+      // Keep the original .add-to-cart selector for script.js.
+      // The event listener in script.js can read the checked radio.
+      if (typeof window.addToCart === "function") {
+        window.addToCart(card, selected);
+      } else {
+        card.dispatchEvent(new CustomEvent("vf:add-to-cart", {
+          bubbles: true,
+          detail: {
+            productId: item.id,
+            name: item.name || "Unnamed product",
+            price: Number(item.price) || 0,
+            color: selected.dataset.color || "",
+            size: selected.dataset.size || selected.value,
+            variant: selected.value,
+            stock: Number(selected.dataset.stock) || 0
+          }
+        }));
+
+        // Let the existing cart click handler run, if it is installed.
+        // Prevent recursive handling by using a separate internal flag.
+        if (!card.dataset.cartHandlerActive) {
+          card.dataset.cartHandlerActive = "true";
+          addButton.dispatchEvent(new CustomEvent("vf:cart-click", {
+            bubbles: true,
+            detail: { card, selected }
+          }));
+          delete card.dataset.cartHandlerActive;
+        }
+      }
+    });
+
+    actions.append(wishlistButton, addButton);
+
+    card.append(media, top);
+
+    if (description.textContent.trim()) {
+      card.appendChild(description);
+    }
+
+    card.append(sizes, actions);
+
+    return card;
+  }
+
+  // --------------------------------------------------
+  // LOAD PRODUCTS FROM FIRESTORE
+  // --------------------------------------------------
+
+  async function loadProducts() {
+    productsArea.replaceChildren();
+
+    const loadingMessage = document.createElement("p");
+    loadingMessage.className = "vf-loading";
+    loadingMessage.textContent = "Loading collection...";
+    productsArea.appendChild(loadingMessage);
+
+    try {
+      const publishedProducts = await getPublishedProducts();
+
+      products = publishedProducts
+        .filter((item) => item && item.id)
+        .map((item) => createProductCard(item));
+
+      productsArea.replaceChildren();
+
+      if (products.length === 0) {
+        const emptyMessage = document.createElement("p");
+        emptyMessage.className = "vf-empty";
+        emptyMessage.textContent =
+          "No published products are available yet.";
+
+        productsArea.appendChild(emptyMessage);
+        return;
+      }
+
+      products.forEach((product) => {
+        productsArea.appendChild(product);
+      });
+
+      renderProducts();
+    } catch (error) {
+      console.error("Could not load products from Firestore:", error);
+
+      productsArea.replaceChildren();
+
+      const errorMessage = document.createElement("p");
+      errorMessage.className = "vf-error";
+      errorMessage.textContent =
+        "We couldn't load the collection. Please refresh and try again.";
+
+      productsArea.appendChild(errorMessage);
+    }
+  }
+
+  // --------------------------------------------------
+  // ACCOUNT DRAWER ACTIONS
+  // --------------------------------------------------
+
+  accountDrawer.querySelectorAll("[data-menu-item]").forEach((item) => {
+    item.addEventListener("click", (event) => {
+      const action = item.dataset.menuItem;
+
+      if (action === "orders") {
+        event.preventDefault();
+        closeAccountDrawer();
+        alert("Your Orders page will be connected in the next step.");
+      }
+
+      if (action === "membership") {
+        event.preventDefault();
+        closeAccountDrawer();
+
+        membership.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      }
+
+      if (action === "cart") {
+        event.preventDefault();
+        closeAccountDrawer();
+        document.querySelector("[data-open-cart]")?.click();
+      }
+
+      if (action === "wishlist") {
+        event.preventDefault();
+        closeAccountDrawer();
+
+        wishlistMode = true;
+        renderProducts();
+
+        collection.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      }
+
+      if (action === "account") {
+        event.preventDefault();
+        closeAccountDrawer();
+        window.location.href = "login.html";
+      }
+
+      if (["about", "info", "privacy"].includes(action)) {
+        closeAccountDrawer();
+      }
+    });
+  });
+
+  // Start loading the published products.
+  loadProducts();
+});
