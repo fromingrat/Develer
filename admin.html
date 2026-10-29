@@ -516,7 +516,7 @@
     const name = $("name").value.trim();
     const category = $("category").value;
     const price = Number($("price").value);
-
+    const originalPrice = Number($("original-price").value);
     // Read all image URLs, one URL per line.
     const images = $("images").value
       .split("\n")
@@ -529,12 +529,18 @@
     const description = $("description").value.trim();
     const published = $("published").checked;
 
-    if (!name || !Number.isSafeInteger(price) || price < 1) {
-      setMessage(
-        "Enter a product name and a valid whole-number price.",
-        true
-      );
-      return;
+    if (
+  !name ||
+  !Number.isSafeInteger(price) ||
+  price < 1 ||
+  !Number.isSafeInteger(originalPrice) ||
+  originalPrice < price
+) {
+  setMessage(
+    "Enter a valid product name, selling price, and original price. Original price must be equal to or higher than selling price.",
+    true
+  );
+  return;
     }
 
     // Validate every image URL.
@@ -571,6 +577,7 @@
         name,
         category,
         price,
+        originalPrice,
         imageUrl,
         images,
         description,
@@ -679,6 +686,8 @@
           $("name").value = product.name || "";
           $("category").value = product.category || "Shirts";
           $("price").value = product.price ?? "";
+          $("original-price").value =
+  product.originalPrice ?? product.price ?? "";
 
           // Support both new multi-image and older single-image products.
           $("images").value = Array.isArray(product.images)
