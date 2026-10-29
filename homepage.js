@@ -715,22 +715,48 @@ image.src = imageUrls[0];
 
       
 
-    // Product name and price
-    const top = document.createElement("div");
-    top.className = "product-top";
+        const details = document.createElement("div");
+    details.className = "product-details";
+
+    const category = document.createElement("p");
+    category.className = "product-category";
+    category.textContent = item.category || "Clothing";
 
     const heading = document.createElement("h3");
+    heading.className = "product-title";
     heading.textContent = item.name || "Unnamed product";
 
-    const price = document.createElement("p");
+    const priceRow = document.createElement("div");
+    priceRow.className = "product-price-row";
+
+    const price = document.createElement("span");
     price.className = "price";
     price.textContent = formatPrice(item.price);
+    priceRow.appendChild(price);
 
-    top.append(heading, price);
+    const originalPriceValue = Number(item.originalPrice);
+    const sellingPrice = Number(item.price);
 
-    const description = document.createElement("p");
-    description.className = "product-note";
-    description.textContent = item.description || "";
+    if (
+      Number.isFinite(originalPriceValue) &&
+      originalPriceValue > sellingPrice &&
+      sellingPrice > 0
+    ) {
+      const originalPrice = document.createElement("span");
+      originalPrice.className = "product-original-price";
+      originalPrice.textContent = formatPrice(originalPriceValue);
+
+      const discount = document.createElement("span");
+      discount.className = "product-discount";
+      discount.textContent =
+        `${Math.round(
+          ((originalPriceValue - sellingPrice) / originalPriceValue) * 100
+        )}% OFF`;
+
+      priceRow.append(originalPrice, discount);
+    }
+
+    details.append(category, heading, priceRow);
 
     // Colour and size selector
     const sizes = document.createElement("fieldset");
@@ -914,7 +940,7 @@ image.src = imageUrls[0];
 
     actions.append(wishlistButton, addButton);
 
-    card.append(media, top);
+    card.append(media, details);
 
     if (description.textContent.trim()) {
       card.appendChild(description);
