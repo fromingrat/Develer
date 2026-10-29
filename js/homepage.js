@@ -286,8 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .addEventListener("click", async () => {
       try {
         const { signOutUser } = await import("./auth.js");
-const { auth } = await import("../firebase.js");
-
+const { auth } = await import("./firebase.js");
         if (auth.currentUser) {
           await signOutUser();
           closeAccountDrawer();
