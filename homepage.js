@@ -618,7 +618,77 @@ document.addEventListener("DOMContentLoaded", () => {
 
           return url.protocol === "https:" || url.protocol === "http:"
             ? url.href
-            : null;
+            if (imageUrls.length > 1) {
+        let currentIndex = 0;
+
+        const dots = document.createElement("div");
+        dots.className = "product-image-dots";
+        dots.setAttribute("aria-label", "Product image navigation");
+
+        const dotButtons = imageUrls.map((url, index) => {
+          const dot = document.createElement("button");
+          dot.type = "button";
+          dot.className = "product-image-dot";
+          dot.setAttribute("aria-label", `Show image ${index + 1}`);
+          dot.setAttribute("aria-current", String(index === 0));
+
+          dot.addEventListener("click", () => {
+            showProductImage(index);
+          });
+
+          dots.appendChild(dot);
+          return dot;
+        });
+
+        function showProductImage(index) {
+          currentIndex =
+            (index + imageUrls.length) % imageUrls.length;
+
+          image.src = imageUrls[currentIndex];
+          image.classList.remove("is-hidden");
+          fallback.hidden = true;
+
+          dotButtons.forEach((dot, dotIndex) => {
+            dot.setAttribute(
+              "aria-current",
+              String(dotIndex === currentIndex)
+            );
+          });
+        }
+
+        let touchStartX = null;
+        let touchStartY = null;
+
+        media.addEventListener("touchstart", (event) => {
+          const touch = event.changedTouches[0];
+          touchStartX = touch.clientX;
+          touchStartY = touch.clientY;
+        }, { passive: true });
+
+        media.addEventListener("touchend", (event) => {
+          if (touchStartX === null || touchStartY === null) {
+            return;
+          }
+
+          const touch = event.changedTouches[0];
+          const deltaX = touch.clientX - touchStartX;
+          const deltaY = touch.clientY - touchStartY;
+
+          if (
+            Math.abs(deltaX) > 40 &&
+            Math.abs(deltaX) > Math.abs(deltaY)
+          ) {
+            showProductImage(
+              currentIndex + (deltaX < 0 ? 1 : -1)
+            );
+          }
+
+          touchStartX = null;
+          touchStartY = null;
+        }, { passive: true });
+
+        media.appendChild(dots);
+          }      : null;
         } catch {
           return null;
         }
@@ -643,87 +713,7 @@ image.src = imageUrls[0];
 
       media.appendChild(image);
 
-      if (imageUrls.length > 1) {
-        let currentIndex = 0;
-
-        const previousButton = document.createElement("button");
-        previousButton.type = "button";
-        previousButton.className =
-          "product-image-nav product-image-prev";
-        previousButton.textContent = "‹";
-        previousButton.setAttribute(
-          "aria-label",
-          "Previous product image"
-        );
-
-        const nextButton = document.createElement("button");
-        nextButton.type = "button";
-        nextButton.className =
-          "product-image-nav product-image-next";
-        nextButton.textContent = "›";
-        nextButton.setAttribute(
-          "aria-label",
-          "Next product image"
-        );
-
-        const counter = document.createElement("span");
-        counter.className = "product-image-count";
-        counter.textContent = `1 / ${imageUrls.length}`;
-
-        function showProductImage(index) {
-          currentIndex =
-            (index + imageUrls.length) % imageUrls.length;
-
-          image.src = imageUrls[currentIndex];
-          image.classList.remove("is-hidden");
-          fallback.hidden = true;
-          counter.textContent =
-            `${currentIndex + 1} / ${imageUrls.length}`;
-        }
-
-        previousButton.addEventListener("click", () => {
-          showProductImage(currentIndex - 1);
-        });
-
-        nextButton.addEventListener("click", () => {
-          showProductImage(currentIndex + 1);
-        });
-
-        let touchStartX = null;
-        let touchStartY = null;
-
-        media.addEventListener("touchstart", (event) => {
-          const touch = event.changedTouches[0];
-          touchStartX = touch.clientX;
-          touchStartY = touch.clientY;
-        }, { passive: true });
-
-        media.addEventListener("touchend", (event) => {
-          if (touchStartX === null || touchStartY === null) {
-            return;
-          }
-
-          const touch = event.changedTouches[0];
-          const deltaX = touch.clientX - touchStartX;
-          const deltaY = touch.clientY - touchStartY;
-
-          // Swipe only when the gesture is mainly horizontal.
-          if (
-            Math.abs(deltaX) > 40 &&
-            Math.abs(deltaX) > Math.abs(deltaY)
-          ) {
-            showProductImage(
-              currentIndex + (deltaX < 0 ? 1 : -1)
-            );
-          }
-
-          touchStartX = null;
-          touchStartY = null;
-        }, { passive: true });
-
-        media.append(previousButton, nextButton, counter);
-      }
-    }
+      
 
     // Product name and price
     const top = document.createElement("div");
