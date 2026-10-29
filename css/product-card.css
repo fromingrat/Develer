@@ -446,3 +446,40 @@
     transition: none;
   }
 }
+/* Smooth product image swipe animation */
+.product-media .product-image.image-swipe-next {
+  animation: velform-image-next 0.28s ease-out;
+}
+
+.product-media .product-image.image-swipe-prev {
+  animation: velform-image-prev 0.28s ease-out;
+}
+
+@keyframes velform-image-next {
+  from {
+    opacity: 0.55;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes velform-image-prev {
+  from {
+    opacity: 0.55;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-media .product-image.image-swipe-next,
+  .product-media .product-image.image-swipe-prev {
+    animation: none;
+  }
+}
