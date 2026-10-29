@@ -1,6 +1,6 @@
 
-import { watchAuthState } from "./auth.js";
-import { getPublishedProducts } from "./product-service.js";
+import { watchAuthState } from "../auth.js";
+import { getPublishedProducts } from "../product-service.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const main = document.querySelector("main");
@@ -285,8 +285,8 @@ document.addEventListener("DOMContentLoaded", () => {
     .querySelector("#vf-drawer-logout")
     .addEventListener("click", async () => {
       try {
-        const { signOutUser } = await import("./auth.js");
-        const { auth } = await import("./firebase.js");
+        const { signOutUser } = await import("../auth.js");
+const { auth } = await import("../firebase.js");
 
         if (auth.currentUser) {
           await signOutUser();
