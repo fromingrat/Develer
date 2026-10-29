@@ -4,160 +4,351 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f8f7f4">
-  <title>VELFORM | Admin</title>
-
+  <title>VELFORM | Store Admin</title>
   <style>
     * { box-sizing: border-box; }
-
     body {
-      margin: 0;
-      min-height: 100vh;
-      padding: 24px;
-      display: grid;
-      place-items: center;
-      background: #f8f7f4;
-      color: #171717;
-      font-family: Arial, sans-serif;
+      margin: 0; padding: 20px; background: #f7f6f2;
+      color: #171717; font-family: Arial, sans-serif;
     }
-
-    main {
-      width: 100%;
-      max-width: 480px;
-      padding: 28px;
-      background: white;
-      border: 1px solid #e5e2dc;
+    main { max-width: 850px; margin: auto; }
+    h1 { letter-spacing: 4px; }
+    section {
+      background: white; border: 1px solid #e3e0d9;
+      padding: 20px; margin: 18px 0;
     }
-
-    h1 {
-      font-size: 25px;
-      letter-spacing: 4px;
-      margin: 0 0 8px;
+    label { display: block; margin: 14px 0 6px; font-size: 14px; }
+    input, textarea, select {
+      width: 100%; padding: 12px; border: 1px solid #ccc;
+      border-radius: 0; font: inherit; background: white;
     }
-
-    h2 { font-size: 19px; }
-
-    p {
-      color: #666;
-      line-height: 1.6;
-      overflow-wrap: anywhere;
-    }
-
+    textarea { min-height: 85px; resize: vertical; }
     button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 12px;
-      border: 0;
-      background: #171717;
-      color: white;
-      font-size: 15px;
-      cursor: pointer;
+      padding: 12px 16px; border: 0; cursor: pointer;
+      background: #171717; color: white; margin: 8px 6px 0 0;
     }
-
-    button:disabled { opacity: 0.6; }
-
-    #account, #sign-out { display: none; }
-
-    code {
-      display: block;
-      padding: 12px;
-      background: #f2f0eb;
+    button.secondary { background: #e9e7e1; color: #171717; }
+    button.danger { background: #9b2525; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .product {
+      border-top: 1px solid #ddd; padding: 14px 0;
       overflow-wrap: anywhere;
-      user-select: all;
     }
-
-    a { color: #333; }
-    #message { font-size: 14px; }
+    .muted { color: #666; font-size: 14px; }
+    .status { white-space: pre-wrap; overflow-wrap: anywhere; }
+    [hidden] { display: none !important; }
+    @media (max-width: 520px) {
+      .row { grid-template-columns: 1fr; }
+      body { padding: 12px; }
+    }
   </style>
 </head>
-
 <body>
-  <main>
-    <h1>VELFORM</h1>
-    <p>Store administration</p>
+<main>
+  <h1>VELFORM</h1>
+  <p>Store administration</p>
 
-    <hr>
+  <section id="signed-out">
+    <h2>Admin sign-in</h2>
+    <p>Sign in using your authorised Google account.</p>
+    <button id="sign-in">Continue with Google</button>
+  </section>
 
-    <section id="signed-out">
-      <h2>Admin sign-in</h2>
-      <p>Sign in with the Google account you intend to use for store management.</p>
-      <button id="sign-in" type="button">Continue with Google</button>
+  <div id="admin-area" hidden>
+    <p id="account-info" class="muted"></p>
+    <button id="sign-out" class="secondary">Sign out</button>
+
+    <section>
+      <h2 id="form-title">Add a product</h2>
+      <form id="product-form">
+        <input id="product-id" type="hidden">
+
+        <label for="name">Product name *</label>
+        <input id="name" required maxlength="120" placeholder="Classic Oxford Shirt">
+
+        <div class="row">
+          <div>
+            <label for="category">Category *</label>
+            <select id="category" required>
+              <option value="Shirts">Shirts</option>
+              <option value="T-shirts">T-shirts</option>
+              <option value="Jeans">Jeans</option>
+              <option value="Trousers">Trousers</option>
+            </select>
+          </div>
+          <div>
+            <label for="price">Price in INR *</label>
+            <input id="price" type="number" min="1" step="1" required placeholder="999">
+          </div>
+        </div>
+
+        <label for="imageUrl">Product image URL (optional)</label>
+        <input id="imageUrl" type="url" placeholder="https://example.com/product.jpg">
+
+        <label for="description">Description</label>
+        <textarea id="description" maxlength="1500" placeholder="Fabric, fit and product details"></textarea>
+
+        <label>
+          <input id="published" type="checkbox" style="width:auto">
+          Publish on the customer website
+        </label>
+
+        <button id="save-button" type="submit">Save product</button>
+        <button id="cancel-edit" type="button" class="secondary" hidden>Cancel edit</button>
+      </form>
+      <p id="message" class="status" role="status"></p>
     </section>
 
-    <section id="account">
-      <h2>Signed in</h2>
-      <p id="email"></p>
-      <p>Your Firebase Authentication UID:</p>
-      <code id="uid"></code>
-      <p>
-        Save this UID for the next setup step. Product editing will remain
-        unavailable until administrator permissions are configured and tested.
-      </p>
-      <button id="sign-out" type="button">Sign out</button>
+    <section>
+      <h2>Products</h2>
+      <button id="refresh" class="secondary">Refresh list</button>
+      <div id="product-list">Loading products…</div>
     </section>
+  </div>
 
-    <p id="message" role="status" aria-live="polite"></p>
-    <p><a href="index.html">← Return to the store</a></p>
-  </main>
+  <p><a href="index.html">← Return to the store</a></p>
+</main>
 
-  <script type="module">
-    import { auth } from "./firebase.js";
-    import { signInWithGoogle, signOutUser } from "./auth.js";
-    import {
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+<script type="module">
+  import { auth, db } from "./firebase.js";
+  import { signInWithGoogle, signOutUser } from "./auth.js";
+  import {
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+  import {
+    collection, getDocs, addDoc, updateDoc, deleteDoc, doc,
+    query, orderBy, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 
-    const signInButton = document.querySelector("#sign-in");
-    const signOutButton = document.querySelector("#sign-out");
-    const signedOut = document.querySelector("#signed-out");
-    const account = document.querySelector("#account");
-    const email = document.querySelector("#email");
-    const uid = document.querySelector("#uid");
-    const message = document.querySelector("#message");
+  // Must match the UID authorised in your Firestore rules.
+  const ADMIN_UID = "qJDZMxnCuYgf6KQahZ0sXzWYQND3";
 
-    signInButton.addEventListener("click", async () => {
-      signInButton.disabled = true;
-      message.textContent = "Connecting to Google…";
+  const $ = (id) => document.getElementById(id);
+  const signedOut = $("signed-out");
+  const adminArea = $("admin-area");
+  const form = $("product-form");
+  const message = $("message");
+  const productList = $("product-list");
 
+  let isAdmin = false;
+  let products = [];
+
+  $("sign-in").addEventListener("click", async () => {
+    try {
+      message.textContent = "";
+      await signInWithGoogle();
+    } catch (error) {
+      console.error(error);
+      alert("Sign-in failed. Please try again.");
+    }
+  });
+
+  $("sign-out").addEventListener("click", async () => {
+    await signOutUser();
+  });
+
+  onAuthStateChanged(auth, async (user) => {
+    isAdmin = Boolean(user && user.uid === ADMIN_UID);
+    signedOut.hidden = Boolean(user && isAdmin);
+    adminArea.hidden = !isAdmin;
+
+    if (!user) {
+      signedOut.hidden = false;
+      message.textContent = "";
+      return;
+    }
+
+    if (!isAdmin) {
+      signedOut.hidden = true;
+      message.textContent = "Access denied: this Google account is not an administrator.";
+      await signOutUser();
+      return;
+    }
+
+    $("account-info").textContent = "Signed in as " + (user.email || "Admin");
+    await loadProducts();
+  });
+
+  function setMessage(text, error = false) {
+    message.textContent = text;
+    message.style.color = error ? "#9b2525" : "#276738";
+  }
+
+  function resetForm() {
+    form.reset();
+    $("product-id").value = "";
+    $("form-title").textContent = "Add a product";
+    $("save-button").textContent = "Save product";
+    $("cancel-edit").hidden = true;
+  }
+
+  $("cancel-edit").addEventListener("click", resetForm);
+  $("refresh").addEventListener("click", loadProducts);
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!isAdmin || !auth.currentUser || auth.currentUser.uid !== ADMIN_UID) {
+      setMessage("Admin access required.", true);
+      return;
+    }
+
+    const name = $("name").value.trim();
+    const category = $("category").value;
+    const price = Number($("price").value);
+    const imageUrl = $("imageUrl").value.trim();
+    const description = $("description").value.trim();
+    const published = $("published").checked;
+
+    if (!name || !Number.isSafeInteger(price) || price < 1) {
+      setMessage("Enter a product name and a valid whole-number price.", true);
+      return;
+    }
+
+    if (imageUrl) {
       try {
-        await signInWithGoogle();
-        message.textContent = "";
-      } catch (error) {
-        console.error("Admin sign-in failed:", error);
-        message.textContent =
-          "Sign-in failed. Please try again.";
-      } finally {
-        signInButton.disabled = false;
+        const url = new URL(imageUrl);
+        if (url.protocol !== "https:" && url.protocol !== "http:") {
+          throw new Error("Invalid protocol");
+        }
+      } catch {
+        setMessage("Enter a valid HTTP or HTTPS image URL.", true);
+        return;
       }
-    });
+    }
 
-    signOutButton.addEventListener("click", async () => {
-      signOutButton.disabled = true;
+    const id = $("product-id").value;
+    const saveButton = $("save-button");
+    saveButton.disabled = true;
+    setMessage("Saving product…");
 
-      try {
-        await signOutUser();
-        message.textContent = "Signed out.";
-      } catch (error) {
-        console.error("Sign-out failed:", error);
-        message.textContent = "Sign-out failed. Please try again.";
-      } finally {
-        signOutButton.disabled = false;
-      }
-    });
+    try {
+      const productData = {
+        name, category, price, imageUrl, description, published,
+        updatedAt: serverTimestamp()
+      };
 
-    onAuthStateChanged(auth, (user) => {
-      signedOut.style.display = user ? "none" : "block";
-      account.style.display = user ? "block" : "none";
-      signOutButton.style.display = user ? "block" : "none";
-
-      if (user) {
-        email.textContent = user.email || "Email unavailable";
-        uid.textContent = user.uid;
+      if (id) {
+        await updateDoc(doc(db, "products", id), productData);
+        setMessage("Product updated successfully.");
       } else {
-        email.textContent = "";
-        uid.textContent = "";
+        await addDoc(collection(db, "products"), {
+          ...productData,
+          createdAt: serverTimestamp()
+        });
+        setMessage("Product added successfully.");
       }
-    });
-  </script>
+
+      resetForm();
+      await loadProducts();
+    } catch (error) {
+      console.error("Product save failed:", error);
+      setMessage("Could not save. Check Firestore rules and your connection.", true);
+    } finally {
+      saveButton.disabled = false;
+    }
+  });
+
+  async function loadProducts() {
+    if (!isAdmin) return;
+
+    productList.textContent = "Loading products…";
+
+    try {
+      const snapshot = await getDocs(
+        query(collection(db, "products"), orderBy("name"))
+      );
+
+      products = snapshot.docs.map((item) => ({
+        id: item.id,
+        ...item.data()
+      }));
+
+      productList.replaceChildren();
+
+      if (!products.length) {
+        productList.textContent = "No products yet.";
+        return;
+      }
+
+      products.forEach((product) => {
+        const card = document.createElement("article");
+        card.className = "product";
+
+        const title = document.createElement("strong");
+        title.textContent = product.name || "Unnamed product";
+
+        const details = document.createElement("p");
+        details.className = "muted";
+        details.textContent =
+          `${product.category || "Uncategorised"} · ₹${product.price ?? 0} · ` +
+          (product.published ? "Published" : "Draft");
+
+        const edit = document.createElement("button");
+        edit.textContent = "Edit";
+        edit.addEventListener("click", () => {
+          $("product-id").value = product.id;
+          $("name").value = product.name || "";
+          $("category").value = product.category || "Shirts";
+          $("price").value = product.price ?? "";
+          $("imageUrl").value = product.imageUrl || product.image || "";
+          $("description").value = product.description || "";
+          $("published").checked = product.published === true;
+          $("form-title").textContent = "Edit product";
+          $("save-button").textContent = "Update product";
+          $("cancel-edit").hidden = false;
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+        const toggle = document.createElement("button");
+        toggle.className = "secondary";
+        toggle.textContent = product.published ? "Unpublish" : "Publish";
+        toggle.addEventListener("click", async () => {
+          if (!isAdmin || !auth.currentUser ||
+              auth.currentUser.uid !== ADMIN_UID) return;
+
+          try {
+            await updateDoc(doc(db, "products", product.id), {
+              published: !product.published,
+              updatedAt: serverTimestamp()
+            });
+            setMessage("Publication status updated.");
+            await loadProducts();
+          } catch (error) {
+            console.error(error);
+            setMessage("Could not change publication status. Check Firestore rules.", true);
+          }
+        });
+
+        const remove = document.createElement("button");
+        remove.className = "danger";
+        remove.textContent = "Delete";
+        remove.addEventListener("click", async () => {
+          if (!isAdmin || !auth.currentUser ||
+              auth.currentUser.uid !== ADMIN_UID) return;
+
+          if (!confirm(`Delete "${product.name || "this product"}"? This cannot be undone.`)) {
+            return;
+          }
+
+          try {
+            await deleteDoc(doc(db, "products", product.id));
+            setMessage("Product deleted.");
+            await loadProducts();
+          } catch (error) {
+            console.error(error);
+            setMessage("Could not delete. Check Firestore rules.", true);
+          }
+        });
+
+        card.append(title, details, edit, toggle, remove);
+        productList.appendChild(card);
+      });
+    } catch (error) {
+      console.error("Product list failed:", error);
+      productList.textContent =
+        "Could not load products. Check that your Firestore rules allow admins to read products.";
+    }
+  }
+</script>
 </body>
 </html>
