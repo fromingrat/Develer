@@ -210,6 +210,5 @@ export function createProductCard(
     addButton
   );
 
-  return product;
-      }
-    
+    return product;
+}
