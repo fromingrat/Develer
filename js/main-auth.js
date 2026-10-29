@@ -2,7 +2,7 @@
 import {
   watchAuthState,
   signOutUser
-} from "./auth.js";
+} from "../auth.js";
 
 const signInButton = document.getElementById("sign-in-btn");
 
