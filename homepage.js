@@ -11,14 +11,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!main || !collection || !hero || !heroInner || !productsArea) return;
 
-  // Firestore is the source of truth for the product catalogue.
-  // Remove the hardcoded demo cards from the rendered catalogue.
   productsArea.replaceChildren();
 
   let products = [];
-  let firestoreProducts = [];
   const savedProducts = new Set();
-
   let wishlistMode = false;
   let activeCategory = "All";
 
@@ -43,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.warn("Could not load the customer greeting.", error);
   }
 
-  // Category bar
+  // Category navigation
   const categories = document.createElement("nav");
   categories.className = "vf-categories";
   categories.setAttribute("aria-label", "Product categories");
@@ -53,11 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
   menuButton.className = "vf-category-menu";
   menuButton.setAttribute("aria-label", "Open menu");
   menuButton.setAttribute("aria-expanded", "false");
-  menuButton.innerHTML = `
-    <span></span>
-    <span></span>
-    <span></span>
-  `;
+  menuButton.innerHTML = `<span></span><span></span><span></span>`;
 
   // Account drawer
   const menuOverlay = document.createElement("div");
@@ -68,6 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
   accountDrawer.className = "vf-account-drawer";
   accountDrawer.setAttribute("aria-label", "Account menu");
   accountDrawer.setAttribute("aria-hidden", "true");
+
   accountDrawer.innerHTML = `
     <div class="vf-drawer-header">
       <div class="vf-profile-avatar" id="vf-profile-avatar">V</div>
@@ -75,8 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <p class="vf-profile-name" id="vf-profile-name">Welcome</p>
         <p class="vf-profile-email" id="vf-profile-email">Sign in to your account</p>
       </div>
-      <button class="vf-drawer-close" type="button"
-        aria-label="Close menu">×</button>
+      <button class="vf-drawer-close" type="button" aria-label="Close menu">×</button>
     </div>
 
     <div class="vf-drawer-greeting">
@@ -85,36 +77,17 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
 
     <nav class="vf-drawer-links" aria-label="Account options">
-      <a href="setup.html" data-menu-item="info">
-        <span>My Info</span><span aria-hidden="true">›</span>
-      </a>
-      <button type="button" data-menu-item="orders">
-        <span>Orders</span><span aria-hidden="true">›</span>
-      </button>
-      <button type="button" data-menu-item="membership">
-        <span>Membership</span><span aria-hidden="true">›</span>
-      </button>
-      <button type="button" data-menu-item="cart">
-        <span>Cart</span><span aria-hidden="true">›</span>
-      </button>
-      <button type="button" data-menu-item="wishlist">
-        <span>Wishlist</span><span aria-hidden="true">›</span>
-      </button>
-      <a href="#about" data-menu-item="about">
-        <span>About Us</span><span aria-hidden="true">›</span>
-      </a>
-      <a href="privacy.html" data-menu-item="privacy">
-        <span>Privacy Policy</span><span aria-hidden="true">›</span>
-      </a>
-      <button type="button" data-menu-item="account">
-        <span>Account Details</span><span aria-hidden="true">›</span>
-      </button>
+      <a href="setup.html" data-menu-item="info"><span>My Info</span><span>›</span></a>
+      <button type="button" data-menu-item="orders"><span>Orders</span><span>›</span></button>
+      <button type="button" data-menu-item="membership"><span>Membership</span><span>›</span></button>
+      <button type="button" data-menu-item="cart"><span>Cart</span><span>›</span></button>
+      <button type="button" data-menu-item="wishlist"><span>Wishlist</span><span>›</span></button>
+      <a href="#about" data-menu-item="about"><span>About Us</span><span>›</span></a>
+      <a href="privacy.html" data-menu-item="privacy"><span>Privacy Policy</span><span>›</span></a>
+      <button type="button" data-menu-item="account"><span>Account Details</span><span>›</span></button>
     </nav>
 
-    <button class="vf-drawer-logout" type="button" id="vf-drawer-logout">
-      Log Out
-    </button>
-
+    <button class="vf-drawer-logout" type="button" id="vf-drawer-logout">Log Out</button>
     <div class="vf-drawer-footer">VELFORM</div>
   `;
 
@@ -147,8 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   menuButton.addEventListener("click", () => {
-    if (drawerOpen) closeAccountDrawer();
-    else openAccountDrawer();
+    drawerOpen ? closeAccountDrawer() : openAccountDrawer();
   });
 
   accountDrawer.querySelector(".vf-drawer-close")
@@ -156,7 +128,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   menuOverlay.addEventListener("click", closeAccountDrawer);
 
-  // Swipe right to close the account drawer.
   accountDrawer.addEventListener("touchstart", (event) => {
     touchStartX = event.changedTouches[0].clientX;
     touchStartY = event.changedTouches[0].clientY;
@@ -172,12 +143,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }, { passive: true });
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && drawerOpen) {
-      closeAccountDrawer();
-    }
+    if (event.key === "Escape" && drawerOpen) closeAccountDrawer();
   });
 
-  // Update account information when authentication changes.
   try {
     watchAuthState((user) => {
       const name = user?.displayName?.trim() || "";
@@ -221,7 +189,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-  // Categories
   categories.appendChild(menuButton);
 
   ["All", "Shirts", "T-shirts", "Jeans", "Trousers"].forEach((category) => {
@@ -247,7 +214,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   collection.querySelector(".section-head")?.after(categories);
 
-  // Floating category bar
   const categorySpacer = document.createElement("div");
   categorySpacer.className = "vf-category-spacer";
   categories.before(categorySpacer);
@@ -299,7 +265,6 @@ document.addEventListener("DOMContentLoaded", () => {
           "vf-categories-floating",
           "vf-categories-hiding"
         );
-
         categorySpacer.classList.remove("is-active");
         categorySpacer.style.height = "0px";
         hideBarTimer = null;
@@ -337,7 +302,6 @@ document.addEventListener("DOMContentLoaded", () => {
     alert("Membership is a preview. Registration and member benefits are not active yet.");
   });
 
-  // Connect account menu actions.
   accountDrawer.querySelectorAll("[data-menu-item]").forEach((item) => {
     item.addEventListener("click", (event) => {
       const action = item.dataset.menuItem;
@@ -374,7 +338,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "login.html";
       }
 
-      if (action === "about" || action === "info" || action === "privacy") {
+      if (["about", "info", "privacy"].includes(action)) {
         closeAccountDrawer();
       }
     });
@@ -396,8 +360,7 @@ document.addEventListener("DOMContentLoaded", () => {
   navItems.forEach((item, index) => {
     const button = document.createElement("button");
     button.type = "button";
-    button.innerHTML =
-      `<span aria-hidden="true">${item.icon}</span>${item.label}`;
+    button.innerHTML = `<span aria-hidden="true">${item.icon}</span>${item.label}`;
     button.classList.toggle("active", index === 0);
 
     button.addEventListener("click", () => {
@@ -444,7 +407,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.body.appendChild(bottomNav);
 
-  // Category matching uses the Firestore category field first.
   function inferCategory(product) {
     const category = (product.dataset.category || "").toLowerCase();
     const id = (product.dataset.id || "").toLowerCase();
@@ -516,7 +478,20 @@ document.addEventListener("DOMContentLoaded", () => {
     updateHearts();
   }
 
-  // Build a product card safely from Firestore data.
+  // Only positive-stock variants are selectable.
+  function getAvailableVariants(item) {
+    if (!Array.isArray(item.variants)) return [];
+
+    return item.variants.filter((variant) =>
+      typeof variant.color === "string" &&
+      variant.color.trim() !== "" &&
+      typeof variant.size === "string" &&
+      variant.size.trim() !== "" &&
+      Number.isSafeInteger(variant.stock) &&
+      variant.stock > 0
+    );
+  }
+
   function createProductCard(item) {
     const card = document.createElement("article");
     card.className = "product";
@@ -539,7 +514,6 @@ document.addEventListener("DOMContentLoaded", () => {
     fallback.appendChild(fallbackLabel);
     media.appendChild(fallback);
 
-    // Supports imageUrl or image in the Firestore document.
     const imageUrl = item.imageUrl || item.image || "";
 
     if (imageUrl) {
@@ -589,105 +563,46 @@ document.addEventListener("DOMContentLoaded", () => {
     sizes.className = "sizes";
 
     const legend = document.createElement("legend");
-    legend.textContent = "Size";
+    legend.textContent = "Colour / size";
 
     const options = document.createElement("div");
     options.className = "size-options";
 
-    // Temporary options only. Real variant inventory is not connected yet.
-    ["S", "M", "L", "XL"].forEach((size) => {
-      const label = document.createElement("label");
-      const input = document.createElement("input");
-      const span = document.createElement("span");
+    const variantsExist =
+      Array.isArray(item.variants) && item.variants.length > 0;
 
-      input.type = "radio";
-      input.name = `size-${item.id}`;
-      input.value = size;
-      span.textContent = size;
+    const availableVariants = getAvailableVariants(item);
 
-      label.append(input, span);
-      options.appendChild(label);
-    });
-
-    sizes.append(legend, options);
-
-    const error = document.createElement("p");
-    error.className = "size-error";
-    error.setAttribute("role", "alert");
-    error.hidden = true;
-    error.textContent = "Please choose a size first.";
-
-    const addButton = document.createElement("button");
-    addButton.className = "btn btn-dark add-to-cart";
-    addButton.type = "button";
-    addButton.textContent = "Add to cart";
-
-    card.append(media, top);
-
-    
-if (description.textContent.trim()) {
-      card.appendChild(description);
-    }
-
-    card.append(sizes, error, addButton);
-
-    const tools = document.createElement("div");
-    tools.className = "vf-product-tools";
-
-    const heart = document.createElement("button");
-    heart.type = "button";
-    heart.className = "vf-heart";
-    heart.textContent = "♡";
-    heart.setAttribute("aria-label", "Add to wishlist");
-    heart.setAttribute("aria-pressed", "false");
-
-    heart.addEventListener("click", () => {
-      if (savedProducts.has(item.id)) {
-        savedProducts.delete(item.id);
+    if (variantsExist) {
+      if (availableVariants.length === 0) {
+        const soldOut = document.createElement("p");
+        soldOut.className = "product-note";
+        soldOut.textContent = "Currently out of stock";
+        sizes.append(legend, soldOut);
       } else {
-        savedProducts.add(item.id);
+        availableVariants.forEach((variant, index) => {
+          const label = document.createElement("label");
+          const input = document.createElement("input");
+          const span = document.createElement("span");
+
+          input.type = "radio";
+          input.name = `size-${item.id}`;
+          input.value = `${variant.color} / ${variant.size}`;
+          input.dataset.color = variant.color;
+          input.dataset.size = variant.size;
+          input.dataset.stock = String(variant.stock);
+
+          span.textContent =
+            `${variant.color} · ${variant.size} (${variant.stock} available)`;
+
+          label.append(input, span);
+          options.appendChild(label);
+        });
+
+        sizes.append(legend, options);
       }
-
-      updateHearts();
-      renderProducts();
-    });
-
-    tools.appendChild(heart);
-    card.appendChild(tools);
-
-    return card;
-  }
-
-  // Load only published products from Firestore.
-  async function loadProducts() {
-    productsArea.replaceChildren();
-
-    const loadingMessage = document.createElement("p");
-    loadingMessage.className = "vf-empty";
-    loadingMessage.textContent = "Loading collection…";
-    productsArea.appendChild(loadingMessage);
-
-    try {
-      firestoreProducts = await getPublishedProducts();
-
-      products = firestoreProducts.map(createProductCard);
-      productsArea.replaceChildren(...products);
-
-      renderProducts();
-    } catch (error) {
-      console.error("Unable to load published products:", error);
-
-      productsArea.replaceChildren();
-
-      const errorMessage = document.createElement("p");
-      errorMessage.className = "vf-empty";
-      errorMessage.textContent =
-        "We couldn't load the collection. Please refresh and try again.";
-
-      productsArea.appendChild(errorMessage);
-    }
-  }
-
-  loadProducts();
-});
-  
+    } else {
+      // Keep old products working until inventory is added in admin.
+      ["S", "M", "L", "XL"].forEach((size) => {
+        const label = document.createElement("label");
+        const input = document.createEleme
