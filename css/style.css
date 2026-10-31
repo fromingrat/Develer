@@ -695,7 +695,7 @@ h2 {
   background: rgba(0, 0, 0, 0.55);
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  transition: opacity 280ms ease, visibility 280ms ease;
 }
 
 .overlay.show {
@@ -716,7 +716,9 @@ h2 {
   color: var(--black);
   transform: translateX(100%);
   visibility: hidden;
-  transition: transform 0.35s ease, visibility 0.35s ease;
+  transition:
+  transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+  visibility 320ms ease;
 }
 
 .cart.open {
