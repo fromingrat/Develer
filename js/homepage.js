@@ -110,6 +110,8 @@ document.addEventListener("DOMContentLoaded", () => {
     showHome,
     showMembership,
     openWishlist,
+    isSignedIn: () => Boolean(signedInUser),
+    showLoginPrompt: showWishlistLoginPrompt,
     renderProducts,
     categories,
     setWishlistMode: (value) => {
