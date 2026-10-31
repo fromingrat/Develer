@@ -393,7 +393,18 @@
   gap: 4px 7px;
   margin: 0 0 7px;
 }
+.product-premium-price {
+  margin: 0 0 9px;
+  color: #777;
+  font-size: 11px;
+  line-height: 1.5;
+}
 
+.product-premium-price strong {
+  color: #171717;
+  font-size: 13px;
+  font-weight: 700;
+}
 /* Circular colour swatches */
 .product-colors {
   min-width: 0;
