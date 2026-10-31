@@ -567,3 +567,69 @@
     transform: none;
   }
 }
+/* =========================================
+   VELFORM — SKELETON PRODUCT LOADING
+========================================= */
+
+.vf-skeleton-card {
+  pointer-events: none;
+}
+
+.vf-skeleton-block {
+  position: relative;
+  overflow: hidden;
+  background: #eceae6;
+}
+
+.vf-skeleton-block::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.65),
+    transparent
+  );
+  animation: velform-shimmer 1.5s infinite;
+}
+
+.vf-skeleton-media {
+  aspect-ratio: 3 / 4;
+  border-radius: 8px;
+}
+
+.vf-skeleton-category {
+  width: 35%;
+  height: 9px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.vf-skeleton-title {
+  width: 75%;
+  height: 14px;
+  margin-bottom: 12px;
+  border-radius: 4px;
+}
+
+.vf-skeleton-price {
+  width: 30%;
+  height: 13px;
+  border-radius: 4px;
+}
+
+@keyframes velform-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vf-skeleton-block::after {
+    animation: none;
+    transform: none;
+    background: transparent;
+  }
+}
