@@ -366,7 +366,7 @@ const { auth } = await import("./firebase.js");
   window.addEventListener("resize", updateMenuVisibility);
   updateMenuVisibility();
   // PREMIUM MEMBERSHIP MODULE
-  const { showMembership, showHome } = createMembership({
+  const { showMembership, showHome, membership } = createMembership({
     collection,
     hero
   });
