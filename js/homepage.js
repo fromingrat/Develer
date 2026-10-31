@@ -250,7 +250,9 @@ for (let i = 0; i < 4; i++) {
         .filter((item) => item && item.id)
         .map((item) =>
           createProductCard(item, {
-            isSaved: savedProducts.has(String(item.id)),
+            isSaved:
+                onPremiumPriceClick: () => showMembership(),
+              savedProducts.has(String(item.id)),
             onWishlistToggle: (product, button) => {
               const productId = String(product.id);
 
