@@ -8,6 +8,7 @@ import { createAccountDrawer } from "./account-drawer.js";
 import { createBottomNav } from "./bottom-nav.js";
 import { createCategoryNavigation } from "./category-navigation.js";
 import { createFloatingCategoryBar } from "./floating-category-bar.js";
+import { auth } from "./firebase.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const main = document.querySelector("main");
@@ -49,9 +50,10 @@ document.addEventListener("DOMContentLoaded", () => {
   `;
 
   heroInner.appendChild(greetingBox);
-
+  let signedInUser = null;
   try {
     watchAuthState((user) => {
+      signedInUser = user;
       const greeting = document.querySelector("#vf-greeting");
       if (!greeting) return;
 
@@ -150,7 +152,79 @@ document.addEventListener("DOMContentLoaded", () => {
 
     return "Other";
   }
+  function showWishlistLoginPrompt() {
+  let prompt = document.querySelector(".vf-login-prompt");
 
+  if (!prompt) {
+    prompt = document.createElement("div");
+    prompt.className = "vf-login-prompt";
+
+    prompt.innerHTML = `
+      <div class="vf-login-backdrop"></div>
+
+      <section class="vf-login-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="vf-login-title">
+
+        <button class="vf-login-close" type="button"
+          aria-label="Close">×</button>
+
+        <p class="vf-login-brand">V E L F O R M</p>
+
+        <div class="vf-login-symbol">♡</div>
+
+        <p class="vf-login-eyebrow">YOUR PERSONAL COLLECTION</p>
+
+        <h2 id="vf-login-title">
+          Your favourites deserve a place.
+        </h2>
+
+        <p class="vf-login-description">
+          Sign in to save pieces you love and keep your wishlist close.
+        </p>
+
+        <button class="vf-login-action" type="button">
+          SIGN IN / LOG IN <span>→</span>
+        </button>
+
+        <button class="vf-login-cancel" type="button">
+          CANCEL
+        </button>
+
+        <p class="vf-login-footer">VELFORM · FEWER PIECES. A HIGHER STANDARD.</p>
+      </section>
+    `;
+
+    document.body.appendChild(prompt);
+
+    const closePrompt = () => {
+      prompt.classList.remove("is-visible");
+      document.body.classList.remove("vf-login-open");
+    };
+
+    prompt.querySelector(".vf-login-close")
+      .addEventListener("click", closePrompt);
+
+    prompt.querySelector(".vf-login-cancel")
+      .addEventListener("click", closePrompt);
+
+    prompt.querySelector(".vf-login-backdrop")
+      .addEventListener("click", closePrompt);
+
+    prompt.querySelector(".vf-login-action")
+      .addEventListener("click", () => {
+        window.location.href = "login.html";
+      });
+
+    prompt.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closePrompt();
+    });
+  }
+
+  prompt.classList.add("is-visible");
+  document.body.classList.add("vf-login-open");
+  }
   function updateHearts() {
     products.forEach((product) => {
       const isSaved = savedProducts.has(product.dataset.id);
