@@ -913,3 +913,147 @@ body.vf-panel-open .vf-bottom-nav {
 .wishlist-item-details .remove-btn {
   min-height: 30px;
 }
+/* VELFORM — WISHLIST LOGIN PROMPT */
+
+.vf-login-prompt {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 250ms ease, visibility 250ms ease;
+}
+
+.vf-login-prompt.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.vf-login-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(5px);
+}
+
+.vf-login-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 360px;
+  box-sizing: border-box;
+  padding: 34px 25px 25px;
+  background: #f7f6f2;
+  color: #171717;
+  text-align: center;
+  transform: translateY(18px);
+  transition: transform 250ms ease;
+}
+
+.vf-login-prompt.is-visible .vf-login-card {
+  transform: translateY(0);
+}
+
+.vf-login-close {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  border: 0;
+  background: transparent;
+  color: #555;
+  font-size: 26px;
+  cursor: pointer;
+}
+
+.vf-login-brand {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 5px;
+}
+
+.vf-login-symbol {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  margin: 27px auto 18px;
+  border: 1px solid #c5ad82;
+  border-radius: 50%;
+  color: #9b8051;
+  font-size: 30px;
+}
+
+.vf-login-eyebrow {
+  color: #9b8051;
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+.vf-login-card h2 {
+  max-width: 270px;
+  margin: 12px auto;
+  font-family: var(--serif);
+  font-size: 29px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.vf-login-description {
+  margin: 12px auto 25px;
+  color: #777;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.vf-login-action,
+.vf-login-cancel {
+  width: 100%;
+  min-height: 49px;
+  font: inherit;
+  font-size: 11px;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.vf-login-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 1px solid #111;
+  background: #111;
+  color: #fff;
+}
+
+.vf-login-action span {
+  font-size: 17px;
+}
+
+.vf-login-cancel {
+  margin-top: 9px;
+  border: 1px solid #d8d6d0;
+  background: transparent;
+  color: #333;
+}
+
+.vf-login-footer {
+  margin: 24px 0 0;
+  color: #999;
+  font-size: 8px;
+  letter-spacing: 1.5px;
+}
+
+body.vf-login-open {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vf-login-prompt,
+  .vf-login-card {
+    transition: none;
+  }
+}
