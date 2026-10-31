@@ -131,30 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --------------------------------------------------
   // PRODUCT HELPERS
-  // --------------------------------------------------
-
-  function inferCategory(product) {
-    const category = String(product.dataset.category || "").toLowerCase();
-    const id = String(product.dataset.id || "").toLowerCase();
-    const name = String(product.dataset.name || "").toLowerCase();
-    const combined = `${category} ${id} ${name}`;
-
-    if (combined.includes("jean")) return "Jeans";
-
-    if (
-      combined.includes("t-shirt") ||
-      combined.includes("tshirt") ||
-      combined.includes("t shirt")
-    ) {
-      return "T-shirts";
-    }
-
-    if (combined.includes("trouser")) return "Trousers";
-    if (combined.includes("shirt")) return "Shirts";
-
-    return "Other";
-  }
-  function showWishlistLoginPrompt() {
+  // ---------------------------------------function showWishlistLoginPrompt(type = "wishlist") {
   let prompt = document.querySelector(".vf-login-prompt");
 
   if (!prompt) {
@@ -178,13 +155,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         <p class="vf-login-eyebrow">YOUR PERSONAL COLLECTION</p>
 
-        <h2 id="vf-login-title">
-          Your favourites deserve a place.
-        </h2>
+        <h2 id="vf-login-title"></h2>
 
-        <p class="vf-login-description">
-          Sign in to save pieces you love and keep your wishlist close.
-        </p>
+        <p class="vf-login-description"></p>
 
         <button class="vf-login-action" type="button">
           SIGN IN / LOG IN <span>→</span>
@@ -224,9 +197,48 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  const isCart = type === "cart";
+
+  prompt.querySelector(".vf-login-symbol").textContent =
+    isCart ? "🛍" : "♡";
+
+  prompt.querySelector("#vf-login-title").textContent =
+    isCart
+      ? "Your cart is waiting."
+      : "Your favourites deserve a place.";
+
+  prompt.querySelector(".vf-login-description").textContent =
+    isCart
+      ? "Sign in to view your cart and keep your selected pieces together."
+      : "Sign in to see the pieces you love and keep your wishlist close.";
+
   prompt.classList.add("is-visible");
   document.body.classList.add("vf-login-open");
+}-----------
+
+  function inferCategory(product) {
+    const category = String(product.dataset.category || "").toLowerCase();
+    const id = String(product.dataset.id || "").toLowerCase();
+    const name = String(product.dataset.name || "").toLowerCase();
+    const combined = `${category} ${id} ${name}`;
+
+    if (combined.includes("jean")) return "Jeans";
+
+    if (
+      combined.includes("t-shirt") ||
+      combined.includes("tshirt") ||
+      combined.includes("t shirt")
+    ) {
+      return "T-shirts";
+    }
+
+    if (combined.includes("trouser")) return "Trousers";
+    if (combined.includes("shirt")) return "Shirts";
+
+    return "Other";
   }
+  function showWishlistLoginPrompt() {
+  
   function updateHearts() {
     products.forEach((product) => {
       const isSaved = savedProducts.has(product.dataset.id);
@@ -331,7 +343,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           onWishlistToggle: (product, button) => {
             if (!signedInUser) {
-              showWishlistLoginPrompt();
+              showWishlistLoginPrompt("wishlist");
               return;
             }
 
