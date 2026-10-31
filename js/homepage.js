@@ -857,10 +857,30 @@ continueButton.addEventListener("click", () => {
   async function loadProducts() {
     productsArea.replaceChildren();
 
-    const loadingMessage = document.createElement("p");
-    loadingMessage.className = "vf-loading";
-    loadingMessage.textContent = "Loading collection...";
-    productsArea.appendChild(loadingMessage);
+for (let i = 0; i < 4; i++) {
+  const skeleton = document.createElement("article");
+  skeleton.className = "product vf-skeleton-card";
+  skeleton.setAttribute("aria-hidden", "true");
+
+  const media = document.createElement("div");
+  media.className = "product-media vf-skeleton-block vf-skeleton-media";
+
+  const details = document.createElement("div");
+  details.className = "product-details";
+
+  const category = document.createElement("div");
+  category.className = "vf-skeleton-block vf-skeleton-category";
+
+  const title = document.createElement("div");
+  title.className = "vf-skeleton-block vf-skeleton-title";
+
+  const price = document.createElement("div");
+  price.className = "vf-skeleton-block vf-skeleton-price";
+
+  details.append(category, title, price);
+  skeleton.append(media, details);
+  productsArea.appendChild(skeleton);
+}
 
     try {
       const publishedProducts = await getPublishedProducts();
