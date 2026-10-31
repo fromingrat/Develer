@@ -1,3 +1,4 @@
+
 export function createBottomNav({
   showHome,
   showMembership,
@@ -5,7 +6,9 @@ export function createBottomNav({
   renderProducts,
   categories,
   setWishlistMode,
-  setActiveCategory
+  setActiveCategory,
+  isSignedIn,
+  showLoginPrompt
 }) {
   const bottomNav = document.createElement("nav");
   bottomNav.className = "vf-bottom-nav";
@@ -28,6 +31,14 @@ export function createBottomNav({
     button.classList.toggle("active", index === 0);
 
     button.addEventListener("click", () => {
+      if (
+        (item.label === "Cart" || item.label === "Wishlist") &&
+        !isSignedIn()
+      ) {
+        showLoginPrompt();
+        return;
+      }
+
       bottomNav.querySelectorAll("button").forEach((navButton) => {
         navButton.classList.toggle("active", navButton === button);
       });
