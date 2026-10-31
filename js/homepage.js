@@ -128,94 +128,94 @@ document.addEventListener("DOMContentLoaded", () => {
       showMembership,
       bottomNav
     });
-
   // --------------------------------------------------
   // PRODUCT HELPERS
-  // ---------------------------------------function showWishlistLoginPrompt(type = "wishlist") {
-  let prompt = document.querySelector(".vf-login-prompt");
+  // --------------------------------------------------
 
-  if (!prompt) {
-    prompt = document.createElement("div");
-    prompt.className = "vf-login-prompt";
+  function showWishlistLoginPrompt(type = "wishlist") {
+    let prompt = document.querySelector(".vf-login-prompt");
 
-    prompt.innerHTML = `
-      <div class="vf-login-backdrop"></div>
+    if (!prompt) {
+      prompt = document.createElement("div");
+      prompt.className = "vf-login-prompt";
 
-      <section class="vf-login-card"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="vf-login-title">
+      prompt.innerHTML = `
+        <div class="vf-login-backdrop"></div>
 
-        <button class="vf-login-close" type="button"
-          aria-label="Close">×</button>
+        <section class="vf-login-card"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="vf-login-title">
 
-        <p class="vf-login-brand">V E L F O R M</p>
+          <button class="vf-login-close" type="button"
+            aria-label="Close">×</button>
 
-        <div class="vf-login-symbol">♡</div>
+          <p class="vf-login-brand">V E L F O R M</p>
 
-        <p class="vf-login-eyebrow">YOUR PERSONAL COLLECTION</p>
+          <div class="vf-login-symbol">♡</div>
 
-        <h2 id="vf-login-title"></h2>
+          <p class="vf-login-eyebrow">YOUR PERSONAL COLLECTION</p>
 
-        <p class="vf-login-description"></p>
+          <h2 id="vf-login-title"></h2>
 
-        <button class="vf-login-action" type="button">
-          SIGN IN / LOG IN <span>→</span>
-        </button>
+          <p class="vf-login-description"></p>
 
-        <button class="vf-login-cancel" type="button">
-          CANCEL
-        </button>
+          <button class="vf-login-action" type="button">
+            SIGN IN / LOG IN <span>→</span>
+          </button>
 
-        <p class="vf-login-footer">VELFORM · FEWER PIECES. A HIGHER STANDARD.</p>
-      </section>
-    `;
+          <button class="vf-login-cancel" type="button">
+            CANCEL
+          </button>
 
-    document.body.appendChild(prompt);
+          <p class="vf-login-footer">VELFORM · FEWER PIECES. A HIGHER STANDARD.</p>
+        </section>
+      `;
 
-    const closePrompt = () => {
-      prompt.classList.remove("is-visible");
-      document.body.classList.remove("vf-login-open");
-    };
+      document.body.appendChild(prompt);
 
-    prompt.querySelector(".vf-login-close")
-      .addEventListener("click", closePrompt);
+      const closePrompt = () => {
+        prompt.classList.remove("is-visible");
+        document.body.classList.remove("vf-login-open");
+      };
 
-    prompt.querySelector(".vf-login-cancel")
-      .addEventListener("click", closePrompt);
+      prompt.querySelector(".vf-login-close")
+        .addEventListener("click", closePrompt);
 
-    prompt.querySelector(".vf-login-backdrop")
-      .addEventListener("click", closePrompt);
+      prompt.querySelector(".vf-login-cancel")
+        .addEventListener("click", closePrompt);
 
-    prompt.querySelector(".vf-login-action")
-      .addEventListener("click", () => {
-        window.location.href = "login.html";
+      prompt.querySelector(".vf-login-backdrop")
+        .addEventListener("click", closePrompt);
+
+      prompt.querySelector(".vf-login-action")
+        .addEventListener("click", () => {
+          window.location.href = "login.html";
+        });
+
+      prompt.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") closePrompt();
       });
+    }
 
-    prompt.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") closePrompt();
-    });
-  }
+    const isCart = type === "cart";
 
-  const isCart = type === "cart";
+    prompt.querySelector(".vf-login-symbol").textContent =
+      isCart ? "🛍" : "♡";
 
-  prompt.querySelector(".vf-login-symbol").textContent =
-    isCart ? "🛍" : "♡";
+    prompt.querySelector("#vf-login-title").textContent =
+      isCart
+        ? "Your cart is waiting."
+        : "Your favourites deserve a place.";
 
-  prompt.querySelector("#vf-login-title").textContent =
-    isCart
-      ? "Your cart is waiting."
-      : "Your favourites deserve a place.";
+    prompt.querySelector(".vf-login-description").textContent =
+      isCart
+        ? "Sign in to view your cart and keep your selected pieces together."
+        : "Sign in to see the pieces you love and keep your wishlist close.";
 
-  prompt.querySelector(".vf-login-description").textContent =
-    isCart
-      ? "Sign in to view your cart and keep your selected pieces together."
-      : "Sign in to see the pieces you love and keep your wishlist close.";
-
-  prompt.classList.add("is-visible");
-  document.body.classList.add("vf-login-open");
-}-----------
-
+    prompt.classList.add("is-visible");
+    document.body.classList.add("vf-login-open");
+  } 
   function inferCategory(product) {
     const category = String(product.dataset.category || "").toLowerCase();
     const id = String(product.dataset.id || "").toLowerCase();
@@ -238,8 +238,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return "Other";
   }
   function showWishlistLoginPrompt() {
-  
-  function updateHearts() {
     products.forEach((product) => {
       const isSaved = savedProducts.has(product.dataset.id);
       const heart = product.querySelector(".vf-heart");
