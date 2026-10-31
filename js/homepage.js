@@ -6,6 +6,7 @@ import { createMembership } from "./membership.js";
 import { createWishlist } from "./wishlist.js";
 import { createAccountDrawer } from "./account-drawer.js";
 import { createBottomNav } from "./bottom-nav.js";
+import { createCategoryNavigation } from "./category-navigation.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const main = document.querySelector("main");
@@ -62,57 +63,21 @@ document.addEventListener("DOMContentLoaded", () => {
     console.warn("Could not load the customer greeting.", error);
   }
 
-  // --------------------------------------------------
-  // CATEGORY NAVIGATION
-  // --------------------------------------------------
-
-  const categories = document.createElement("nav");
-  categories.className = "vf-categories";
-  categories.setAttribute("aria-label", "Product categories");
-
-  const menuButton = document.createElement("button");
-  menuButton.type = "button";
-  menuButton.className = "vf-category-menu";
-  menuButton.setAttribute("aria-label", "Open menu");
-  menuButton.setAttribute("aria-expanded", "false");
-  menuButton.innerHTML = "<span></span><span></span><span></span>";
-
-  const categoryNames = [
-    "All",
-    "Shirts",
-    "T-shirts",
-    "Jeans",
-    "Trousers"
-  ];
-
-  categoryNames.forEach((category) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "vf-category";
-    button.textContent = category;
-    button.classList.toggle("active", category === "All");
-
-    button.addEventListener("click", () => {
-      activeCategory = category;
-      wishlistMode = false;
-
-      categories.querySelectorAll(".vf-category").forEach((item) => {
-        item.classList.toggle("active", item === button);
-      });
-
-      renderProducts();
-    });
-
-    categories.appendChild(button);
+  // CATEGORY NAVIGATION MODULE
+  const {
+    categories,
+    menuButton,
+    categorySpacer
+  } = createCategoryNavigation({
+    collection,
+    renderProducts,
+    setActiveCategory: (value) => {
+      activeCategory = value;
+    },
+    setWishlistMode: (value) => {
+      wishlistMode = value;
+    }
   });
-
-  categories.prepend(menuButton);
-
-  collection.querySelector(".section-head")?.after(categories);
-
-  const categorySpacer = document.createElement("div");
-  categorySpacer.className = "vf-category-spacer";
-  categories.before(categorySpacer);
 
   // ACCOUNT DRAWER MODULE WILL BE INITIALIZED AFTER BOTTOM NAV
   // --------------------------------------------------
