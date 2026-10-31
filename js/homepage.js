@@ -2,6 +2,7 @@
 import { watchAuthState } from "./auth.js";
 import { getPublishedProducts } from "./product-service.js";
 import { createProductCard } from "./product-card.js";
+import { createMembership } from "./membership.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const main = document.querySelector("main");
