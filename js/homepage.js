@@ -290,95 +290,95 @@ document.addEventListener("DOMContentLoaded", () => {
   // --------------------------------------------------
       
   async function loadProducts() {
-    productsArea.replaceChildren();
+  productsArea.replaceChildren();
 
-for (let i = 0; i < 4; i++) {
-  const skeleton = document.createElement("article");
-  skeleton.className = "product vf-skeleton-card";
-  skeleton.setAttribute("aria-hidden", "true");
+  for (let i = 0; i < 4; i++) {
+    const skeleton = document.createElement("article");
+    skeleton.className = "product vf-skeleton-card";
+    skeleton.setAttribute("aria-hidden", "true");
 
-  const media = document.createElement("div");
-  media.className = "product-media vf-skeleton-block vf-skeleton-media";
+    const media = document.createElement("div");
+    media.className = "product-media vf-skeleton-block vf-skeleton-media";
 
-  const details = document.createElement("div");
-  details.className = "product-details";
+    const details = document.createElement("div");
+    details.className = "product-details";
 
-  const category = document.createElement("div");
-  category.className = "vf-skeleton-block vf-skeleton-category";
+    const category = document.createElement("div");
+    category.className = "vf-skeleton-block vf-skeleton-category";
 
-  const title = document.createElement("div");
-  title.className = "vf-skeleton-block vf-skeleton-title";
+    const title = document.createElement("div");
+    title.className = "vf-skeleton-block vf-skeleton-title";
 
-  const price = document.createElement("div");
-  price.className = "vf-skeleton-block vf-skeleton-price";
+    const price = document.createElement("div");
+    price.className = "vf-skeleton-block vf-skeleton-price";
 
-  details.append(category, title, price);
-  skeleton.append(media, details);
-  productsArea.appendChild(skeleton);
-}
-
-    try {
-      const publishedProducts = await getPublishedProducts();
-
-            products = publishedProducts
-        .filter((item) => item && item.id)
-        .map((item) =>
-          createProductCard(item, {
-  isSaved: savedProducts.has(String(item.id)),
-  onPremiumPriceClick: () => showMembership(),
-            
-
-              if (savedProducts.has(productId)) {
-                savedProducts.delete(productId);
-              } else {
-                savedProducts.add(productId);
-                button.classList.remove("heart-pop");
-                void button.offsetWidth;
-                button.classList.add("heart-pop");
-              }
-
-              updateHearts();
-              renderProducts();
-            }
-          })
-        );
-
-      productsArea.replaceChildren();
-
-      if (products.length === 0) {
-        const emptyMessage = document.createElement("p");
-        emptyMessage.className = "vf-empty";
-        emptyMessage.textContent =
-          "No published products are available yet.";
-
-        productsArea.appendChild(onWishlistToggle: (product, button) => {
-  if (!signedInUser) {
-    showWishlistLoginPrompt();
-    return;
+    details.append(category, title, price);
+    skeleton.append(media, details);
+    productsArea.appendChild(skeleton);
   }
 
-  const productId = String(product.id);emptyMessage);
-        return;
-      }
+  try {
+    const publishedProducts = await getPublishedProducts();
 
-      products.forEach((product) => {
-        productsArea.appendChild(product);
-      });
+    products = publishedProducts
+      .filter((item) => item && item.id)
+      .map((item) =>
+        createProductCard(item, {
+          isSaved: savedProducts.has(String(item.id)),
+          onPremiumPriceClick: () => showMembership(),
 
-      renderProducts();
-    } catch (error) {
-      console.error("Could not load products from Firestore:", error);
+          onWishlistToggle: (product, button) => {
+            if (!signedInUser) {
+              showWishlistLoginPrompt();
+              return;
+            }
 
-      productsArea.replaceChildren();
+            const productId = String(product.id);
 
-      const errorMessage = document.createElement("p");
-      errorMessage.className = "vf-error";
-      errorMessage.textContent =
-        "We couldn't load the collection. Please refresh and try again.";
+            if (savedProducts.has(productId)) {
+              savedProducts.delete(productId);
+            } else {
+              savedProducts.add(productId);
+              button.classList.remove("heart-pop");
+              void button.offsetWidth;
+              button.classList.add("heart-pop");
+            }
 
-      productsArea.appendChild(errorMessage);
+            updateHearts();
+            renderProducts();
+          }
+        })
+      );
+
+    productsArea.replaceChildren();
+
+    if (products.length === 0) {
+      const emptyMessage = document.createElement("p");
+      emptyMessage.className = "vf-empty";
+      emptyMessage.textContent =
+        "No published products are available yet.";
+
+      productsArea.appendChild(emptyMessage);
+      return;
     }
-        }
 
+    products.forEach((product) => {
+      productsArea.appendChild(product);
+    });
+
+    renderProducts();
+  } catch (error) {
+    console.error("Could not load products from Firestore:", error);
+
+    productsArea.replaceChildren();
+
+    const errorMessage = document.createElement("p");
+    errorMessage.className = "vf-error";
+    errorMessage.textContent =
+      "We couldn't load the collection. Please refresh and try again.";
+
+    productsArea.appendChild(errorMessage);
+  }
+  }
   loadProducts();
 });
