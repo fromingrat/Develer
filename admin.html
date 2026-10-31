@@ -529,9 +529,7 @@
 
     const name = $("name").value.trim();
     const category = $("category").value;
-    const price = Number($("price").value);
-    const originalPrice = Number($("original-price").value);
-    // Read all image URLs, one URL per line.
+    
     const images = $("images").value
       .split("\n")
       .map((url) => url.trim())
@@ -547,7 +545,9 @@
   !name ||
   !Number.isSafeInteger(price) ||
   price < 1 ||
-  !Number.isSafeInteger(originalPrice) ||
+  !Number.isSafeInteger(originalPrice) ||const price = Number($("price").value);
+const premiumPrice = Number($("premium-price").value);
+const originalPrice = Number($("original-price").value);
   originalPrice < price
 ) {
   setMessage(
