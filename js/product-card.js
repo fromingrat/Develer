@@ -265,7 +265,25 @@ if (imageUrls.length) {
   }
 
   details.append(category, heading, priceRow);
+ const premiumPriceValue = Number(item.premiumPrice);
 
+if (
+  Number.isSafeInteger(premiumPriceValue) &&
+  premiumPriceValue > 0 &&
+  premiumPriceValue <= sellingPrice
+) {
+  const premiumPriceRow = document.createElement("p");
+  premiumPriceRow.className = "product-premium-price";
+
+  const premiumLabel = document.createElement("span");
+  premiumLabel.textContent = "Premium Member Price: ";
+
+  const premiumValue = document.createElement("strong");
+  premiumValue.textContent = formatPrice(premiumPriceValue);
+
+  premiumPriceRow.append(premiumLabel, premiumValue);
+  details.append(premiumPriceRow);
+}
   // One swatch per available colour. Sizes stay on the product page.
   const availableVariants = getAvailableVariants(item);
   const colors = [
