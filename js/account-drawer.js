@@ -6,6 +6,9 @@ export function createAccountDrawer({
   showMembership,
   bottomNav
 }) {
+    let drawerOpen = false;
+  let touchStartX = 0;
+  let touchStartY = 0;
   const menuOverlay = document.createElement("div");
   menuOverlay.className = "vf-menu-overlay";
   menuOverlay.setAttribute("aria-hidden", "true");
