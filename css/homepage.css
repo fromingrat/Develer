@@ -869,3 +869,47 @@ body.vf-menu-open {
   }
   }
     
+/* Hide bottom navigation while Cart or Wishlist is open */
+body.vf-panel-open .vf-bottom-nav {
+  display: none;
+}
+
+/* Wishlist panel styling */
+.wishlist-panel {
+  z-index: 61;
+}
+
+.wishlist-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.wishlist-item-image {
+  flex: 0 0 88px;
+  width: 88px;
+  height: 110px;
+  object-fit: cover;
+  background: #f1f1f1;
+}
+
+.wishlist-item-details {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+}
+
+.wishlist-item-details .cart-item-name {
+  font-size: 1.15rem;
+}
+
+.wishlist-item-details .cart-item-meta {
+  margin: 0;
+}
+
+.wishlist-item-details .remove-btn {
+  min-height: 30px;
+}
