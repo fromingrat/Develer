@@ -326,8 +326,7 @@ for (let i = 0; i < 4; i++) {
           createProductCard(item, {
   isSaved: savedProducts.has(String(item.id)),
   onPremiumPriceClick: () => showMembership(),
-            onWishlistToggle: (product, button) => {
-              const productId = String(product.id);
+            
 
               if (savedProducts.has(productId)) {
                 savedProducts.delete(productId);
@@ -352,7 +351,13 @@ for (let i = 0; i < 4; i++) {
         emptyMessage.textContent =
           "No published products are available yet.";
 
-        productsArea.appendChild(emptyMessage);
+        productsArea.appendChild(onWishlistToggle: (product, button) => {
+  if (!signedInUser) {
+    showWishlistLoginPrompt();
+    return;
+  }
+
+  const productId = String(product.id);emptyMessage);
         return;
       }
 
