@@ -35,7 +35,7 @@ export function createBottomNav({
         (item.label === "Cart" || item.label === "Wishlist") &&
         !isSignedIn()
       ) {
-        showLoginPrompt();
+        showLoginPrompt(item.label.toLowerCase());
         return;
       }
 
