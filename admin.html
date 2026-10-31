@@ -529,7 +529,9 @@
 
     const name = $("name").value.trim();
     const category = $("category").value;
-    
+    const price = Number($("price").value);
+const premiumPrice = Number($("premium-price").value);
+const originalPrice = Number($("original-price").value);
     const images = $("images").value
       .split("\n")
       .map((url) => url.trim())
@@ -545,17 +547,18 @@
   !name ||
   !Number.isSafeInteger(price) ||
   price < 1 ||
-  !Number.isSafeInteger(originalPrice) ||const price = Number($("price").value);
-const premiumPrice = Number($("premium-price").value);
-const originalPrice = Number($("original-price").value);
+  !Number.isSafeInteger(premiumPrice) ||
+  premiumPrice < 1 ||
+  premiumPrice > price ||
+  !Number.isSafeInteger(originalPrice) ||
   originalPrice < price
 ) {
   setMessage(
-    "Enter a valid product name, selling price, and original price. Original price must be equal to or higher than selling price.",
+    "Enter valid prices. Premium Member Price must be at least ₹1 and cannot exceed the selling price. Original price must be equal to or higher than selling price.",
     true
   );
   return;
-    }
+  }
 
     // Validate every image URL.
     for (const imageUrl of images) {
@@ -591,6 +594,7 @@ const originalPrice = Number($("original-price").value);
         name,
         category,
         price,
+        premiumPrice,
         originalPrice,
         imageUrl,
         images,
@@ -700,6 +704,7 @@ const originalPrice = Number($("original-price").value);
           $("name").value = product.name || "";
           $("category").value = product.category || "Shirts";
           $("price").value = product.price ?? "";
+          $("premium-price").value = product.premiumPrice ?? "";
           $("original-price").value =
   product.originalPrice ?? product.price ?? "";
 
