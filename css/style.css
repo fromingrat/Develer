@@ -894,6 +894,10 @@ h2 {
   opacity: 0;
   visibility: hidden;
   transform: translate(-50%, 1rem);
+  transition:
+  opacity 220ms ease,
+  transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+  visibility 220ms ease;
 }
 
 .toast.show {
