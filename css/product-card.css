@@ -484,3 +484,66 @@
     animation: none;
   }
 }
+/* =========================================
+   VELFORM — LUXURY PRODUCT INTERACTIONS
+========================================= */
+
+/* Gentle product card transition */
+.product {
+  transition:
+    border-color 250ms ease,
+    box-shadow 250ms ease;
+}
+
+/* Smooth image movement */
+.product-media .product-image {
+  transition: transform 500ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* Image zoom only on devices with a real pointer */
+@media (hover: hover) and (pointer: fine) {
+  .product:hover {
+    border-color: #c9c5bd;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+  }
+
+  .product:hover .product-image {
+    transform: scale(1.035);
+  }
+}
+
+/* Refined add-to-cart button feedback */
+.product .add-to-cart {
+  transition:
+    background 200ms ease,
+    color 200ms ease,
+    transform 150ms ease;
+}
+
+.product .add-to-cart:active {
+  transform: scale(0.98);
+}
+
+/* Smooth size and colour selection */
+.size-option span,
+.color-swatch {
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    outline-color 180ms ease;
+}
+
+/* Respect reduced-motion settings */
+@media (prefers-reduced-motion: reduce) {
+  .product,
+  .product-media .product-image,
+  .product .add-to-cart,
+  .size-option span,
+  .color-swatch {
+    transition: none !important;
+  }
+
+  .product:hover .product-image {
+    transform: none;
+  }
+}
