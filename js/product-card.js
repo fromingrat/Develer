@@ -273,15 +273,19 @@ if (
   premiumPriceValue <= sellingPrice
 ) {
   const premiumPriceRow = document.createElement("p");
-  premiumPriceRow.className = "product-premium-price";
+premiumPriceRow.className = "product-premium-price";
 
+const crown = document.createElement("span");
+crown.className = "premium-crown";
+crown.textContent = "♛";
+crown.setAttribute("aria-hidden", "true");
   const premiumLabel = document.createElement("span");
-  premiumLabel.textContent = "Premium Member Price: ";
+  premiumLabel.textContent = "PREMIUM MEMBER PRICE";
 
   const premiumValue = document.createElement("strong");
   premiumValue.textContent = formatPrice(premiumPriceValue);
 
-  premiumPriceRow.append(premiumLabel, premiumValue);
+  premiumPriceRow.append(crown, premiumLabel, premiumValue);
   details.append(premiumPriceRow);
 }
   // One swatch per available colour. Sizes stay on the product page.
