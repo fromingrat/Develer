@@ -333,8 +333,34 @@
   color: #e11d48;
 }
 
+.product-media .vf-heart {
+  transition:
+    color 220ms ease,
+    background 220ms ease,
+    transform 180ms ease;
+}
+
 .product-media .vf-heart.heart-pop {
-  animation: velform-heart-pop 0.32s ease;
+  animation: velform-heart-pop 380ms
+    cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes velform-heart-pop {
+  0% {
+    transform: scale(1);
+  }
+
+  45% {
+    transform: scale(1.22);
+  }
+
+  75% {
+    transform: scale(0.96);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 @keyframes velform-heart-pop {
