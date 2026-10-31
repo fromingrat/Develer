@@ -275,34 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
         firstName ? firstName.charAt(0).toUpperCase() : "V";
 
       accountDrawer.querySelector("#vf-drawer-greeting").textContent =
-        firstName ? `Hey, ${firstName}!` : "Hey there!";
-
-      accountDrawer.querySelector("#vf-drawer-logout").textContent =
-        user ? "Log Out" : "Sign In";
-    });
-  } catch (error) {
-    console.warn("Could not update account information.", error);
-  }
-
-  accountDrawer
-    .querySelector("#vf-drawer-logout")
-    .addEventListener("click", async () => {
-      try {
-        const { signOutUser } = await import("./auth.js");
-const { auth } = await import("./firebase.js");
-        if (auth.currentUser) {
-          await signOutUser();
-          closeAccountDrawer();
-          window.location.href = "index.html";
-        } else {
-          window.location.href = "login.html";
-        }
-      } catch (error) {
-        console.error("Account action failed:", error);
-        alert("Unable to complete this action. Please try again.");
-      }
-    });
-
+  // ACCOUNT DRAWER MODULE WILL BE INITIALIZED AFTER BOTTOM NAV
   // --------------------------------------------------
   // FLOATING CATEGORY BAR
   // --------------------------------------------------
@@ -448,6 +421,13 @@ const { auth } = await import("./firebase.js");
   });
 
   document.body.appendChild(bottomNav);
+        const { openAccountDrawer, closeAccountDrawer } =
+    createAccountDrawer({
+      menuButton,
+      openWishlist,
+      showMembership,
+      bottomNav
+    });
 
   // --------------------------------------------------
   // PRODUCT HELPERS
@@ -624,58 +604,3 @@ for (let i = 0; i < 4; i++) {
     }
   }
 
-  // --------------------------------------------------
-  // ACCOUNT DRAWER ACTIONS
-  // --------------------------------------------------
-
-  accountDrawer.querySelectorAll("[data-menu-item]").forEach((item) => {
-    item.addEventListener("click", (event) => {
-      const action = item.dataset.menuItem;
-
-      if (action === "orders") {
-        event.preventDefault();
-        closeAccountDrawer();
-        alert("Your Orders page will be connected in the next step.");
-      }
-
-      if (action === "membership") {
-        event.preventDefault();
-        closeAccountDrawer();
-
-        showMembership();
-
-bottomNav.querySelectorAll("button").forEach((navButton) => {
-  navButton.classList.toggle(
-    "active",
-    navButton.dataset.navItem === "Membership"
-  );
-});
-      }
-
-      if (action === "cart") {
-        event.preventDefault();
-        closeAccountDrawer();
-        document.querySelector("[data-open-cart]")?.click();
-      }
-
-      if (action === "wishlist") {
-  event.preventDefault();
-  closeAccountDrawer();
-  openWishlist();
-      }
-
-      if (action === "account") {
-        event.preventDefault();
-        closeAccountDrawer();
-        window.location.href = "login.html";
-      }
-
-      if (["about", "info", "privacy"].includes(action)) {
-        closeAccountDrawer();
-      }
-    });
-  });
-
-  // Start loading the published products.
-  loadProducts();
-});
