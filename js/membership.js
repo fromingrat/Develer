@@ -181,5 +181,5 @@ export function createMembership({ collection, hero }) {
       " plan selected. Membership payments will be available soon.";
   });
 
-  return { showMembership, showHome };
+  return { showMembership, showHome, membership };
   }
