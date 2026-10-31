@@ -110,8 +110,8 @@ if (imageUrls.length) {
     );
 
     fallback.hidden = true;
-    image.src = imageUrls[currentImageIndex];
-
+media.classList.add("is-image-loading");
+image.src = imageUrls[currentImageIndex];
     // Restart the animation for every image change.
     void image.offsetWidth;
     image.classLiconst image = document.createElement("img");
