@@ -494,42 +494,6 @@ wishlistPanel.querySelector("#close-wishlist").addEventListener(
 
 wishlistOverlay.addEventListener("click", closeWishlist);
 
-// Plan selection.
-let selectedMembershipPlan = "";
-
-const planCards = membership.querySelectorAll("[data-membership-plan]");
-const continueButton = membership.querySelector("#vf-membership-continue");
-const membershipStatus = membership.querySelector("#vf-membership-status");
-
-planCards.forEach((card) => {
-  card.addEventListener("click", () => {
-    selectedMembershipPlan = card.dataset.membershipPlan;
-
-    planCards.forEach((plan) => {
-      const isSelected = plan === card;
-
-      plan.classList.toggle("selected", isSelected);
-      plan.setAttribute("aria-pressed", String(isSelected));
-      plan.querySelector(".vf-plan-select").textContent =
-        isSelected ? "Selected ✓" : "Select plan";
-    });
-
-    continueButton.disabled = false;
-    continueButton.textContent = "Continue with " + selectedMembershipPlan;
-
-    membershipStatus.textContent = "";
-  });
-});
-
-// Payment will be connected later.
-continueButton.addEventListener("click", () => {
-  if (!selectedMembershipPlan) return;
-
-  membershipStatus.textContent =
-    selectedMembershipPlan +
-    " plan selected. Membership payments will be available soon.";
-});
-
   // --------------------------------------------------
   // BOTTOM NAVIGATION
   // --------------------------------------------------
