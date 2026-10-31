@@ -89,21 +89,7 @@ export function createProductCard(
 
   
 if (imageUrls.length) {
-  const image = document.createElement("img");
-  image.className = "product-image";
-  image.src = imageUrls[0];
-  image.alt = item.name || item.title || "VELFORM product";
-  image.loading = "lazy";
-  image.width = 900;
-  image.height = 1200;
-
-  image.addEventListener("error", () => {
-    image.classList.add("is-hidden");
-    fallback.hidden = false;
-  });
-
-  fallback.hidden = true;
-  media.append(image);
+  
 
   let currentImageIndex = 0;
   let touchStartX = 0;
@@ -128,7 +114,29 @@ if (imageUrls.length) {
 
     // Restart the animation for every image change.
     void image.offsetWidth;
-    image.classList.add(
+    image.classLiconst image = document.createElement("img");
+image.className = "product-image";
+image.alt = item.name || item.title || "VELFORM product";
+image.loading = "lazy";
+image.width = 900;
+image.height = 1200;
+
+media.classList.add("is-image-loading");
+
+image.addEventListener("load", () => {
+  media.classList.remove("is-image-loading");
+});
+
+image.addEventListener("error", () => {
+  media.classList.remove("is-image-loading");
+  image.classList.add("is-hidden");
+  fallback.hidden = false;
+});
+
+fallback.hidden = true;
+media.append(image);
+image.src = imageUrls[0];
+    st.add(
       direction === "prev" ? "image-swipe-prev" : "image-swipe-next"
     );
 
