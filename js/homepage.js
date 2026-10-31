@@ -751,14 +751,8 @@ continueButton.addEventListener("click", () => {
       }
 
       if (item.label === "Wishlist") {
-        wishlistMode = true;
-        renderProducts();
-
-        collection.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-      }
+  openWishlist();
+}
 
       if (item.label === "Profile") {
         window.location.href = "login.html";
@@ -960,16 +954,9 @@ bottomNav.querySelectorAll("button").forEach((navButton) => {
       }
 
       if (action === "wishlist") {
-        event.preventDefault();
-        closeAccountDrawer();
-
-        wishlistMode = true;
-        renderProducts();
-
-        collection.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
+  event.preventDefault();
+  closeAccountDrawer();
+  openWishlist();
       }
 
       if (action === "account") {
