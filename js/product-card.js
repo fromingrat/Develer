@@ -51,7 +51,11 @@ function formatPrice(value) {
 
 export function createProductCard(
   item,
-  { isSaved = false, onWishlistToggle = null } = {}
+  {
+    isSaved = false,
+    onWishlistToggle = null,
+    onPremiumPriceClick = null
+  } = {}
 ) {
   const card = document.createElement("article");
   card.className = "product";
@@ -272,8 +276,17 @@ if (
   premiumPriceValue > 0 &&
   premiumPriceValue <= sellingPrice
 ) {
-  const premiumPriceRow = document.createElement("p");
+  const premiumPriceRow = document.createElement("button");
+premiumPriceRow.type = "button";
 premiumPriceRow.className = "product-premium-price";
+premiumPriceRow.style.cssText =
+  "border:0;background:transparent;padding:0;font:inherit;color:inherit;width:100%;text-align:left;cursor:pointer;";
+
+premiumPriceRow.addEventListener("click", () => {
+  if (typeof onPremiumPriceClick === "function") {
+    onPremiumPriceClick(item);
+  }
+});
 
 const crown = document.createElement("span");
 crown.className = "premium-crown";
