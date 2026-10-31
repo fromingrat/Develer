@@ -633,3 +633,37 @@
     background: transparent;
   }
 }
+/* Product image loading shimmer */
+
+.product-media.is-image-loading::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    #eceae6 25%,
+    #f7f6f3 50%,
+    #eceae6 75%
+  );
+  background-size: 200% 100%;
+  animation: velform-image-shimmer 1.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes velform-image-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-media.is-image-loading::after {
+    animation: none;
+    background: #eceae6;
+  }
+}
