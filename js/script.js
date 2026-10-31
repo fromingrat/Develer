@@ -195,7 +195,7 @@
     cartPanel.classList.add("open");
     overlay.classList.add("show");
     cartPanel.setAttribute("aria-hidden", "false");
-    document.body.classList.add("no-scroll");
+    document.body.classList.add("no-scroll", "vf-panel-open");
 
     if (closeCartBtn) closeCartBtn.focus();
   }
@@ -206,7 +206,7 @@
     cartPanel.classList.remove("open");
     overlay.classList.remove("show");
     cartPanel.setAttribute("aria-hidden", "true");
-    document.body.classList.remove("no-scroll");
+    document.body.classList.remove("no-scroll", "vf-panel-open");
 
     if (lastFocused && typeof lastFocused.focus === "function") {
       lastFocused.focus();
