@@ -269,29 +269,27 @@ if (imageUrls.length) {
   }
 
   details.append(category, heading, priceRow);
- const premiumPriceValue = Number(item.premiumPrice);
+const premiumPriceValue = Number(item.premiumPrice);
 
 if (
   Number.isSafeInteger(premiumPriceValue) &&
   premiumPriceValue > 0 &&
   premiumPriceValue <= sellingPrice
 ) {
-  const premiumPriceRow = document.createElement("button");
-premiumPriceRow.type = "button";
-premiumPriceRow.className = "product-premium-price";
-premiumPriceRow.style.cssText =
-  "border:0;background:transparent;padding:0;font:inherit;color:inherit;width:100%;text-align:left;cursor:pointer;";
+  const premiumPriceRow = document.createElement("div");
+  premiumPriceRow.className = "product-premium-price";
 
-premiumPriceRow.addEventListener("click", () => {
-  if (typeof onPremiumPriceClick === "function") {
-    onPremiumPriceClick(item);
-  }
-});
+  premiumPriceRow.addEventListener("click", () => {
+    if (typeof onPremiumPriceClick === "function") {
+      onPremiumPriceClick(item);
+    }
+  });
 
-const crown = document.createElement("span");
-crown.className = "premium-crown";
-crown.textContent = "♛";
-crown.setAttribute("aria-hidden", "true");
+  const crown = document.createElement("span");
+  crown.className = "premium-crown";
+  crown.textContent = "♛";
+  crown.setAttribute("aria-hidden", "true");
+
   const premiumLabel = document.createElement("span");
   premiumLabel.textContent = "PREMIUM MEMBER PRICE";
 
