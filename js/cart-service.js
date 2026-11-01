@@ -59,6 +59,5 @@ export async function clearCloudCart(userId) {
     batch.delete(item.ref);
   });
 
-  await batch.commit();
-    }
-
+  await batch.commit();  
+}
