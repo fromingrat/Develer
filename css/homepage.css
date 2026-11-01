@@ -463,10 +463,10 @@ body:not(.vf-intro-finished) .vf-welcome-message {
 }
 
 .vf-period-trigger strong {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-size: 21px;
-  font-weight: 500;
-}
+  font-weight: 400;
+} 
 
 .vf-period-arrow {
   color: #9a835e;
