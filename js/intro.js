@@ -56,7 +56,7 @@
 
   document.body.style.overflow = "hidden";
 
-  // Keep the intro visible for approximately 4 seconds.
+  // Keep intro visible for approximately 4 seconds.
   setTimeout(() => {
     intro.classList.add("is-exiting");
     document.body.style.overflow = "";
