@@ -7,7 +7,6 @@
   if (!intro) return;
 
   const taglines = [
-    "NOT MADE TO BLEND.",
     "BEYOND THE ORDINARY.",
     "THE ART OF PRESENCE."
   ];
