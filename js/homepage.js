@@ -237,7 +237,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     return "Other";
   }
-  function showWishlistLoginPrompt() {
+  function updateHearts() {
     products.forEach((product) => {
       const isSaved = savedProducts.has(product.dataset.id);
       const heart = product.querySelector(".vf-heart");
