@@ -1,35 +1,44 @@
 
 import { getPublishedProduct } from "./product-service.js";
 
-const elements = {
-  loading: document.getElementById("product-loading"),
-  error: document.getElementById("product-error"),
-  content: document.getElementById("product-content"),
-  images: document.getElementById("product-images"),
-  category: document.getElementById("product-category"),
-  name: document.getElementById("product-name"),
-  price: document.getElementById("product-price"),
-  originalPrice: document.getElementById("product-original-price"),
-  discount: document.getElementById("product-discount"),
-  description: document.getElementById("product-description"),
-  colors: document.getElementById("product-colors"),
-  sizes: document.getElementById("product-sizes"),
-  quantityMinus: document.getElementById("quantity-minus"),
-  quantityPlus: document.getElementById("quantity-plus"),
-  quantityValue: document.getElementById("quantity-value"),
-  stockMessage: document.getElementById("variant-stock-message"),
-  addToCart: document.getElementById("add-to-cart")
+const $ = (id) => document.getElementById(id);
+
+const el = {
+  loading: $("product-loading"),
+  error: $("product-error"),
+  content: $("product-content"),
+  images: $("product-images"),
+  category: $("product-category"),
+  name: $("product-name"),
+  description: $("product-description"),
+  price: $("product-price"),
+  original: $("product-original-price"),
+  discount: $("product-discount"),
+  premium: $("product-premium-price"),
+  premiumValue: $("premium-price-value"),
+  add: $("add-to-cart"),
+  selection: $("variant-selection"),
+  colors: $("product-colors"),
+  sizes: $("product-sizes"),
+  minus: $("quantity-minus"),
+  plus: $("quantity-plus"),
+  quantity: $("quantity-value"),
+  stock: $("variant-stock-message"),
+  confirm: $("confirm-add-to-cart"),
+  message: $("cart-message"),
+  details: $("product-details-text")
 };
 
+const CART_KEY = "velform_cart_v1";
 const MAX_QUANTITY = 10;
 
-let product = null;
-let availableVariants = [];
+let product;
+let variants = [];
 let selectedColor = "";
 let selectedSize = "";
 let quantity = 1;
 
-function formatPrice(value) {
+function money(value) {
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
@@ -37,53 +46,45 @@ function formatPrice(value) {
   }).format(Number(value) || 0);
 }
 
-function showError() {
-  elements.loading.hidden = true;
-  elements.content.hidden = true;
-  elements.error.hidden = false;
+function getImages(item) {
+  if (Array.isArray(item.images)) return item.images;
+  if (Array.isArray(item.imageUrls)) return item.imageUrls;
+  return [item.imageUrl || item.image || ""];
 }
 
 function renderImages(item) {
-  const rawImages = Array.isArray(item.images)
-    ? item.images
-    : Array.isArray(item.imageUrls)
-      ? item.imageUrls
-      : [item.imageUrl || item.image || ""];
-
-  const imageUrls = rawImages.filter((value) => {
-    if (typeof value !== "string" || !value.trim()) return false;
-
+  const urls = getImages(item).filter((value) => {
+    if (typeof value !== "string") return false;
     try {
-      const url = new URL(value.trim());
+      const url = new URL(value);
       return url.protocol === "https:" || url.protocol === "http:";
     } catch {
       return false;
     }
   });
 
-  if (!imageUrls.length) {
+  if (!urls.length) {
     const fallback = document.createElement("div");
-    fallback.textContent = "VELFORM";
     fallback.className = "product-image-fallback";
-    elements.images.append(fallback);
+    fallback.textContent = "VELFORM";
+    el.images.append(fallback);
     return;
   }
 
-  imageUrls.forEach((url) => {
+  urls.forEach((url, index) => {
     const image = document.createElement("img");
     image.src = url;
-    image.alt = item.name || item.title || "VELFORM product";
-    image.loading = "lazy";
-    elements.images.append(image);
+    image.alt = `${item.name || item.title || "Product"} image ${index + 1}`;
+    image.loading = index === 0 ? "eager" : "lazy";
+    el.images.append(image);
   });
 }
 
-function getAvailableVariants(item) {
-  if (!Array.isArray(item.variants)) return [];
+function getAvailableVariants() {
+  if (!Array.isArray(product.variants)) return [];
 
-  return item.variants.filter((variant) =>
+  return product.variants.filter((variant) =>
     variant &&
-    typeof variant === "object" &&
     String(variant.color || "").trim() &&
     String(variant.size || "").trim() &&
     Number.isFinite(Number(variant.stock)) &&
@@ -91,7 +92,14 @@ function getAvailableVariants(item) {
   );
 }
 
-function createSelect(container, labelText, id) {
+function selectedVariant() {
+  return variants.find((variant) =>
+    String(variant.color).trim() === selectedColor &&
+    String(variant.size).trim() === selectedSize
+  ) || null;
+}
+
+function makeSelect(container, labelText, id) {
   const wrapper = document.createElement("div");
   wrapper.className = "variant-selector";
 
@@ -101,7 +109,6 @@ function createSelect(container, labelText, id) {
 
   const select = document.createElement("select");
   select.id = id;
-  select.className = "variant-select";
 
   wrapper.append(label, select);
   container.replaceChildren(wrapper);
@@ -109,217 +116,198 @@ function createSelect(container, labelText, id) {
   return select;
 }
 
-function getSelectedVariant() {
-  return availableVariants.find((variant) =>
-    String(variant.color).trim() === selectedColor &&
-    String(variant.size).trim() === selectedSize
-  ) || null;
-}
-
-function updateVariantStatus() {
-  const variant = getSelectedVariant();
-
-  if (!selectedColor || !selectedSize) {
-    elements.stockMessage.textContent = "Select a colour and size.";
-    elements.quantityMinus.disabled = true;
-    elements.quantityPlus.disabled = true;
-    return;
-  }
+function updateSelection() {
+  const variant = selectedVariant();
 
   if (!variant) {
-    elements.stockMessage.textContent =
-      "This colour and size combination is unavailable.";
-    elements.quantityMinus.disabled = true;
-    elements.quantityPlus.disabled = true;
+    el.stock.textContent = "Please select a colour and size.";
+    el.confirm.disabled = true;
+    el.minus.disabled = true;
+    el.plus.disabled = true;
     return;
   }
 
   const stock = Number(variant.stock);
-  const maxAllowed = Math.min(stock, MAX_QUANTITY);
+  const max = Math.min(stock, MAX_QUANTITY);
 
-  if (quantity > maxAllowed) {
-    quantity = maxAllowed;
-    elements.quantityValue.textContent = String(quantity);
-  }
-
-  elements.stockMessage.textContent =
-    stock + (stock === 1 ? " item available" : " items available");
-
-  elements.quantityMinus.disabled = quantity <= 1;
-  elements.quantityPlus.disabled = quantity >= maxAllowed;
+  quantity = Math.min(quantity, max);
+  el.quantity.textContent = String(quantity);
+  el.stock.textContent = `${stock} available`;
+  el.minus.disabled = quantity <= 1;
+  el.plus.disabled = quantity >= max;
+  el.confirm.disabled = false;
 }
 
-function renderVariants() {
-  availableVariants = getAvailableVariants(product);
+function renderSelectors() {
+  variants = getAvailableVariants();
 
-  if (!availableVariants.length) {
-    elements.colors.textContent = "No available colours.";
-    elements.sizes.textContent = "No available sizes.";
-    elements.stockMessage.textContent = "Currently out of stock.";
-    elements.quantityMinus.disabled = true;
-    elements.quantityPlus.disabled = true;
+  if (!variants.length) {
+    el.colors.textContent = "Currently out of stock.";
+    el.sizes.replaceChildren();
+    el.stock.textContent = "This product is currently unavailable.";
+    el.confirm.disabled = true;
     return;
   }
 
-  const colors = [
-    ...new Set(
-      availableVariants.map((variant) =>
-        String(variant.color).trim()
-      )
-    )
-  ];
+  const colors = [...new Set(variants.map((v) => String(v.color).trim()))];
 
-  const colorSelect = createSelect(
-    elements.colors,
-    "Choose Colour",
-    "selected-product-color"
-  );
+  const colorSelect = makeSelect(el.colors, "Colour", "chosen-color");
+  const colorPlaceholder = new Option("Select colour", "");
+  colorSelect.add(colorPlaceholder);
 
-  const colorPlaceholder = document.createElement("option");
-  colorPlaceholder.value = "";
-  colorPlaceholder.textContent = "Select colour";
-  colorSelect.append(colorPlaceholder);
+  colors.forEach((color) => colorSelect.add(new Option(color, color)));
 
-  colors.forEach((color) => {
-    const option = document.createElement("option");
-    option.value = color;
-    option.textContent = color;
-    colorSelect.append(option);
-  });
+  const sizeSelect = makeSelect(el.sizes, "Size", "chosen-size");
 
-  const sizeSelect = createSelect(
-    elements.sizes,
-    "Choose Size",
-    "selected-product-size"
-  );
-
-  function updateSizes() {
+  function refreshSizes() {
     selectedSize = "";
-    sizeSelect.replaceChildren();
+    sizeSelect.replaceChildren(new Option("Select size", ""));
 
-    const placeholder = document.createElement("option");
-    placeholder.value = "";
-    placeholder.textContent = "Select size";
-    sizeSelect.append(placeholder);
+    const sizes = [...new Set(
+      variants
+        .filter((v) => String(v.color).trim() === selectedColor)
+        .map((v) => String(v.size).trim())
+    )];
 
-    const sizes = [
-      ...new Set(
-        availableVariants
-          .filter((variant) =>
-            String(variant.color).trim() === selectedColor
-          )
-          .map((variant) => String(variant.size).trim())
-      )
-    ];
-
-    sizes.forEach((size) => {
-      const option = document.createElement("option");
-      option.value = size;
-      option.textContent = size;
-      sizeSelect.append(option);
-    });
-
-    updateVariantStatus();
+    sizes.forEach((size) => sizeSelect.add(new Option(size, size)));
+    updateSelection();
   }
 
   colorSelect.addEventListener("change", () => {
     selectedColor = colorSelect.value;
+    selectedSize = "";
     quantity = 1;
-    elements.quantityValue.textContent = "1";
-    updateSizes();
+    el.quantity.textContent = "1";
+    refreshSizes();
   });
 
   sizeSelect.addEventListener("change", () => {
     selectedSize = sizeSelect.value;
     quantity = 1;
-    elements.quantityValue.textContent = "1";
-    updateVariantStatus();
+    el.quantity.textContent = "1";
+    updateSelection();
   });
 
-  updateSizes();
+  refreshSizes();
 }
 
 function updateQuantity(change) {
-  const variant = getSelectedVariant();
+  const variant = selectedVariant();
   if (!variant) return;
 
-  const maxAllowed = Math.min(
-    Number(variant.stock),
-    MAX_QUANTITY
-  );
-
-  quantity = Math.max(
-    1,
-    Math.min(maxAllowed, quantity + change)
-  );
-
-  elements.quantityValue.textContent = String(quantity);
-  updateVariantStatus();
+  const max = Math.min(Number(variant.stock), MAX_QUANTITY);
+  quantity = Math.max(1, Math.min(max, quantity + change));
+  updateSelection();
 }
 
-elements.quantityMinus.addEventListener("click", () => {
-  updateQuantity(-1);
+function readCart() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+    return Array.isArray(saved) ? saved : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveCartItem() {
+  const variant = selectedVariant();
+  if (!variant) return;
+
+  const cart = readCart();
+  const key = `${product.id}-${selectedColor}-${selectedSize}`;
+  const existing = cart.find((item) => item.key === key);
+
+  const item = {
+    key,
+    id: product.id,
+    name: product.name || product.title || "Product",
+    price: Number(product.price) || 0,
+    color: selectedColor,
+    size: selectedSize,
+    qty: quantity,
+    image: getImages(product)[0] || ""
+  };
+
+  if (existing) {
+    existing.qty = Math.min(
+      Number(variant.stock),
+      MAX_QUANTITY,
+      Number(existing.qty || 0) + quantity
+    );
+  } else {
+    cart.push(item);
+  }
+
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  el.message.textContent = "Added to your cart. Open your bag from the homepage to view it.";
+  el.confirm.textContent = "ADDED TO CART ✓";
+}
+
+el.add.addEventListener("click", () => {
+  el.selection.hidden = false;
+  el.add.hidden = true;
+
+  if (!variants.length) {
+    renderSelectors();
+  }
+
+  el.selection.scrollIntoView({ behavior: "smooth", block: "nearest" });
 });
 
-elements.quantityPlus.addEventListener("click", () => {
-  updateQuantity(1);
-});
+el.minus.addEventListener("click", () => updateQuantity(-1));
+el.plus.addEventListener("click", () => updateQuantity(1));
+el.confirm.addEventListener("click", saveCartItem);
 
 async function loadProduct() {
-  const params = new URLSearchParams(window.location.search);
-  const productId = params.get("id");
-
-  if (!productId) {
-    showError();
-    return;
-  }
+  const id = new URLSearchParams(location.search).get("id");
+  if (!id) return showError();
 
   try {
-    product = await getPublishedProduct(productId);
+    product = await getPublishedProduct(id);
+    if (!product) return showError();
 
-    if (!product) {
-      showError();
-      return;
+    document.title = `${product.name || product.title || "Product"} | VELFORM`;
+
+    el.category.textContent = product.category || "VELFORM COLLECTION";
+    el.name.textContent = product.name || product.title || "Product";
+    el.description.textContent = product.description || "";
+    el.price.textContent = money(product.price);
+    el.details.textContent = product.description || "More product details coming soon.";
+
+    const original = Number(product.originalPrice);
+    const selling = Number(product.price);
+
+    if (original > selling && selling > 0) {
+      el.original.textContent = money(original);
+      el.discount.textContent =
+        `${Math.round((original - selling) / original * 100)}% OFF`;
     }
 
-    document.title =
-      `${product.name || product.title || "Product"} | VELFORM`;
-
-    elements.category.textContent = product.category || "Clothing";
-    elements.name.textContent =
-      product.name || product.title || "Unnamed product";
-
-    elements.price.textContent = formatPrice(product.price);
-
-    const originalPrice = Number(product.originalPrice);
-    const sellingPrice = Number(product.price);
-
-    if (
-      Number.isFinite(originalPrice) &&
-      originalPrice > sellingPrice &&
-      sellingPrice > 0
-    ) {
-      elements.originalPrice.textContent = formatPrice(originalPrice);
-      elements.discount.textContent =
-        `${Math.round(
-          ((originalPrice - sellingPrice) / originalPrice) * 100
-        )}% OFF`;
+    const premium = Number(product.premiumPrice);
+    if (premium > 0 && premium <= selling) {
+      el.premium.hidden = false;
+      el.premiumValue.textContent = money(premium);
     }
-
-    elements.description.textContent =
-      product.description || "Discover this VELFORM piece.";
 
     renderImages(product);
-    renderVariants();
+    variants = getAvailableVariants();
 
-    elements.loading.hidden = true;
-    elements.error.hidden = true;
-    elements.content.hidden = false;
+    if (!variants.length) {
+      el.add.disabled = true;
+      el.add.textContent = "OUT OF STOCK";
+    }
 
+    el.loading.hidden = true;
+    el.content.hidden = false;
   } catch (error) {
-    console.error("Could not load product details:", error);
+    console.error("Product loading failed:", error);
     showError();
   }
+}
+
+function showError() {
+  el.loading.hidden = true;
+  el.error.hidden = false;
 }
 
 loadProduct();
