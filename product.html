@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,9 +26,7 @@
 
   <main class="product-page container">
 
-    <div id="product-loading">
-      Loading product...
-    </div>
+    <div id="product-loading">Loading product...</div>
 
     <div id="product-error" hidden>
       Product not found or unavailable.
@@ -42,7 +41,6 @@
       <div class="product-information">
 
         <p id="product-category"></p>
-
         <h1 id="product-name"></h1>
 
         <div class="product-detail-price">
@@ -54,13 +52,19 @@
         <p id="product-description"></p>
 
         <div id="product-colors"></div>
-
         <div id="product-sizes"></div>
 
-        <div class="product-quantity" hidden>
+        <div class="product-quantity">
           <span>Quantity</span>
-          <span>Coming soon</span>
+
+          <div class="quantity-controls">
+            <button id="quantity-minus" type="button" aria-label="Decrease quantity">−</button>
+            <span id="quantity-value">1</span>
+            <button id="quantity-plus" type="button" aria-label="Increase quantity">+</button>
+          </div>
         </div>
+
+        <p id="variant-stock-message" class="variant-stock-message" aria-live="polite"></p>
 
         <button
           id="add-to-cart"
@@ -68,7 +72,7 @@
           type="button"
           disabled
         >
-          ADD TO CART
+          CART SETUP NEXT
         </button>
 
       </div>
