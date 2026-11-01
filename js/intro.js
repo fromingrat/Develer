@@ -4,7 +4,10 @@
 (() => {
   const intro = document.getElementById("vf-intro");
 
-  if (!intro) return;
+  if (!intro) {
+    document.body.classList.add("vf-intro-finished");
+    return;
+  }
 
   const taglines = [
     "BEYOND THE ORDINARY.",
@@ -13,11 +16,9 @@
 
   const taglineElement = document.getElementById("vf-intro-tagline");
 
-  // Select a random tagline.
   const randomIndex = Math.floor(Math.random() * taglines.length);
   const selectedTagline = taglines[randomIndex];
 
-  // Reveal tagline letters one by one.
   taglineElement.textContent = "";
   taglineElement.setAttribute("aria-label", selectedTagline);
 
@@ -30,7 +31,6 @@
     taglineElement.appendChild(letter);
   });
 
-  // Check whether the intro should play.
   let hasVisited = false;
 
   try {
@@ -44,6 +44,7 @@
 
   if (hasVisited && !isReload) {
     intro.remove();
+    document.body.classList.add("vf-intro-finished");
     return;
   }
 
@@ -55,14 +56,16 @@
 
   document.body.style.overflow = "hidden";
 
-  // Keep intro visible for approximately 4 seconds.
+  // Keep the opening intro timing unchanged.
   setTimeout(() => {
     intro.classList.add("is-exiting");
     document.body.style.overflow = "";
 
-    // Remove after fade-out.
     setTimeout(() => {
       intro.remove();
+
+      // Start homepage animations after the intro disappears.
+      document.body.classList.add("vf-intro-finished");
     }, 1000);
 
   }, 4000);
