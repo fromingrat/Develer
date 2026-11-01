@@ -28,31 +28,10 @@ body {
 }
 
 .hero-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
   gap: 0;
-  width: 100%;
-  min-height: 0 !important;
-  box-sizing: border-box;
-  text-align: left;
 }
 
-/* Small editorial details */
-.vf-hero-topline {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 24px;
-  color: #a9a9a9;
-  font-family: var(--sans);
-  font-size: 9px;
-  font-weight: 500;
-  letter-spacing: 0.19em;
-  animation: vfEditorialReveal 900ms ease both;
-}
+
 
 /* Single-line VELFORM wordmark */
 .wordmark {
@@ -79,7 +58,7 @@ body {
 .vf-hero-divider {
   width: 100%;
   height: 1px;
-  margin: 22px 0 15px;
+  margin: 10px 0 9px;
   background: linear-gradient(
     to right,
     var(--vf-champagne),
@@ -101,10 +80,9 @@ body {
   animation: vfEditorialReveal 900ms ease 450ms both;
 }
 
-/* Customer welcome */
 .vf-welcome {
   width: 100%;
-  margin-top: 25px;
+  margin-top: 17px;
   padding: 0;
   color: var(--vf-white);
   text-align: left;
