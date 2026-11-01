@@ -2,46 +2,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#000000">
-  <meta name="description" content="Explore VELFORM menswear.">
-
+  <meta name="theme-color" content="#ffffff">
   <title>Product | VELFORM</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/product-details.css">
 </head>
-
 <body>
-
   <header class="product-page-header">
     <a href="index.html" class="product-back">← Back</a>
     <a href="index.html" class="product-brand">VELFORM</a>
+    <a href="index.html?openCart=1" class="product-cart-link">Bag</a>
   </header>
 
-  <main class="product-page container">
-
-    <div id="product-loading">Loading product...</div>
-
-    <div id="product-error" hidden>
-      Product not found or unavailable.
-    </div>
+  <main class="product-page">
+    <p id="product-loading">Loading product...</p>
+    <p id="product-error" hidden>Product not found or unavailable.</p>
 
     <section id="product-content" hidden>
-
       <div class="product-gallery">
         <div id="product-images"></div>
       </div>
 
       <div class="product-information">
-
         <p id="product-category"></p>
         <h1 id="product-name"></h1>
+        <p id="product-description"></p>
 
         <div class="product-detail-price">
           <strong id="product-price"></strong>
@@ -49,39 +36,56 @@
           <span id="product-discount"></span>
         </div>
 
-        <p id="product-description"></p>
-
-        <div id="product-colors"></div>
-        <div id="product-sizes"></div>
-
-        <div class="product-quantity">
-          <span>Quantity</span>
-
-          <div class="quantity-controls">
-            <button id="quantity-minus" type="button" aria-label="Decrease quantity">−</button>
-            <span id="quantity-value">1</span>
-            <button id="quantity-plus" type="button" aria-label="Increase quantity">+</button>
-          </div>
+        <div id="product-premium-price" class="product-premium-price" hidden>
+          <span>♛ VELFORM PREMIUM MEMBER PRICE</span>
+          <strong id="premium-price-value"></strong>
         </div>
 
-        <p id="variant-stock-message" class="variant-stock-message" aria-live="polite"></p>
-
-        <button
-          id="add-to-cart"
-          class="btn btn-dark product-add-button"
-          type="button"
-          disabled
-        >
-          CART SETUP NEXT
+        <button id="add-to-cart" class="product-add-button" type="button">
+          ADD TO CART
         </button>
 
+        <p id="cart-message" role="status" aria-live="polite"></p>
+
+        <section id="variant-selection" hidden>
+          <h2>Select your options</h2>
+
+          <div id="product-colors"></div>
+          <div id="product-sizes"></div>
+
+          <div class="product-quantity">
+            <span>Quantity</span>
+            <div class="quantity-controls">
+              <button id="quantity-minus" type="button">−</button>
+              <span id="quantity-value">1</span>
+              <button id="quantity-plus" type="button">+</button>
+            </div>
+          </div>
+
+          <p id="variant-stock-message" aria-live="polite"></p>
+          <button id="confirm-add-to-cart" class="product-add-button" type="button" disabled>
+            CONFIRM ADD TO CART
+          </button>
+        </section>
+
+        <section class="product-extra">
+          <h2>Product highlights</h2>
+          <p id="product-highlights">Quality and style, thoughtfully selected by VELFORM.</p>
+
+          <details>
+            <summary>All details</summary>
+            <p id="product-details-text"></p>
+          </details>
+
+          <details>
+            <summary>Delivery details</summary>
+            <p>Delivery availability and timing will be confirmed during checkout.</p>
+          </details>
+        </section>
       </div>
-
     </section>
-
   </main>
 
   <script type="module" src="js/product-details.js"></script>
-
 </body>
 </html>
