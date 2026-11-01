@@ -247,10 +247,7 @@ el.add.addEventListener("click", () => {
   el.selection.hidden = false;
   el.add.hidden = true;
 
-  if (!variants.length) {
-    renderSelectors();
-  }
-
+  renderSelectors();
   el.selection.scrollIntoView({ behavior: "smooth", block: "nearest" });
 });
 
