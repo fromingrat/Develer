@@ -55,18 +55,6 @@
   animation: vfLetterReveal 550ms ease forwards;
 }
 
-.vf-intro-message {
-  margin: 38px 0 0;
-  font-family: "Jost", sans-serif;
-  font-size: clamp(0.65rem, 2.2vw, 0.85rem);
-  font-weight: 400;
-  letter-spacing: 0.12em;
-  line-height: 1.8;
-  opacity: 0;
-  transform: translateY(14px);
-  animation: vfMessageReveal 1000ms cubic-bezier(0.16, 1, 0.3, 1) 2000ms forwards;
-}
-
 @keyframes vfBrandReveal {
   from {
     opacity: 0;
@@ -88,20 +76,6 @@
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes vfMessageReveal {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-    letter-spacing: 0.12em;
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    letter-spacing: 0.22em;
   }
 }
 
