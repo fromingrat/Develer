@@ -1,4 +1,3 @@
-
 export function createWishlist({
   getProducts,
   savedProducts,
@@ -6,7 +5,8 @@ export function createWishlist({
   renderProducts,
   membership,
   showMembership,
-  showHome
+  showHome,
+  onWishlistRemove
 }) {
   let pageBeforeWishlist = "home";
 
@@ -84,11 +84,18 @@ export function createWishlist({
       remove.className = "remove-btn";
       remove.textContent = "Remove";
 
-      remove.addEventListener("click", () => {
-        savedProducts.delete(product.dataset.id);
-        updateHearts();
-        renderProducts();
-        renderWishlist();
+      remove.addEventListener("click", async () => {
+        remove.disabled = true;
+        remove.textContent = "Removing...";
+
+        const success = await onWishlistRemove?.(product.dataset.id);
+
+        if (success) {
+          renderWishlist();
+        } else {
+          remove.disabled = false;
+          remove.textContent = "Remove";
+        }
       });
 
       details.append(name, price, remove);
@@ -133,4 +140,4 @@ export function createWishlist({
   wishlistOverlay.addEventListener("click", closeWishlist);
 
   return { openWishlist };
-                  }
+}
