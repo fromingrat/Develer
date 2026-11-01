@@ -4,78 +4,32 @@ import { getPublishedProducts } from "./product-service.js";
 import { createProductCard } from "./product-card.js";
 import { createMembership } from "./membership.js";
 import { createWishlist } from "./wishlist.js";
-import { createAccountDrawer } from "./account-drawer.js";
-import { createBottomNav } from "./bottom-nav.js";
-import { createCategoryNavigation } from "./category-navigation.js";
-import { createFloatingCategoryBar } from "./floating-category-bar.js";
-import { auth } from "./firebase.js";
-import {
-  loadWishlist,
-  saveWishlistItem,
-  removeWishlistItem
-} from "./wishlist-service.js";
+im  let products = [];
+  const savedProducts = new Set();
+  let wishlistMode = false;
+  let activeCategory = "All";
+  let directionAnchorY = window.scrollY;
+  let scrollDirection = "down";
+  let ticking = false;
+  let hideBarTimer = null;
 
-document.addEventListener("DOMContentLoaded", () => {
-  const main = document.querySelector("main");
-  const collection = document.querySelector("#collection");
-  const hero = document.querySelector(".hero");
-  const heroInner = document.querySelector(".hero-inner");
-  const productsArea = collection?.querySelector(".products");
+  const SCROLL_THRESHOLD = 35;
+  const ANIMATION_DURATION = 650;
 
-  if (!main || !collection || !hero || !heroInner || !productsArea) {
-    console.error("Homepage setup failed: required HTML elements are missing.");
-    return;
-  }
+  // WELCOME GREETING
+  const greetingBox = document.createElement("div");
+  greetingBox.className = "vf-welcome";
+  greetingBox.innerHTML = `
+    <p class="vf-greeting" id="vf-greeting">Hey there!</p>
+    <p class="vf-welcome-message">
+      We're really glad you've come again.
+    </p>
+  `;
 
-  productsArea.replaceChildren();
+  heroInner.appendChild(greetingBox);
 
-  let products = [];
-    let signedInUser = null;
+  let signedInUser = null;
   let wishlistLoadVersion = 0;
-
-  try {
-    watchAuthState(async (user) => {
-      signedInUser = user;
-
-      const greeting = document.querySelector("#vf-greeting");
-      const firstName = user?.displayName?.trim()?.split(/\s+/)[0];
-
-      if (greeting) {
-        greeting.textContent = firstName
-          ? `Hey, ${firstName}!`
-          : "Hey there!";
-      }
-
-      const loadVersion = ++wishlistLoadVersion;
-      savedProducts.clear();
-
-      if (!user) {
-        updateHearts();
-        renderProducts();
-        return;
-      }
-
-      try {
-        const productIds = await loadWishlist(user.uid);
-
-        if (
-          loadVersion !== wishlistLoadVersion ||
-          signedInUser?.uid !== user.uid
-        ) {
-          return;
-        }
-
-        productIds.forEach((id) => savedProducts.add(String(id)));
-
-        updateHearts();
-        renderProducts();
-      } catch (error) {
-        console.error("Could not load saved wishlist:", error);
-      }
-    });
-  } catch (error) {
-    console.warn("Could not load the customer greeting.", error);
-  }
 
   // CATEGORY NAVIGATION MODULE
   const {
@@ -116,32 +70,31 @@ document.addEventListener("DOMContentLoaded", () => {
     membership,
     showMembership,
     showHome
-  });
-  const savedProducts = new Set();
-  let wishlistMode = false;
-  let activeCategory = "All";
-  let directionAnchorY = window.scrollY;
-  let scrollDirection = "down";
-  let ticking = false;
-  let hideBarTimer = null;
+  });port { createAccountDrawer } from "./account-drawer.js";
+import { createBottomNav } from "./bottom-nav.js";
+import { createCategoryNavigation } from "./category-navigation.js";
+import { createFloatingCategoryBar } from "./floating-category-bar.js";
+import { auth } from "./firebase.js";
+import {
+  loadWishlist,
+  saveWishlistItem,
+  removeWishlistItem
+} from "./wishlist-service.js";
 
-  const SCROLL_THRESHOLD = 35;
-  const ANIMATION_DURATION = 650;
+document.addEventListener("DOMContentLoaded", () => {
+  const main = document.querySelector("main");
+  const collection = document.querySelector("#collection");
+  const hero = document.querySelector(".hero");
+  const heroInner = document.querySelector(".hero-inner");
+  const productsArea = collection?.querySelector(".products");
 
-  // --------------------------------------------------
-  // WELCOME GREETING
-  // --------------------------------------------------
+  if (!main || !collection || !hero || !heroInner || !productsArea) {
+    console.error("Homepage setup failed: required HTML elements are missing.");
+    return;
+  }
 
-  const greetingBox = document.createElement("div");
-  greetingBox.className = "vf-welcome";
-  greetingBox.innerHTML = `
-    <p class="vf-greeting" id="vf-greeting">Hey there!</p>
-    <p class="vf-welcome-message">
-      We're really glad you've come again.
-    </p>
-  `;
+  productsArea.replaceChildren();
 
-  heroInner.appendChild(greetingBox);
   
   // BOTTOM NAVIGATION MODULE
   const bottomNav = createBottomNav({
