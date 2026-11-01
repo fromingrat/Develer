@@ -12,7 +12,6 @@
 body {
   padding-bottom: 76px;
 }
-
 /* Editorial welcome panel */
 .hero {
   display: flex;
@@ -21,17 +20,21 @@ body {
   height: 45svh;
   min-height: 320px;
   max-height: 440px;
-  padding: 30px 0 !important;
+  padding: 18px 0 !important;
   overflow: hidden;
   background: var(--vf-black);
   color: var(--vf-white);
 }
 
 .hero-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
   gap: 0;
 }
 
-/* Single-line VELFORM wordmark */
+/* VELFORM wordmark */
 .wordmark {
   display: block;
   width: 100%;
@@ -44,7 +47,7 @@ body {
   letter-spacing: 0.035em;
   white-space: nowrap;
   text-align: left;
-  animation: vfWordmarkReveal 1200ms
+  animation: vfWordmarkReveal 1000ms
     cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
@@ -52,26 +55,22 @@ body {
   color: var(--vf-champagne);
 }
 
-/* Elegant champagne underline */
+/* Pure white underline */
 .vf-hero-divider {
   width: 70%;
   max-width: 420px;
   height: 2px;
-  margin: 10px 0 0;
-  background: linear-gradient(
-    to right,
-    var(--vf-champagne),
-    rgba(185, 169, 137, 0.35)
-  );
+  margin: 4px 0 0;
+  background: #ffffff;
   transform-origin: left;
-  animation: vfDividerReveal 1500ms
-    cubic-bezier(0.22, 1, 0.36, 1) 450ms both;
+  animation: vfDividerReveal 1200ms
+    cubic-bezier(0.22, 1, 0.36, 1) 150ms both;
 }
 
 /* Welcome greeting */
 .vf-welcome {
   width: 100%;
-  margin-top: 12px;
+  margin-top: 4px;
   padding: 0;
   color: var(--vf-white);
   text-align: left;
@@ -84,12 +83,12 @@ body {
   font-weight: 500;
   line-height: 1.15;
   text-align: left;
-  animation: vfWelcomeReveal 900ms
-    cubic-bezier(0.16, 1, 0.3, 1) 1100ms both;
+  animation: vfWelcomeReveal 800ms
+    cubic-bezier(0.16, 1, 0.3, 1) 500ms both;
 }
 
 .vf-welcome-message {
-  margin: 7px 0 0;
+  margin: 3px 0 0;
   color: #bdbdbd;
   font-family: var(--sans);
   font-size: 13px;
@@ -97,8 +96,16 @@ body {
   letter-spacing: 0.025em;
   line-height: 1.6;
   text-align: left;
-  animation: vfWelcomeReveal 900ms
-    cubic-bezier(0.16, 1, 0.3, 1) 1450ms both;
+  animation: vfWelcomeReveal 800ms
+    cubic-bezier(0.16, 1, 0.3, 1) 650ms both;
+}
+
+/* Wait until the opening intro disappears */
+body:not(.vf-intro-finished) .wordmark,
+body:not(.vf-intro-finished) .vf-hero-divider,
+body:not(.vf-intro-finished) .vf-greeting,
+body:not(.vf-intro-finished) .vf-welcome-message {
+  animation-play-state: paused;
 }
 
 /* Entrance animations */
