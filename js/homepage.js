@@ -9,6 +9,11 @@ import { createBottomNav } from "./bottom-nav.js";
 import { createCategoryNavigation } from "./category-navigation.js";
 import { createFloatingCategoryBar } from "./floating-category-bar.js";
 import { auth } from "./firebase.js";
+import {
+  loadWishlist,
+  saveWishlistItem,
+  removeWishlistItem
+} from "./wishlist-service.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const main = document.querySelector("main");
@@ -51,20 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   heroInner.appendChild(greetingBox);
   let signedInUser = null;
-  try {
-    watchAuthState((user) => {
-      signedInUser = user;
-      const greeting = document.querySelector("#vf-greeting");
-      if (!greeting) return;
-
-      const firstName = user?.displayName?.trim()?.split(/\s+/)[0];
-      greeting.textContent = firstName
-        ? `Hey, ${firstName}!`
-        : "Hey there!";
-    });
-  } catch (error) {
-    console.warn("Could not load the customer greeting.", error);
-  }
+  
 
   // CATEGORY NAVIGATION MODULE
   const {
@@ -98,7 +90,52 @@ document.addEventListener("DOMContentLoaded", () => {
   const { openWishlist } = createWishlist({
     getProducts: () => products,
     savedProducts,
-    updateHearts,
+    u  let wishlistLoadVersion = 0;
+
+  try {
+    watchAuthState(async (user) => {
+      signedInUser = user;
+
+      const greeting = document.querySelector("#vf-greeting");
+      const firstName = user?.displayName?.trim()?.split(/\s+/)[0];
+
+      if (greeting) {
+        greeting.textContent = firstName
+          ? `Hey, ${firstName}!`
+          : "Hey there!";
+      }
+
+      const loadVersion = ++wishlistLoadVersion;
+      savedProducts.clear();
+
+      if (!user) {
+        updateHearts();
+        renderProducts();
+        return;
+      }
+
+      try {
+        const productIds = await loadWishlist(user.uid);
+
+        if (
+          loadVersion !== wishlistLoadVersion ||
+          signedInUser?.uid !== user.uid
+        ) {
+          return;
+        }
+
+        productIds.forEach((id) => savedProducts.add(String(id)));
+
+        updateHearts();
+        renderProducts();
+      } catch (error) {
+        console.error("Could not load saved wishlist:", error);
+      }
+    });
+  } catch (error) {
+    console.warn("Could not load the customer greeting.", error);
+  }
+  updateHearts,
     renderProducts,
     membership,
     showMembership,
