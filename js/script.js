@@ -63,9 +63,12 @@
     }
   }
 
-  function saveCart() {
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
-  }
+  
+function saveCart() {
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  window.dispatchEvent(new CustomEvent("velform-cart-updated"));
+}
+
 
   function findItem(key) {
     return cart.find(item => item.key === key) || null;
@@ -366,6 +369,12 @@
     });
   }
 
+  // Refresh cart when cloud sync updates local storage.
+  window.addEventListener("velform-cart-updated", () => {
+    loadCart();
+    renderCart();
+  });
+   
   // Refresh if another tab changes the cart.
   window.addEventListener("storage", event => {
     if (event.key === CART_KEY) {
