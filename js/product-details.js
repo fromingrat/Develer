@@ -1,5 +1,8 @@
 
 import { getPublishedProduct } from "./product-service.js";
+import { auth } from "./firebase.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+import { saveCloudCartItem } from "./cart-service.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -31,7 +34,7 @@ const el = {
 
 const CART_KEY = "velform_cart_v1";
 const MAX_QUANTITY = 10;
-
+let currentUser = null;
 let product;
 let variants = [];
 let selectedColor = "";
@@ -209,7 +212,8 @@ function readCart() {
   }
 }
 
-function saveCartItem() {
+
+async function saveCartItem() {
   const variant = selectedVariant();
   if (!variant) return;
 
@@ -224,22 +228,39 @@ function saveCartItem() {
     price: Number(product.price) || 0,
     color: selectedColor,
     size: selectedSize,
-    qty: quantity,
+    qty: existing
+      ? Math.min(
+          Number(variant.stock),
+          MAX_QUANTITY,
+          Number(existing.qty || 0) + quantity
+        )
+      : quantity,
     image: getImages(product)[0] || ""
   };
 
   if (existing) {
-    existing.qty = Math.min(
-      Number(variant.stock),
-      MAX_QUANTITY,
-      Number(existing.qty || 0) + quantity
-    );
+    existing.qty = item.qty;
   } else {
     cart.push(item);
   }
 
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
-  el.message.textContent = "Added to your cart. Open your bag from the homepage to view it.";
+
+  if (currentUser) {
+    try {
+      await saveCloudCartItem(currentUser.uid, item);
+      el.message.textContent =
+        "Added to your cart and synced to your account.";
+    } catch (error) {
+      console.error("Cloud cart sync failed:", error);
+      el.message.textContent =
+        "Added to this device. Cloud sync failed; please try again later.";
+    }
+  } else {
+    el.message.textContent =
+      "Added to this device. Sign in to sync your cart.";
+  }
+
   el.confirm.textContent = "ADDED TO CART ✓";
 }
 
@@ -306,5 +327,7 @@ function showError() {
   el.loading.hidden = true;
   el.error.hidden = false;
 }
-
+onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+});
 loadProduct();
