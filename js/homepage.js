@@ -1,76 +1,9 @@
-
 import { watchAuthState } from "./auth.js";
 import { getPublishedProducts } from "./product-service.js";
 import { createProductCard } from "./product-card.js";
 import { createMembership } from "./membership.js";
 import { createWishlist } from "./wishlist.js";
-im  let products = [];
-  const savedProducts = new Set();
-  let wishlistMode = false;
-  let activeCategory = "All";
-  let directionAnchorY = window.scrollY;
-  let scrollDirection = "down";
-  let ticking = false;
-  let hideBarTimer = null;
-
-  const SCROLL_THRESHOLD = 35;
-  const ANIMATION_DURATION = 650;
-
-  // WELCOME GREETING
-  const greetingBox = document.createElement("div");
-  greetingBox.className = "vf-welcome";
-  greetingBox.innerHTML = `
-    <p class="vf-greeting" id="vf-greeting">Hey there!</p>
-    <p class="vf-welcome-message">
-      We're really glad you've come again.
-    </p>
-  `;
-
-  heroInner.appendChild(greetingBox);
-
-  let signedInUser = null;
-  let wishlistLoadVersion = 0;
-
-  // CATEGORY NAVIGATION MODULE
-  const {
-    categories,
-    menuButton,
-    categorySpacer
-  } = createCategoryNavigation({
-    collection,
-    renderProducts,
-    setActiveCategory: (value) => {
-      activeCategory = value;
-    },
-    setWishlistMode: (value) => {
-      wishlistMode = value;
-    }
-  });
-
-  // FLOATING CATEGORY BAR MODULE
-  createFloatingCategoryBar({
-    hero,
-    categories,
-    menuButton,
-    categorySpacer
-  });
-
-  // PREMIUM MEMBERSHIP MODULE
-  const { showMembership, showHome, membership } = createMembership({
-    collection,
-    hero
-  });
-
-  // WISHLIST MODULE
-  const { openWishlist } = createWishlist({
-    getProducts: () => products,
-    savedProducts,
-    updateHearts,
-    renderProducts,
-    membership,
-    showMembership,
-    showHome
-  });port { createAccountDrawer } from "./account-drawer.js";
+import { createAccountDrawer } from "./account-drawer.js";
 import { createBottomNav } from "./bottom-nav.js";
 import { createCategoryNavigation } from "./category-navigation.js";
 import { createFloatingCategoryBar } from "./floating-category-bar.js";
@@ -95,8 +28,97 @@ document.addEventListener("DOMContentLoaded", () => {
 
   productsArea.replaceChildren();
 
-  
+  let products = [];
+  const savedProducts = new Set();
+  let wishlistMode = false;
+  let activeCategory = "All";
+  let directionAnchorY = window.scrollY;
+  let scrollDirection = "down";
+  let ticking = false;
+  let hideBarTimer = null;
+
+  const SCROLL_THRESHOLD = 35;
+  const ANIMATION_DURATION = 650;
+
+  // WELCOME GREETING
+
+  const greetingBox = document.createElement("div");
+  greetingBox.className = "vf-welcome";
+  greetingBox.innerHTML = `
+    <p class="vf-greeting" id="vf-greeting">Hey there!</p>
+    <p class="vf-welcome-message">
+      We're really glad you've come again.
+    </p>
+  `;
+
+  heroInner.appendChild(greetingBox);
+
+  let signedInUser = null;
+  let wishlistLoadVersion = 0;
+
+  // CATEGORY NAVIGATION MODULE
+
+  const {
+    categories,
+    menuButton,
+    categorySpacer
+  } = createCategoryNavigation({
+    collection,
+    renderProducts,
+    setActiveCategory: (value) => {
+      activeCategory = value;
+    },
+    setWishlistMode: (value) => {
+      wishlistMode = value;
+    }
+  });
+
+  // FLOATING CATEGORY BAR MODULE
+
+  createFloatingCategoryBar({
+    hero,
+    categories,
+    menuButton,
+    categorySpacer
+  });
+
+  // PREMIUM MEMBERSHIP MODULE
+
+  const { showMembership, showHome, membership } = createMembership({
+    collection,
+    hero
+  });
+
+  // WISHLIST MODULE
+
+  const { openWishlist } = createWishlist({
+    getProducts: () => products,
+    savedProducts,
+    updateHearts,
+    renderProducts,
+    membership,
+    showMembership,
+    showHome,
+
+    onWishlistRemove: async (productId) => {
+      if (!signedInUser) return false;
+
+      try {
+        await removeWishlistItem(signedInUser.uid, productId);
+        savedProducts.delete(productId);
+        updateHearts();
+        renderProducts();
+        return true;
+      } catch (error) {
+        console.error("Could not remove wishlist item:", error);
+        alert("Could not update your wishlist. Please try again.");
+        return false;
+      }
+    }
+  });
+
   // BOTTOM NAVIGATION MODULE
+
   const bottomNav = createBottomNav({
     showHome,
     showMembership,
@@ -112,16 +134,16 @@ document.addEventListener("DOMContentLoaded", () => {
       activeCategory = value;
     }
   });
-        const { openAccountDrawer, closeAccountDrawer } =
+
+  const { openAccountDrawer, closeAccountDrawer } =
     createAccountDrawer({
       menuButton,
       openWishlist,
       showMembership,
       bottomNav
     });
-  // --------------------------------------------------
+
   // PRODUCT HELPERS
-  // --------------------------------------------------
 
   function showWishlistLoginPrompt(type = "wishlist") {
     let prompt = document.querySelector(".vf-login-prompt");
@@ -159,7 +181,9 @@ document.addEventListener("DOMContentLoaded", () => {
             CANCEL
           </button>
 
-          <p class="vf-login-footer">VELFORM · FEWER PIECES. A HIGHER STANDARD.</p>
+          <p class="vf-login-footer">
+            VELFORM · FEWER PIECES. A HIGHER STANDARD.
+          </p>
         </section>
       `;
 
@@ -206,7 +230,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     prompt.classList.add("is-visible");
     document.body.classList.add("vf-login-open");
-  } 
+  }
+
   function inferCategory(product) {
     const category = String(product.dataset.category || "").toLowerCase();
     const id = String(product.dataset.id || "").toLowerCase();
@@ -228,6 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     return "Other";
   }
+
   function updateHearts() {
     products.forEach((product) => {
       const isSaved = savedProducts.has(product.dataset.id);
@@ -284,104 +310,154 @@ document.addEventListener("DOMContentLoaded", () => {
     updateHearts();
   }
 
-    // --------------------------------------------------
-  // PRODUCT CARD
-  // --------------------------------------------------
-
-  // --------------------------------------------------
-  // LOAD PRODUCTS FROM FIRESTORE
-  // --------------------------------------------------
-      
-  async function loadProducts() {
-  productsArea.replaceChildren();
-
-  for (let i = 0; i < 4; i++) {
-    const skeleton = document.createElement("article");
-    skeleton.className = "product vf-skeleton-card";
-    skeleton.setAttribute("aria-hidden", "true");
-
-    const media = document.createElement("div");
-    media.className = "product-media vf-skeleton-block vf-skeleton-media";
-
-    const details = document.createElement("div");
-    details.className = "product-details";
-
-    const category = document.createElement("div");
-    category.className = "vf-skeleton-block vf-skeleton-category";
-
-    const title = document.createElement("div");
-    title.className = "vf-skeleton-block vf-skeleton-title";
-
-    const price = document.createElement("div");
-    price.className = "vf-skeleton-block vf-skeleton-price";
-
-    details.append(category, title, price);
-    skeleton.append(media, details);
-    productsArea.appendChild(skeleton);
-  }
+  // AUTHENTICATION AND WISHLIST LOADING
 
   try {
-    const publishedProducts = await getPublishedProducts();
+    watchAuthState(async (user) => {
+      signedInUser = user;
 
-    products = publishedProducts
-      .filter((item) => item && item.id)
-      .map((item) =>
-        createProductCard(item, {
-          isSaved: savedProducts.has(String(item.id)),
-          onPremiumPriceClick: () => showMembership(),
+      const greeting = document.querySelector("#vf-greeting");
+      const firstName = user?.displayName?.trim()?.split(/\s+/)[0];
 
-          onWishlistToggle: (product, button) => {
-            if (!signedInUser) {
-              showWishlistLoginPrompt("wishlist");
-              return;
-            }
+      if (greeting) {
+        greeting.textContent = firstName
+          ? `Hey, ${firstName}!`
+          : "Hey there!";
+      }
 
-            const productId = String(product.id);
+      const loadVersion = ++wishlistLoadVersion;
+      savedProducts.clear();
 
-            if (savedProducts.has(productId)) {
-              savedProducts.delete(productId);
-            } else {
-              savedProducts.add(productId);
-              button.classList.remove("heart-pop");
-              void button.offsetWidth;
-              button.classList.add("heart-pop");
-            }
+      if (!user) {
+        updateHearts();
+        renderProducts();
+        return;
+      }
 
-            updateHearts();
-            renderProducts();
-          }
-        })
-      );
+      try {
+        const productIds = await loadWishlist(user.uid);
 
+        if (
+          loadVersion !== wishlistLoadVersion ||
+          signedInUser?.uid !== user.uid
+        ) {
+          return;
+        }
+
+        productIds.forEach((id) => savedProducts.add(String(id)));
+
+        updateHearts();
+        renderProducts();
+      } catch (error) {
+        console.error("Could not load saved wishlist:", error);
+      }
+    });
+  } catch (error) {
+    console.warn("Could not load the customer greeting.", error);
+  }
+
+  // LOAD PRODUCTS FROM FIRESTORE
+
+  async function loadProducts() {
     productsArea.replaceChildren();
 
-    if (products.length === 0) {
-      const emptyMessage = document.createElement("p");
-      emptyMessage.className = "vf-empty";
-      emptyMessage.textContent =
-        "No published products are available yet.";
+    for (let i = 0; i < 4; i++) {
+      const skeleton = document.createElement("article");
+      skeleton.className = "product vf-skeleton-card";
+      skeleton.setAttribute("aria-hidden", "true");
 
-      productsArea.appendChild(emptyMessage);
-      return;
+      const media = document.createElement("div");
+      media.className = "product-media vf-skeleton-block vf-skeleton-media";
+
+      const details = document.createElement("div");
+      details.className = "product-details";
+
+      const category = document.createElement("div");
+      category.className = "vf-skeleton-block vf-skeleton-category";
+
+      const title = document.createElement("div");
+      title.className = "vf-skeleton-block vf-skeleton-title";
+
+      const price = document.createElement("div");
+      price.className = "vf-skeleton-block vf-skeleton-price";
+
+      details.append(category, title, price);
+      skeleton.append(media, details);
+      productsArea.appendChild(skeleton);
     }
 
-    products.forEach((product) => {
-      productsArea.appendChild(product);
-    });
+    try {
+      const publishedProducts = await getPublishedProducts();
 
-    renderProducts();
-  } catch (error) {
-    console.error("Could not load products from Firestore:", error);
+      products = publishedProducts
+        .filter((item) => item && item.id)
+        .map((item) =>
+          createProductCard(item, {
+            isSaved: savedProducts.has(String(item.id)),
+            onPremiumPriceClick: () => showMembership(),
 
-    productsArea.replaceChildren();
+            onWishlistToggle: async (product, button) => {
+              if (!signedInUser) {
+                showWishlistLoginPrompt("wishlist");
+                return;
+              }
 
-    const errorMessage = document.createElement("p");
-    errorMessage.className = "vf-error";
-    errorMessage.textContent =
-      "We couldn't load the collection. Please refresh and try again.";
+              const productId = String(product.id);
+              const isSaved = savedProducts.has(productId);
 
-    productsArea.appendChild(errorMessage);
+              try {
+                if (isSaved) {
+                  await removeWishlistItem(signedInUser.uid, productId);
+                  savedProducts.delete(productId);
+                } else {
+                  await saveWishlistItem(signedInUser.uid, productId);
+                  savedProducts.add(productId);
+
+                  button.classList.remove("heart-pop");
+                  void button.offsetWidth;
+                  button.classList.add("heart-pop");
+                }
+
+                updateHearts();
+                renderProducts();
+              } catch (error) {
+                console.error("Could not update wishlist:", error);
+                alert("Could not update your wishlist. Please try again.");
+              }
+            }
+          })
+        );
+
+      productsArea.replaceChildren();
+
+      if (products.length === 0) {
+        const emptyMessage = document.createElement("p");
+        emptyMessage.className = "vf-empty";
+        emptyMessage.textContent =
+          "No published products are available yet.";
+
+        productsArea.appendChild(emptyMessage);
+        return;
+      }
+
+      products.forEach((product) => {
+        productsArea.appendChild(product);
+      });
+
+      renderProducts();
+    } catch (error) {
+      console.error("Could not load products from Firestore:", error);
+
+      productsArea.replaceChildren();
+
+      const errorMessage = document.createElement("p");
+      errorMessage.className = "vf-error";
+      errorMessage.textContent =
+        "We couldn't load the collection. Please refresh and try again.";
+
+      productsArea.appendChild(errorMessage);
+    }
   }
-  }
+
   loadProducts();
 });
