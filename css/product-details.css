@@ -1,0 +1,163 @@
+/* PRODUCT DETAILS PAGE */
+
+.product-page-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 5%;
+  border-bottom: 1px solid #e8e8e8;
+  background: #fff;
+}
+
+.product-back {
+  color: #222;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.product-brand {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #111;
+  text-decoration: none;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 27px;
+  font-weight: 600;
+  letter-spacing: 3px;
+}
+
+.product-page {
+  padding-top: 35px;
+  padding-bottom: 60px;
+}
+
+#product-loading,
+#product-error {
+  padding: 60px 15px;
+  text-align: center;
+  color: #777;
+  font-size: 14px;
+}
+
+#product-content {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 55px;
+  align-items: start;
+}
+
+.product-gallery {
+  width: 100%;
+}
+
+#product-images {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+#product-images img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  background: #f5f5f5;
+}
+
+.product-information {
+  position: sticky;
+  top: 25px;
+}
+
+#product-category {
+  margin: 0 0 12px;
+  color: #888;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+#product-name {
+  margin: 0 0 18px;
+  color: #111;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.product-detail-price {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+#product-price {
+  font-size: 19px;
+  color: #111;
+}
+
+#product-original-price {
+  color: #999;
+  font-size: 14px;
+  text-decoration: line-through;
+}
+
+#product-discount {
+  color: #777;
+  font-size: 12px;
+}
+
+#product-description {
+  margin: 0 0 25px;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+#product-colors,
+#product-sizes {
+  margin: 25px 0;
+}
+
+.product-add-button {
+  width: 100%;
+  min-height: 50px;
+  margin-top: 20px;
+  letter-spacing: 1.5px;
+}
+
+.product-quantity {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+@media (max-width: 768px) {
+  .product-page {
+    padding-top: 15px;
+  }
+
+  #product-content {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+
+  .product-information {
+    position: static;
+  }
+
+  #product-name {
+    font-size: 30px;
+  }
+
+  #product-images {
+    gap: 8px;
+  }
+}
