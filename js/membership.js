@@ -66,7 +66,7 @@ export function createMembership({ collection, hero, heroInner }) {
           </article>
 
           <article class="vf-benefit">
-            <span class="vf-benefit-icon">👨‍👩‍👧‍👦🎉</span>
+            <span class="vf-benefit-icon">🎁</span>
             <span class="vf-benefit-number">04 / SEASONAL</span>
             <h4>Festival privileges</h4>
             <p>
@@ -76,7 +76,7 @@ export function createMembership({ collection, hero, heroInner }) {
           </article>
 
           <article class="vf-benefit">
-            <span class="vf-benefit-icon">🧑‍💼🎧</span>
+            <span class="vf-benefit-icon">💬</span>
             <span class="vf-benefit-number">05 / PERSONAL</span>
             <h4>Priority customer support</h4>
             <p>
