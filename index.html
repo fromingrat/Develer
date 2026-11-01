@@ -10,14 +10,20 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/homepage.css">
+  <link rel="stylesheet" href="css/intro.css">
   <link rel="stylesheet" href="css/product-card.css">
 </head>
 
 <body id="top">
-
+<!-- VELFORM OPENING INTRO -->
+<div class="vf-intro" id="vf-intro" role="status" aria-live="polite">
+  <div class="vf-intro-content">
+    <h1 class="vf-intro-brand">VELFORM.</h1>
+    <p class="vf-intro-tagline" id="vf-intro-tagline"></p>
+  </div>
+</div>
   <a class="skip-link" href="#collection">Skip to products</a>
 
   <main>
@@ -173,7 +179,7 @@
   </aside>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
+  <script src="js/intro.js"></script>
   <script src="js/script.js"></script>
   <script type="module" src="js/main-auth.js"></script>
   <script type="module" src="js/cart-sync.js"></script>
