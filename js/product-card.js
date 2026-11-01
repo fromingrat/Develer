@@ -1,4 +1,3 @@
-
 const COLOR_MAP = {
   black: "#171717",
   white: "#ffffff",
@@ -59,13 +58,51 @@ export function createProductCard(
 ) {
   const card = document.createElement("article");
   card.className = "product";
+  card.setAttribute("role", "link");
+  card.setAttribute("tabindex", "0");
+  card.setAttribute(
+    "aria-label",
+    `View ${item.name || item.title || "product"} details`
+  );
+
+  function openProductPage() {
+    if (!item.id) return;
+
+    window.location.href =
+      `product.html?id=${encodeURIComponent(item.id)}`;
+  }
+
+  card.addEventListener("click", (event) => {
+    if (
+      event.target.closest(
+        ".vf-heart, .product-premium-price, button, input, label"
+      )
+    ) {
+      return;
+    }
+
+    openProductPage();
+  });
+
+  card.addEventListener("keydown", (event) => {
+    if (
+      event.target !== card ||
+      (event.key !== "Enter" && event.key !== " ")
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    openProductPage();
+  });
 
   card.dataset.id = String(item.id || "");
   card.dataset.name = String(item.name || item.title || "Unnamed product");
   card.dataset.price = String(Number(item.price) || 0);
   card.dataset.category = String(item.category || "");
 
-  // Product image and fallback.
+  // PRODUCT IMAGE AND FALLBACK
+
   const media = document.createElement("div");
   media.className = "product-media";
 
@@ -91,121 +128,123 @@ export function createProductCard(
     }
   }).map((value) => new URL(value.trim()).href);
 
-if (imageUrls.length) {
-  const image = document.createElement("img");
-  image.className = "product-image";
-  image.alt = item.name || item.title || "VELFORM product";
-  image.loading = "lazy";
-  image.width = 900;
-  image.height = 1200;
+  if (imageUrls.length) {
+    const image = document.createElement("img");
+    image.className = "product-image";
+    image.alt = item.name || item.title || "VELFORM product";
+    image.loading = "lazy";
+    image.width = 900;
+    image.height = 1200;
 
-  media.classList.add("is-image-loading");
+    media.classList.add("is-image-loading");
 
-  image.addEventListener("load", () => {
-    media.classList.remove("is-image-loading");
-  });
+    image.addEventListener("load", () => {
+      media.classList.remove("is-image-loading");
+    });
 
-  image.addEventListener("error", () => {
-    media.classList.remove("is-image-loading");
-    image.classList.add("is-hidden");
-    fallback.hidden = false;
-  });
-
-  fallback.hidden = true;
-  media.append(image);
-  image.src = imageUrls[0];
-
-  let currentImageIndex = 0;
-  let touchStartX = 0;
-  let touchStartY = 0;
-
-  const dots = document.createElement("div");
-  dots.className = "product-image-dots";
-  dots.setAttribute("aria-label", "Product image navigation");
-
-  function changeImage(nextIndex, direction = "next") {
-    currentImageIndex =
-      (nextIndex + imageUrls.length) % imageUrls.length;
-
-    image.classList.remove(
-      "is-hidden",
-      "image-swipe-next",
-      "image-swipe-prev"
-    );
+    image.addEventListener("error", () => {
+      media.classList.remove("is-image-loading");
+      image.classList.add("is-hidden");
+      fallback.hidden = false;
+    });
 
     fallback.hidden = true;
-    media.classList.add("is-image-loading");
-    image.src = imageUrls[currentImageIndex];
+    media.append(image);
+    image.src = imageUrls[0];
 
-    void image.offsetWidth;
+    let currentImageIndex = 0;
+    let touchStartX = 0;
+    let touchStartY = 0;
 
-    image.classList.add(
-      direction === "prev"
-        ? "image-swipe-prev"
-        : "image-swipe-next"
-    );
+    const dots = document.createElement("div");
+    dots.className = "product-image-dots";
+    dots.setAttribute("aria-label", "Product image navigation");
 
-    dots.querySelectorAll("button").forEach((button, index) => {
-      button.setAttribute(
-        "aria-current",
-        String(index === currentImageIndex)
+    function changeImage(nextIndex, direction = "next") {
+      currentImageIndex =
+        (nextIndex + imageUrls.length) % imageUrls.length;
+
+      image.classList.remove(
+        "is-hidden",
+        "image-swipe-next",
+        "image-swipe-prev"
       );
-    });
-  }
 
-  if (imageUrls.length > 1) {
-    imageUrls.forEach((url, index) => {
-      const dot = document.createElement("button");
-      dot.type = "button";
-      dot.className = "product-image-dot";
-      dot.setAttribute("aria-label", `Show image ${index + 1}`);
-      dot.setAttribute("aria-current", String(index === 0));
+      fallback.hidden = true;
+      media.classList.add("is-image-loading");
+      image.src = imageUrls[currentImageIndex];
 
-      dot.addEventListener("click", () => {
-        if (index === currentImageIndex) return;
+      void image.offsetWidth;
 
-        changeImage(
-          index,
-          index > currentImageIndex ? "next" : "prev"
+      image.classList.add(
+        direction === "prev"
+          ? "image-swipe-prev"
+          : "image-swipe-next"
+      );
+
+      dots.querySelectorAll("button").forEach((button, index) => {
+        button.setAttribute(
+          "aria-current",
+          String(index === currentImageIndex)
         );
       });
+    }
 
-      dots.append(dot);
-    });
+    if (imageUrls.length > 1) {
+      imageUrls.forEach((url, index) => {
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "product-image-dot";
+        dot.setAttribute("aria-label", `Show image ${index + 1}`);
+        dot.setAttribute("aria-current", String(index === 0));
 
-    media.addEventListener("touchstart", (event) => {
-      const touch = event.changedTouches[0];
-      touchStartX = touch.clientX;
-      touchStartY = touch.clientY;
-    }, { passive: true });
+        dot.addEventListener("click", (event) => {
+          event.stopPropagation();
 
-    media.addEventListener("touchend", (event) => {
-      const touch = event.changedTouches[0];
-      const deltaX = touch.clientX - touchStartX;
-      const deltaY = touch.clientY - touchStartY;
+          if (index === currentImageIndex) return;
 
-      // Ignore vertical scrolling and short accidental movements.
-      if (
-        Math.abs(deltaX) < 45 ||
-        Math.abs(deltaX) < Math.abs(deltaY)
-      ) {
-        return;
-      }
+          changeImage(
+            index,
+            index > currentImageIndex ? "next" : "prev"
+          );
+        });
 
-      if (deltaX < 0) {
-        changeImage(currentImageIndex + 1, "next");
-      } else {
-        changeImage(currentImageIndex - 1, "prev");
-      }
-    }, { passive: true });
+        dots.append(dot);
+      });
 
-    media.append(dots);
+      media.addEventListener("touchstart", (event) => {
+        const touch = event.changedTouches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+      }, { passive: true });
+
+      media.addEventListener("touchend", (event) => {
+        const touch = event.changedTouches[0];
+        const deltaX = touch.clientX - touchStartX;
+        const deltaY = touch.clientY - touchStartY;
+
+        if (
+          Math.abs(deltaX) < 45 ||
+          Math.abs(deltaX) < Math.abs(deltaY)
+        ) {
+          return;
+        }
+
+        if (deltaX < 0) {
+          changeImage(currentImageIndex + 1, "next");
+        } else {
+          changeImage(currentImageIndex - 1, "prev");
+        }
+      }, { passive: true });
+
+      media.append(dots);
+    }
   }
-}
 
   media.append(fallback);
 
-  // Wishlist heart overlays the top-right of the image.
+  // WISHLIST HEART
+
   const wishlistButton = document.createElement("button");
   wishlistButton.type = "button";
   wishlistButton.className = "vf-heart";
@@ -218,7 +257,9 @@ if (imageUrls.length) {
 
   if (isSaved) wishlistButton.classList.add("is-saved");
 
-  wishlistButton.addEventListener("click", () => {
+  wishlistButton.addEventListener("click", (event) => {
+    event.stopPropagation();
+
     if (typeof onWishlistToggle === "function") {
       onWishlistToggle(item, wishlistButton);
     }
@@ -226,7 +267,8 @@ if (imageUrls.length) {
 
   media.append(wishlistButton);
 
-  // Product details.
+  // PRODUCT DETAILS
+
   const details = document.createElement("div");
   details.className = "product-details";
 
@@ -269,38 +311,46 @@ if (imageUrls.length) {
   }
 
   details.append(category, heading, priceRow);
-const premiumPriceValue = Number(item.premiumPrice);
 
-if (
-  Number.isSafeInteger(premiumPriceValue) &&
-  premiumPriceValue > 0 &&
-  premiumPriceValue <= sellingPrice
-) {
-  const premiumPriceRow = document.createElement("div");
-  premiumPriceRow.className = "product-premium-price";
+  // PREMIUM MEMBER PRICE
 
-  premiumPriceRow.addEventListener("click", () => {
-    if (typeof onPremiumPriceClick === "function") {
-      onPremiumPriceClick(item);
-    }
-  });
+  const premiumPriceValue = Number(item.premiumPrice);
 
-  const crown = document.createElement("span");
-  crown.className = "premium-crown";
-  crown.textContent = "♛";
-  crown.setAttribute("aria-hidden", "true");
+  if (
+    Number.isSafeInteger(premiumPriceValue) &&
+    premiumPriceValue > 0 &&
+    premiumPriceValue <= sellingPrice
+  ) {
+    const premiumPriceRow = document.createElement("div");
+    premiumPriceRow.className = "product-premium-price";
 
-  const premiumLabel = document.createElement("span");
-  premiumLabel.textContent = "PREMIUM MEMBER PRICE";
+    premiumPriceRow.addEventListener("click", (event) => {
+      event.stopPropagation();
 
-  const premiumValue = document.createElement("strong");
-  premiumValue.textContent = formatPrice(premiumPriceValue);
+      if (typeof onPremiumPriceClick === "function") {
+        onPremiumPriceClick(item);
+      }
+    });
 
-  premiumPriceRow.append(crown, premiumLabel, premiumValue);
-  details.append(premiumPriceRow);
-}
-  // One swatch per available colour. Sizes stay on the product page.
+    const crown = document.createElement("span");
+    crown.className = "premium-crown";
+    crown.textContent = "♛";
+    crown.setAttribute("aria-hidden", "true");
+
+    const premiumLabel = document.createElement("span");
+    premiumLabel.textContent = "PREMIUM MEMBER PRICE";
+
+    const premiumValue = document.createElement("strong");
+    premiumValue.textContent = formatPrice(premiumPriceValue);
+
+    premiumPriceRow.append(crown, premiumLabel, premiumValue);
+    details.append(premiumPriceRow);
+  }
+
+  // AVAILABLE COLOUR SWATCHES
+
   const availableVariants = getAvailableVariants(item);
+
   const colors = [
     ...new Map(
       availableVariants.map((variant) => [
@@ -336,10 +386,12 @@ if (
       swatch.className = "color-swatch";
       swatch.style.backgroundColor = getColorValue(color);
 
-      if (color.toLowerCase() === "white" ||
-          color.toLowerCase() === "cream" ||
-          color.toLowerCase() === "beige" ||
-          color.toLowerCase() === "yellow") {
+      if (
+        color.toLowerCase() === "white" ||
+        color.toLowerCase() === "cream" ||
+        color.toLowerCase() === "beige" ||
+        color.toLowerCase() === "yellow"
+      ) {
         swatch.classList.add("light-swatch");
       }
 
@@ -354,4 +406,4 @@ if (
   card.append(media, details);
 
   return card;
-}
+    }
