@@ -519,7 +519,7 @@ body:not(.vf-intro-finished) .vf-welcome-message {
 }
 
 .vf-period-options button strong {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-size: 21px;
   font-weight: 500;
 }
@@ -559,7 +559,7 @@ body:not(.vf-intro-finished) .vf-welcome-message {
 }
 
 .vf-price-main strong {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-size: 42px;
   font-weight: 500;
   line-height: 1.1;
@@ -594,6 +594,7 @@ body:not(.vf-intro-finished) .vf-welcome-message {
 }
 
 .vf-price-comparison strong {
+  font-family: var(--sans);
   font-size: 15px;
   font-weight: 600;
 }
