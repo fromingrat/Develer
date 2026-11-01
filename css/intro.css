@@ -1,0 +1,64 @@
+/* VELFORM — Opening intro */
+
+.vf-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  background: #000;
+  color: #fff;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 450ms ease, visibility 450ms ease;
+}
+
+.vf-intro.is-exiting {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.vf-intro-content {
+  padding: 24px;
+  text-align: center;
+  animation: vfIntroContent 700ms ease both;
+}
+
+.vf-intro-brand {
+  margin: 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(3.5rem, 12vw, 7rem);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1;
+}
+
+.vf-intro-tagline {
+  margin: 24px 0 0;
+  font-family: "Jost", sans-serif;
+  font-size: clamp(0.65rem, 2vw, 0.85rem);
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  line-height: 1.8;
+}
+
+@keyframes vfIntroContent {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vf-intro,
+  .vf-intro-content {
+    transition: none;
+    animation: none;
+  }
+}
