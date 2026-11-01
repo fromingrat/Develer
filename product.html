@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="Explore VELFORM menswear.">
+
+  <title>Product | VELFORM</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/product-details.css">
+</head>
+
+<body>
+
+  <header class="product-page-header">
+    <a href="index.html" class="product-back">← Back</a>
+    <a href="index.html" class="product-brand">VELFORM</a>
+  </header>
+
+  <main class="product-page container">
+
+    <div id="product-loading">
+      Loading product...
+    </div>
+
+    <div id="product-error" hidden>
+      Product not found or unavailable.
+    </div>
+
+    <section id="product-content" hidden>
+
+      <div class="product-gallery">
+        <div id="product-images"></div>
+      </div>
+
+      <div class="product-information">
+
+        <p id="product-category"></p>
+
+        <h1 id="product-name"></h1>
+
+        <div class="product-detail-price">
+          <strong id="product-price"></strong>
+          <span id="product-original-price"></span>
+          <span id="product-discount"></span>
+        </div>
+
+        <p id="product-description"></p>
+
+        <div id="product-colors"></div>
+
+        <div id="product-sizes"></div>
+
+        <div class="product-quantity" hidden>
+          <span>Quantity</span>
+          <span>Coming soon</span>
+        </div>
+
+        <button
+          id="add-to-cart"
+          class="btn btn-dark product-add-button"
+          type="button"
+          disabled
+        >
+          ADD TO CART
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <script type="module" src="js/product-details.js"></script>
+
+</body>
+</html>
