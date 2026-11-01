@@ -44,6 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const greetingBox = document.createElement("div");
   greetingBox.className = "vf-welcome";
+
   greetingBox.innerHTML = `
     <p class="vf-greeting" id="vf-greeting">Hey there!</p>
     <p class="vf-welcome-message">
