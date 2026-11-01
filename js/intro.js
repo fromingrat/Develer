@@ -1,4 +1,5 @@
-/* VELFORM — Opening intro */
+
+/* VELFORM — Premium Opening Intro */
 
 (() => {
   const intro = document.getElementById("vf-intro");
@@ -13,12 +14,9 @@
 
   const taglineElement = document.getElementById("vf-intro-tagline");
 
-  // Select one random tagline for this opening.
   const randomIndex = Math.floor(Math.random() * taglines.length);
-
   taglineElement.textContent = taglines[randomIndex];
 
-  // Show on a fresh tab/session or when the homepage is reloaded.
   let hasVisited = false;
 
   try {
@@ -38,21 +36,21 @@
   try {
     sessionStorage.setItem("vf_intro_seen", "1");
   } catch (error) {
-    // Intro can still work if session storage is unavailable.
+    // Intro still works if session storage is unavailable.
   }
 
-  // Hide the page behind the intro from scrolling.
   document.body.style.overflow = "hidden";
 
-  // Keep the intro visible for approximately 2.5 seconds.
+  // Keep intro visible for approximately 4 seconds.
   setTimeout(() => {
     intro.classList.add("is-exiting");
 
     document.body.style.overflow = "";
 
+    // Remove after the smooth fade-out finishes.
     setTimeout(() => {
       intro.remove();
-    }, 500);
+    }, 950);
 
-  }, 2050);
+  }, 4000);
 })();
