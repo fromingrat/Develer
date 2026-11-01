@@ -86,9 +86,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // PREMIUM MEMBERSHIP MODULE
 
   const { showMembership, showHome, membership } = createMembership({
-    collection,
-    hero
-  });
+  collection,
+  hero,
+  heroInner
+});
 
   // WISHLIST MODULE
 
