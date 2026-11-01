@@ -1,26 +1,28 @@
 
-/* VELFORM HOMEPAGE */
+/* VELFORM — EDITORIAL HOMEPAGE */
 
 :root {
   --vf-black: #111111;
   --vf-white: #ffffff;
   --vf-grey: #777777;
   --vf-light: #f4f3f0;
+  --vf-champagne: #b9a989;
 }
 
 body {
   padding-bottom: 76px;
 }
 
-/* Black welcome panel: approximately 40% of screen height */
+/* Editorial welcome panel */
 .hero {
   display: flex;
   align-items: stretch;
   box-sizing: border-box;
-  height: 40svh;
-  min-height: 260px;
-  max-height: 380px;
-  padding: 28px 0 !important;
+  height: 45svh;
+  min-height: 320px;
+  max-height: 440px;
+  padding: 30px 0 !important;
+  overflow: hidden;
   background: var(--vf-black);
   color: var(--vf-white);
 }
@@ -30,88 +32,183 @@ body {
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  gap: 24px;
+  gap: 0;
   width: 100%;
   min-height: 0 !important;
   box-sizing: border-box;
   text-align: left;
 }
 
-/* Animated VELFORM wordmark on one line */
-.wordmark {
+/* Small editorial details */
+.vf-hero-topline {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: flex-start;
-  flex-wrap: nowrap;
-  gap: 0;
+  width: 100%;
+  margin-bottom: 24px;
+  color: #a9a9a9;
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.19em;
+  animation: vfEditorialReveal 900ms ease both;
+}
+
+/* Single-line VELFORM wordmark */
+.wordmark {
+  display: block;
   width: 100%;
   margin: 0;
+  color: #ffffff;
   font-family: var(--serif);
-  font-size: clamp(2.2rem, 10vw, 4.2rem) !important;
+  font-size: clamp(3rem, 11vw, 6.5rem) !important;
   font-weight: 500;
   line-height: 1;
-  letter-spacing: 0.015em;
+  letter-spacing: 0.035em;
   white-space: nowrap;
   text-align: left;
+  animation: vfWordmarkReveal 1200ms
+    cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.wordmark .line,
-.wordmark .line-right {
-  display: inline-block;
-  flex: 0 0 auto;
-  padding: 0;
-  overflow: hidden;
-  text-align: left;
+.wordmark span {
+  color: var(--vf-champagne);
 }
 
-.wordmark .line > span {
-  display: block;
-  transform: translateY(105%);
-  animation: vf-rise 1.1s cubic-bezier(0.2, 0.7, 0.1, 1) 0.1s forwards;
+/* Fine divider */
+.vf-hero-divider {
+  width: 100%;
+  height: 1px;
+  margin: 22px 0 15px;
+  background: linear-gradient(
+    to right,
+    var(--vf-champagne),
+    rgba(185, 169, 137, 0.12)
+  );
+  transform-origin: left;
+  animation: vfDividerReveal 1100ms ease 350ms both;
 }
 
-.wordmark .line-right > span {
-  animation-delay: 0.25s;
+/* Brand statement */
+.vf-hero-kicker {
+  margin: 0;
+  color: #b9a989;
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  line-height: 1.6;
+  animation: vfEditorialReveal 900ms ease 450ms both;
 }
 
-@keyframes vf-rise {
-  to {
-    transform: translateY(0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .wordmark .line > span {
-    animation: none;
-    transform: none;
-  }
-}
-
-/* Left-aligned customer greeting */
+/* Customer welcome */
 .vf-welcome {
   width: 100%;
-  margin: 0;
+  margin-top: 25px;
   padding: 0;
   color: var(--vf-white);
   text-align: left;
+  animation: vfWelcomeReveal 1000ms
+    cubic-bezier(0.16, 1, 0.3, 1) 550ms both;
 }
 
 .vf-greeting {
   margin: 0;
   font-family: var(--serif);
-  font-size: clamp(1.6rem, 6vw, 2.1rem);
+  font-size: clamp(1.7rem, 6vw, 2.3rem);
   font-weight: 500;
-  line-height: 1.2;
+  line-height: 1.15;
   text-align: left;
 }
 
 .vf-welcome-message {
-  margin: 9px 0 0;
-  color: #d5d5d5;
-  font-size: clamp(0.9rem, 3.5vw, 1rem);
-  line-height: 1.5;
+  margin: 7px 0 0;
+  color: #bdbdbd;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.025em;
+  line-height: 1.6;
   text-align: left;
 }
+
+/* Editorial entrance animations */
+@keyframes vfWordmarkReveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    letter-spacing: 0.08em;
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    letter-spacing: 0.035em;
+  }
+}
+
+@keyframes vfDividerReveal {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@keyframes vfEditorialReveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes vfWelcomeReveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vf-hero-topline,
+  .wordmark,
+  .vf-hero-divider,
+  .vf-hero-kicker,
+  .vf-welcome {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Keep the category tabs close to the intro panel */
+#collection {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+#collection > .container {
+  padding-top: 0;
+}
+
+#collection .section-head {
+  display: none !important;
+}
+
 
 /* Keep the category tabs close to the intro panel */
 #collection {
