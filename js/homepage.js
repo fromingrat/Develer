@@ -30,67 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
   productsArea.replaceChildren();
 
   let products = [];
-  const savedProducts = new Set();
-  let wishlistMode = false;
-  let activeCategory = "All";
-  let directionAnchorY = window.scrollY;
-  let scrollDirection = "down";
-  let ticking = false;
-  let hideBarTimer = null;
-
-  const SCROLL_THRESHOLD = 35;
-  const ANIMATION_DURATION = 650;
-
-  // --------------------------------------------------
-  // WELCOME GREETING
-  // --------------------------------------------------
-
-  const greetingBox = document.createElement("div");
-  greetingBox.className = "vf-welcome";
-  greetingBox.innerHTML = `
-    <p class="vf-greeting" id="vf-greeting">Hey there!</p>
-    <p class="vf-welcome-message">
-      We're really glad you've come again.
-    </p>
-  `;
-
-  heroInner.appendChild(greetingBox);
-  let signedInUser = null;
-  
-
-  // CATEGORY NAVIGATION MODULE
-  const {
-    categories,
-    menuButton,
-    categorySpacer
-  } = createCategoryNavigation({
-    collection,
-    renderProducts,
-    setActiveCategory: (value) => {
-      activeCategory = value;
-    },
-    setWishlistMode: (value) => {
-      wishlistMode = value;
-    }
-  });
-
-  // FLOATING CATEGORY BAR MODULE
-  createFloatingCategoryBar({
-    hero,
-    categories,
-    menuButton,
-    categorySpacer
-  });
-  // PREMIUM MEMBERSHIP MODULE
-  const { showMembership, showHome, membership } = createMembership({
-    collection,
-    hero
-  });
-  // WISHLIST MODULE
-  const { openWishlist } = createWishlist({
-    getProducts: () => products,
-    savedProducts,
-    u  let wishlistLoadVersion = 0;
+    let signedInUser = null;
+  let wishlistLoadVersion = 0;
 
   try {
     watchAuthState(async (user) => {
@@ -135,13 +76,73 @@ document.addEventListener("DOMContentLoaded", () => {
   } catch (error) {
     console.warn("Could not load the customer greeting.", error);
   }
-  updateHearts,
+
+  // CATEGORY NAVIGATION MODULE
+  const {
+    categories,
+    menuButton,
+    categorySpacer
+  } = createCategoryNavigation({
+    collection,
+    renderProducts,
+    setActiveCategory: (value) => {
+      activeCategory = value;
+    },
+    setWishlistMode: (value) => {
+      wishlistMode = value;
+    }
+  });
+
+  // FLOATING CATEGORY BAR MODULE
+  createFloatingCategoryBar({
+    hero,
+    categories,
+    menuButton,
+    categorySpacer
+  });
+
+  // PREMIUM MEMBERSHIP MODULE
+  const { showMembership, showHome, membership } = createMembership({
+    collection,
+    hero
+  });
+
+  // WISHLIST MODULE
+  const { openWishlist } = createWishlist({
+    getProducts: () => products,
+    savedProducts,
+    updateHearts,
     renderProducts,
     membership,
     showMembership,
     showHome
   });
+  const savedProducts = new Set();
+  let wishlistMode = false;
+  let activeCategory = "All";
+  let directionAnchorY = window.scrollY;
+  let scrollDirection = "down";
+  let ticking = false;
+  let hideBarTimer = null;
 
+  const SCROLL_THRESHOLD = 35;
+  const ANIMATION_DURATION = 650;
+
+  // --------------------------------------------------
+  // WELCOME GREETING
+  // --------------------------------------------------
+
+  const greetingBox = document.createElement("div");
+  greetingBox.className = "vf-welcome";
+  greetingBox.innerHTML = `
+    <p class="vf-greeting" id="vf-greeting">Hey there!</p>
+    <p class="vf-welcome-message">
+      We're really glad you've come again.
+    </p>
+  `;
+
+  heroInner.appendChild(greetingBox);
+  
   // BOTTOM NAVIGATION MODULE
   const bottomNav = createBottomNav({
     showHome,
