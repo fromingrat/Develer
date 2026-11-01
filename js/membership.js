@@ -1,5 +1,5 @@
 
-export function createMembership({ collection, hero }) {
+export function createMembership({ collection, hero, heroInner }) {
   const membership = document.createElement("section");
 
   membership.className = "vf-membership vf-membership-page";
@@ -117,7 +117,21 @@ export function createMembership({ collection, hero }) {
   `;
 
   collection.after(membership);
+    function replayHeroAnimation() {
+    const animatedElements = heroInner.querySelectorAll(
+      ".wordmark, .vf-hero-divider, .vf-greeting, .vf-welcome-message"
+    );
 
+    animatedElements.forEach((element) => {
+      element.style.animation = "none";
+    });
+
+    void heroInner.offsetWidth;
+
+    animatedElements.forEach((element) => {
+      element.style.animation = "";
+    });
+    }
   function showMembership() {
     hero.hidden = true;
     collection.hidden = true;
@@ -137,6 +151,8 @@ export function createMembership({ collection, hero }) {
     document.querySelector(".site-footer").hidden = false;
 
     membership.hidden = true;
+
+    replayHeroAnimation();
   }
 
   let selectedMembershipPlan = "";
