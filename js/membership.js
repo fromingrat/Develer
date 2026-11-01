@@ -129,13 +129,11 @@ export function createMembership({ collection, hero, heroInner }) {
             <button type="button" data-membership-plan="3 Months">
               <span>3 Months</span>
               <strong>₹249</strong>
-              <small>Save ₹48</small>
             </button>
 
             <button type="button" data-membership-plan="1 Year">
               <span>1 Year</span>
               <strong>₹899</strong>
-              <small>Save ₹289</small>
             </button>
           </div>
         </div>
