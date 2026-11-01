@@ -1,3 +1,4 @@
+
 export function createMembership({ collection, hero, heroInner }) {
   const membership = document.createElement("section");
 
@@ -34,7 +35,7 @@ export function createMembership({ collection, hero, heroInner }) {
 
         <div class="vf-benefit-grid">
 
-          <article class="vf-benefit vf-benefit-featured">
+          <article class="vf-benefit">
             <span class="vf-benefit-icon">✦</span>
             <span class="vf-benefit-number">01 / EXCLUSIVE</span>
             <h4>Member-only prices</h4>
@@ -45,7 +46,7 @@ export function createMembership({ collection, hero, heroInner }) {
           </article>
 
           <article class="vf-benefit">
-            <span class="vf-benefit-icon">↗</span>
+            <span class="vf-benefit-icon">🛵</span>
             <span class="vf-benefit-number">02 / PRIORITY</span>
             <h4>Priority delivery</h4>
             <p>
@@ -55,7 +56,7 @@ export function createMembership({ collection, hero, heroInner }) {
           </article>
 
           <article class="vf-benefit">
-            <span class="vf-benefit-icon">◈</span>
+            <span class="vf-benefit-icon">🎟️</span>
             <span class="vf-benefit-number">03 / FIRST ACCESS</span>
             <h4>Early access</h4>
             <p>
@@ -65,7 +66,7 @@ export function createMembership({ collection, hero, heroInner }) {
           </article>
 
           <article class="vf-benefit">
-            <span class="vf-benefit-icon">✧</span>
+            <span class="vf-benefit-icon">👨‍👩‍👧‍👦🎉</span>
             <span class="vf-benefit-number">04 / SEASONAL</span>
             <h4>Festival privileges</h4>
             <p>
@@ -74,8 +75,8 @@ export function createMembership({ collection, hero, heroInner }) {
             </p>
           </article>
 
-          <article class="vf-benefit vf-benefit-wide">
-            <span class="vf-benefit-icon">⌁</span>
+          <article class="vf-benefit">
+            <span class="vf-benefit-icon">🧑‍💼🎧</span>
             <span class="vf-benefit-number">05 / PERSONAL</span>
             <h4>Priority customer support</h4>
             <p>
@@ -104,10 +105,14 @@ export function createMembership({ collection, hero, heroInner }) {
             id="vf-period-trigger"
             aria-expanded="false"
             aria-controls="vf-period-options">
+
             <span>
               <small>MEMBERSHIP DURATION</small>
-              <strong id="vf-period-current">Choose a time period</strong>
+              <strong id="vf-period-current">
+                Choose a time period
+              </strong>
             </span>
+
             <span class="vf-period-arrow">⌄</span>
           </button>
 
@@ -136,6 +141,7 @@ export function createMembership({ collection, hero, heroInner }) {
         </div>
 
         <div class="vf-price-summary" id="vf-price-summary" hidden>
+
           <p class="vf-price-label">YOUR MEMBERSHIP PRICE</p>
 
           <div class="vf-price-main">
@@ -146,14 +152,17 @@ export function createMembership({ collection, hero, heroInner }) {
           <div class="vf-price-divider"></div>
 
           <div class="vf-price-comparison">
+
             <div>
               <span>Equivalent per month</span>
               <strong id="vf-monthly-price"></strong>
             </div>
+
             <div>
               <span>Your savings</span>
               <strong id="vf-plan-saving"></strong>
             </div>
+
           </div>
 
           <p class="vf-price-note" id="vf-price-note"></p>
@@ -178,6 +187,7 @@ export function createMembership({ collection, hero, heroInner }) {
       <p class="vf-membership-footer">
         VELFORM PREMIUM · EXCLUSIVELY FOR MEMBERS
       </p>
+
     </div>
   `;
 
@@ -202,6 +212,7 @@ export function createMembership({ collection, hero, heroInner }) {
   function showMembership() {
     hero.hidden = true;
     collection.hidden = true;
+
     document.querySelector("#about").hidden = true;
     document.querySelector("#contact").hidden = true;
     document.querySelector(".site-footer").hidden = true;
@@ -212,12 +223,16 @@ export function createMembership({ collection, hero, heroInner }) {
     void membership.offsetWidth;
     membership.classList.add("is-visible");
 
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
   }
 
   function showHome() {
     hero.hidden = false;
     collection.hidden = false;
+
     document.querySelector("#about").hidden = false;
     document.querySelector("#contact").hidden = false;
     document.querySelector(".site-footer").hidden = false;
@@ -252,7 +267,12 @@ export function createMembership({ collection, hero, heroInner }) {
     const isOpening = options.hidden;
 
     options.hidden = !isOpening;
-    trigger.setAttribute("aria-expanded", String(isOpening));
+
+    trigger.setAttribute(
+      "aria-expanded",
+      String(isOpening)
+    );
+
     trigger.classList.toggle("is-open", isOpening);
   });
 
@@ -260,18 +280,24 @@ export function createMembership({ collection, hero, heroInner }) {
     button.addEventListener("click", () => {
       const planName = button.dataset.membershipPlan;
 
-      selectedPlan = plans.find((plan) => plan.name === planName);
+      selectedPlan = plans.find(
+        (plan) => plan.name === planName
+      );
 
       if (!selectedPlan) return;
 
       currentPeriod.textContent = selectedPlan.name;
+
       closePeriodOptions();
 
       const monthlyEquivalent =
         selectedPlan.price / selectedPlan.months;
 
-      const regularTotal = 99 * selectedPlan.months;
-      const savings = regularTotal - selectedPlan.price;
+      const regularTotal =
+        99 * selectedPlan.months;
+
+      const savings =
+        regularTotal - selectedPlan.price;
 
       const savingPercent =
         regularTotal > 0
@@ -301,9 +327,11 @@ export function createMembership({ collection, hero, heroInner }) {
       priceSummary.classList.remove("is-updating");
 
       void priceSummary.offsetWidth;
+
       priceSummary.classList.add("is-updating");
 
       continueButton.disabled = false;
+
       continueButton.textContent =
         `Continue with ${selectedPlan.name}`;
 
@@ -334,5 +362,9 @@ export function createMembership({ collection, hero, heroInner }) {
       "Membership payments will be available soon.";
   });
 
-  return { showMembership, showHome, membership };
+  return {
+    showMembership,
+    showHome,
+    membership
+  };
 }
