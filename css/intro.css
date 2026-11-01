@@ -1,5 +1,5 @@
 
-/* VELFORM — Premium Opening Intro */
+/* VELFORM — Cinematic Luxury Intro */
 
 .vf-intro {
   position: fixed;
@@ -12,8 +12,8 @@
   opacity: 1;
   visibility: visible;
   transition:
-    opacity 900ms cubic-bezier(0.22, 1, 0.36, 1),
-    visibility 900ms ease;
+    opacity 950ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 950ms ease;
 }
 
 .vf-intro.is-exiting {
@@ -25,7 +25,6 @@
 .vf-intro-content {
   padding: 24px;
   text-align: center;
-  animation: vfIntroContent 1400ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .vf-intro-brand {
@@ -35,6 +34,9 @@
   font-weight: 600;
   letter-spacing: 0.16em;
   line-height: 1;
+
+  opacity: 0;
+  animation: vfBrandReveal 1500ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .vf-intro-tagline {
@@ -46,22 +48,45 @@
   line-height: 1.8;
 }
 
-@keyframes vfIntroContent {
+.vf-intro-tagline span {
+  display: inline-block;
+  white-space: pre;
+  opacity: 0;
+  transform: translateY(9px);
+  animation: vfLetterReveal 550ms ease forwards;
+}
+
+@keyframes vfBrandReveal {
   from {
     opacity: 0;
-    transform: translateY(18px) scale(0.98);
+    transform: scale(0.92);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes vfLetterReveal {
+  from {
+    opacity: 0;
+    transform: translateY(9px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .vf-intro,
-  .vf-intro-content {
+  .vf-intro-brand,
+  .vf-intro-tagline span {
     transition: none;
     animation: none;
+    opacity: 1;
+    transform: none;
   }
 }
