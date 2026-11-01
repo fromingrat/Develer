@@ -161,3 +161,59 @@
     gap: 8px;
   }
 }
+/* PRODUCT VARIANT AND QUANTITY CONTROLS */
+
+.variant-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.variant-selector label {
+  color: #222;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.variant-select {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 12px;
+  border: 1px solid #ddd;
+  border-radius: 0;
+  background: #fff;
+  color: #222;
+  font: inherit;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.quantity-controls button {
+  width: 35px;
+  height: 35px;
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.quantity-controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+#quantity-value {
+  min-width: 18px;
+  text-align: center;
+}
+
+.variant-stock-message {
+  min-height: 20px;
+  margin: 12px 0;
+  color: #777;
+  font-size: 12px;
+}
