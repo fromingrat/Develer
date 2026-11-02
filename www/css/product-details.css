@@ -1,0 +1,283 @@
+
+.product-page-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+.product-back,
+.product-cart-link {
+  color: #222;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.product-brand {
+  color: #111;
+  text-decoration: none;
+  font-family: Georgia, serif;
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: 3px;
+}
+
+.product-page {
+  width: 100%;
+  max-width: 900px;
+  margin: auto;
+  padding-bottom: 50px;
+}
+
+#product-loading,
+#product-error {
+  padding: 50px 20px;
+  text-align: center;
+  color: #777;
+}
+
+.product-gallery {
+  width: 100%;
+  overflow: hidden;
+}
+
+#product-images {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+#product-images::-webkit-scrollbar {
+  display: none;
+}
+
+#product-images img {
+  flex: 0 0 100%;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  scroll-snap-align: center;
+  background: #f4f4f4;
+}
+
+.product-image-fallback {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  display: grid;
+  place-items: center;
+  background: #f3f3f3;
+  font-family: Georgia, serif;
+  font-size: 30px;
+  letter-spacing: 5px;
+}
+
+.product-information {
+  padding: 22px 20px;
+}
+
+#product-category {
+  margin: 0 0 7px;
+  color: #888;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+#product-name {
+  margin: 0 0 7px;
+  color: #111;
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+#product-description {
+  margin: 0 0 16px;
+  color: #858585;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.product-detail-price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0 18px;
+}
+
+#product-price {
+  color: #111;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+#product-original-price {
+  color: #999;
+  font-size: 15px;
+  text-decoration: line-through;
+}
+
+#product-discount {
+  color: #16804a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.product-premium-price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0;
+  padding: 17px;
+  border: 1px solid #d8c9a2;
+  background: #fbf8ef;
+  color: #4b4028;
+  font-size: 12px;
+}
+
+.product-premium-price strong {
+  font-size: 23px;
+  white-space: nowrap;
+}
+
+.product-add-button {
+  width: 100%;
+  min-height: 52px;
+  margin: 10px 0;
+  border: 0;
+  background: #111;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+}
+
+.product-add-button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+#cart-message {
+  color: #247448;
+  font-size: 13px;
+}
+
+#variant-selection {
+  margin-top: 20px;
+  padding: 20px 0;
+  border-top: 1px solid #eee;
+}
+
+#variant-selection h2,
+.product-extra h2 {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.variant-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 18px 0;
+}
+
+.variant-selector label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.variant-selector select {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 12px;
+  border: 1px solid #ddd;
+  background: #fff;
+  font: inherit;
+}
+
+.product-quantity {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.quantity-controls button {
+  width: 35px;
+  height: 35px;
+  border: 1px solid #ddd;
+  background: white;
+  font-size: 20px;
+}
+
+.quantity-controls button:disabled {
+  opacity: .4;
+}
+
+#variant-stock-message {
+  color: #777;
+  font-size: 12px;
+}
+
+.product-extra {
+  margin-top: 30px;
+  border-top: 1px solid #eee;
+}
+
+.product-extra details {
+  padding: 17px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.product-extra summary {
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.product-extra details p {
+  color: #777;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+@media (min-width: 769px) {
+  .product-page {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    gap: 35px;
+    padding: 30px 20px;
+  }
+
+  .product-gallery {
+    position: sticky;
+    top: 75px;
+  }
+
+  #product-images img {
+    border-radius: 4px;
+  }
+
+  .product-information {
+    padding: 10px 0;
+  }
+}

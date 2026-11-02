@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="Velform menswear.">
+  <title>Velform | Premium Menswear</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/homepage.css">
+  <link rel="stylesheet" href="css/intro.css">
+  <link rel="stylesheet" href="css/product-card.css">
+</head>
+
+<body id="top">
+
+<!-- VELFORM OPENING INTRO -->
+<div class="vf-intro" id="vf-intro" role="status" aria-live="polite">
+  <div class="vf-intro-content">
+    <h1 class="vf-intro-brand">VELFORM.</h1>
+
+    <p class="vf-intro-tagline" id="vf-intro-tagline"></p>
+    
+  </div>
+</div>
+
+  <a class="skip-link" href="#collection">Skip to products</a>
+
+  <main>
+
+<!-- HERO: VELFORM EDITORIAL WELCOME -->
+<section class="hero" aria-labelledby="hero-title">
+  <div class="container hero-inner">
+
+    <h1 class="wordmark" id="hero-title">
+      VELFORM<span>.</span>
+    </h1>
+    <div class="vf-hero-divider"></div>
+  </div>
+</section>
+    
+    <!-- PRODUCTS -->
+    <section class="section" id="collection" aria-label="Products">
+      <div class="container">
+
+        <!-- Kept empty so homepage.js can insert category filters here -->
+        <div class="section-head"></div>
+
+        <div class="products">
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="section section-grey" id="about" aria-labelledby="about-title">
+      <div class="container about-grid">
+
+        <h2 class="about-statement" id="about-title">
+          Fewer pieces. A higher standard.
+        </h2>
+
+        <div class="about-text">
+          <p>
+            Velform is built around considered menswear,
+            clean design and everyday versatility.
+          </p>
+
+          <p>
+            Our collection is designed to make getting dressed
+            feel simple, comfortable and confident.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section" id="contact" aria-labelledby="contact-title">
+      <div class="container contact-grid">
+
+        <div>
+          <h2 id="contact-title">Contact</h2>
+          <p class="lede">
+            Questions about products or orders?
+            Contact information will be added before launch.
+          </p>
+        </div>
+
+        <dl class="contact-list">
+          <div>
+            <dt>Email</dt>
+            <dd>Contact details coming soon</dd>
+          </div>
+
+          <div>
+            <dt>Delivery</dt>
+            <dd>Surat, Gujarat</dd>
+          </div>
+
+          <div>
+            <dt>Customer support</dt>
+            <dd>Details coming soon</dd>
+          </div>
+        </dl>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+
+        <p class="footer-brand">VELFORM</p>
+
+        <nav aria-label="Footer">
+          <ul>
+            <li><a href="#collection">Products</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li>
+              <button class="link-button" type="button" data-open-cart>
+                Cart
+              </button>
+            </li>
+            <li><a href="#top">Back to top</a></li>
+          </ul>
+        </nav>
+
+      </div>
+
+      <p class="footer-demo">
+        Demo store. Orders and payments are not active.
+      </p>
+
+      <p class="footer-copy">
+        &copy; 2026 Velform. All rights reserved.
+      </p>
+    </div>
+  </footer>
+
+  <!-- CART DRAWER -->
+  <div class="overlay" id="overlay"></div>
+
+  <aside class="cart" id="cart" aria-label="Shopping cart" aria-hidden="true">
+    <div class="cart-head">
+      <h2>Your cart</h2>
+      <button class="cart-close" id="close-cart" type="button">Close</button>
+    </div>
+
+    <p class="cart-demo">
+      Demo store: checkout and payment are not enabled.
+    </p>
+
+    <div class="cart-body">
+      <p class="cart-empty" id="cart-empty">
+        Your cart is empty. Choose a size and add a product.
+      </p>
+      <ul class="cart-items" id="cart-items"></ul>
+    </div>
+
+    <div class="cart-foot">
+      <div class="total-row">
+        <span>Total</span>
+        <strong id="cart-total">₹0</strong>
+      </div>
+
+      <button class="btn btn-outline" id="clear-cart" type="button">
+        Clear cart
+      </button>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="js/intro.js"></script>
+  <script src="js/script.js"></script>
+  <script type="module" src="js/main-auth.js"></script>
+  <script type="module" src="js/cart-sync.js"></script>
+  <script type="module" src="js/homepage.js"></script>
+
+</body>
+</html>

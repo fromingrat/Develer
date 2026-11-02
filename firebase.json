@@ -1,6 +1,16 @@
 {
   "hosting": {
     "public": ".",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "firebase-debug.log"]
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "firebase-debug.log",
+      "android/**",
+      "www/**",
+      "package.json",
+      "package-lock.json",
+      "capacitor.config.json"
+    ]
   }
 }
