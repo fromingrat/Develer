@@ -5,250 +5,596 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f8f7f4">
-  <title>Complete Your Profile | Velform</title>
+
+  <title>Complete Your Profile | VELFORM</title>
 
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --background: #f8f7f4;
+      --black: #171717;
+      --grey: #77736d;
+      --gold: #92794f;
+      --line: #e5e0d7;
+      --white: #ffffff;
+      --sans: "Jost", "Segoe UI", Arial, sans-serif;
+      --serif: Georgia, "Times New Roman", serif;
+    }
 
     body {
       margin: 0;
-      padding: 28px 16px;
-      background: #f8f7f4;
-      color: #171717;
-      font-family: Arial, Helvetica, sans-serif;
+      min-height: 100vh;
+      min-height: 100svh;
+      background: var(--background);
+      color: var(--black);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
     }
 
-    main {
-      width: 100%;
-      max-width: 500px;
-      margin: 0 auto;
+    [hidden] {
+      display: none !important;
     }
+
+    /* Header */
+
+    .setup-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 7%;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--grey);
+      font-size: 12px;
+      text-decoration: none;
+      transition: color 200ms ease;
+    }
+
+    .back-link:hover {
+      color: var(--black);
+    }
+
+    .header-label {
+      color: #99938a;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+    }
+
+    /* Main layout */
+
+    .setup-main {
+      width: 100%;
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 25px 22px 65px;
+      animation: reveal 700ms ease both;
+    }
+
+    @keyframes reveal {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Brand */
 
     .brand {
+      margin: 0;
       text-align: center;
-      font-size: 30px;
-      font-weight: 700;
-      letter-spacing: 4px;
-      margin: 10px 0;
+      font-family: var(--sans);
+      font-size: 39px;
+      font-weight: 650;
+      letter-spacing: 0.22em;
+      text-indent: 0.22em;
+    }
+
+    .brand-line {
+      width: 48px;
+      height: 2px;
+      margin: 17px auto 35px;
+      background: var(--gold);
+    }
+
+    /* Intro */
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--gold);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      text-align: center;
+    }
+
+    .setup-title {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(32px, 8vw, 40px);
+      font-weight: 400;
+      line-height: 1.2;
+      text-align: center;
     }
 
     .intro {
+      max-width: 340px;
+      margin: 13px auto 34px;
+      color: var(--grey);
+      font-size: 13px;
+      line-height: 1.8;
       text-align: center;
-      color: #666;
-      line-height: 1.5;
-      margin-bottom: 28px;
+    }
+
+    /* Form sections */
+
+    .form-section {
+      margin-top: 27px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 19px;
+      color: var(--gold);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.17em;
+    }
+
+    .section-heading::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    /* Fields */
+
+    .field {
+      margin-bottom: 19px;
     }
 
     label {
       display: block;
-      font-size: 13px;
-      font-weight: 600;
-      margin: 17px 0 7px;
+      margin-bottom: 8px;
+      color: #37342f;
+      font-size: 12px;
+      font-weight: 550;
+      letter-spacing: 0.02em;
     }
 
-    input, select {
+    .optional {
+      margin-left: 5px;
+      color: #99938a;
+      font-size: 10px;
+      font-weight: 400;
+    }
+
+    input {
+      display: block;
       width: 100%;
-      padding: 13px;
-      border: 1px solid #d5d3ce;
+      min-height: 51px;
+      padding: 13px 14px;
+      border: 1px solid #d9d4cb;
       border-radius: 2px;
-      background: white;
-      color: #171717;
-      font-size: 15px;
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 400;
+      transition: border-color 180ms ease;
     }
 
-    input:focus, select:focus {
-      outline: 2px solid #777;
-      outline-offset: 1px;
+    input::placeholder {
+      color: #aaa49a;
+      opacity: 1;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--black);
+    }
+
+    input:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
     }
 
     .hint {
-      margin: 6px 0 0;
-      color: #777;
-      font-size: 12px;
+      margin: 7px 0 0;
+      color: #89837a;
+      font-size: 11px;
+      line-height: 1.6;
     }
 
-    button {
+    /* Save button */
+
+    .save-button {
       width: 100%;
-      margin-top: 25px;
-      padding: 15px;
-      border: 0;
-      background: #171717;
-      color: white;
-      font-size: 15px;
-      font-weight: 600;
+      min-height: 56px;
+      margin-top: 15px;
+      padding: 14px 18px;
+      border: 1px solid var(--black);
+      border-radius: 2px;
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 550;
+      letter-spacing: 0.12em;
       cursor: pointer;
+      transition:
+        background 200ms ease,
+        color 200ms ease,
+        opacity 200ms ease;
     }
 
-    button:disabled {
+    .save-button:hover:not(:disabled) {
+      background: transparent;
+      color: var(--black);
+    }
+
+    .save-button:disabled {
       opacity: 0.6;
       cursor: wait;
     }
 
+    /* Status */
+
     #message {
-      font-size: 14px;
-      line-height: 1.5;
+      min-height: 22px;
+      margin: 15px 0 0;
+      color: #b42318;
+      font-size: 12px;
+      line-height: 1.6;
+      text-align: center;
     }
 
-    .back {
-      display: block;
+    /* Footer */
+
+    .setup-footer {
+      padding: 22px;
+      border-top: 1px solid var(--line);
       text-align: center;
-      margin: 20px 0;
-      color: #555;
-      text-decoration: none;
-      font-size: 14px;
+    }
+
+    .footer-brand {
+      margin: 0;
+      color: #918b81;
+      font-size: 9px;
+      letter-spacing: 0.22em;
+    }
+
+    .footer-caption {
+      margin: 7px 0 0;
+      color: #aaa49a;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 480px) {
+      .setup-header {
+        padding: 21px 20px;
+      }
+
+      .header-label {
+        font-size: 8px;
+      }
+
+      .setup-main {
+        padding-top: 20px;
+      }
+
+      .brand-line {
+        margin-bottom: 30px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
     }
   </style>
 </head>
 
 <body>
-<main>
-  <div class="brand">VELFORM</div>
-  <p class="intro">
-    Complete your profile once for a smoother shopping experience.
-  </p>
 
-  <form id="profile-form">
-    <label for="name">Full name *</label>
-    <input id="name" name="name" autocomplete="name"
-      maxlength="80" required>
+  <header class="setup-header">
+    <a class="back-link" href="index.html">
+      <span aria-hidden="true">←</span>
+      Back to home
+    </a>
 
-    <label for="phone">Mobile number *</label>
-    <input id="phone" name="phone" type="tel"
-      inputmode="numeric" autocomplete="tel"
-      pattern="[6-9][0-9]{9}" maxlength="10" required>
-    <p class="hint">Enter your 10-digit Indian mobile number.</p>
+    <span class="header-label">THE VELFORM EXPERIENCE</span>
+  </header>
 
-    <label for="address">House / flat and street address *</label>
-    <input id="address" name="address"
-      autocomplete="street-address" maxlength="200" required>
+  <main class="setup-main">
 
-    <label for="area">Area / locality in Surat *</label>
-    <input id="area" name="area" maxlength="100" required>
+    <h1 class="brand">VELFORM</h1>
+    <div class="brand-line"></div>
 
-    <label for="landmark">Landmark (optional)</label>
-    <input id="landmark" name="landmark" maxlength="120">
+    <p class="eyebrow">A LITTLE ABOUT YOU</p>
 
-    <label for="alternate">Alternate mobile number (optional)</label>
-    <input id="alternate" name="alternate" type="tel"
-      inputmode="numeric" pattern="[6-9][0-9]{9}"
-      maxlength="10">
+    <h2 class="setup-title">Complete your profile.</h2>
 
-    <button id="save-button" type="submit">
-      Save profile
-    </button>
-    <p id="message" role="status" aria-live="polite"></p>
-  </form>
+    <p class="intro">
+      Just a few details to make your shopping
+      experience more personal and convenient.
+    </p>
 
-  <a class="back" href="index.html">Back to homepage</a>
-</main>
+    <form id="profile-form">
 
-<script type="module">
-  import { auth, db } from "./js/firebase.js";
-  import {
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
-  import {
-    doc, getDoc, setDoc, serverTimestamp
-  } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+      <section class="form-section">
+        <h3 class="section-heading">PERSONAL DETAILS</h3>
 
-  const form = document.getElementById("profile-form");
-  const saveButton = document.getElementById("save-button");
-  const message = document.getElementById("message");
+        <div class="field">
+          <label for="name">Full name *</label>
+          <input
+            id="name"
+            name="name"
+            autocomplete="name"
+            maxlength="80"
+            placeholder="Enter your full name"
+            required
+          >
+        </div>
 
-  let currentUser = null;
-  let ready = false;
+        <div class="field">
+          <label for="phone">Mobile number *</label>
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            inputmode="numeric"
+            autocomplete="tel"
+            pattern="[6-9][0-9]{9}"
+            maxlength="10"
+            placeholder="10-digit mobile number"
+            required
+          >
+          <p class="hint">
+            Enter your 10-digit Indian mobile number.
+          </p>
+        </div>
+      </section>
 
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      window.location.replace("login.html");
-      return;
-    }
+      <section class="form-section">
+        <h3 class="section-heading">DELIVERY ADDRESS</h3>
 
-    currentUser = user;
+        <div class="field">
+          <label for="address">House / flat and street address *</label>
+          <input
+            id="address"
+            name="address"
+            autocomplete="street-address"
+            maxlength="200"
+            placeholder="House number, building, street"
+            required
+          >
+        </div>
 
-    try {
-      const ref = doc(db, "users", user.uid);
-      const snapshot = await getDoc(ref);
+        <div class="field">
+          <label for="area">Area / locality in Surat *</label>
+          <input
+            id="area"
+            name="area"
+            maxlength="100"
+            placeholder="Enter your area or locality"
+            required
+          >
+        </div>
 
-      if (snapshot.exists() &&
-          snapshot.data().profileComplete === true) {
-        window.location.replace("index.html");
+        <div class="field">
+          <label for="landmark">
+            Landmark <span class="optional">OPTIONAL</span>
+          </label>
+          <input
+            id="landmark"
+            name="landmark"
+            maxlength="120"
+            placeholder="Nearby shop, building or landmark"
+          >
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h3 class="section-heading">ADDITIONAL CONTACT</h3>
+
+        <div class="field">
+          <label for="alternate">
+            Alternate mobile number
+            <span class="optional">OPTIONAL</span>
+          </label>
+          <input
+            id="alternate"
+            name="alternate"
+            type="tel"
+            inputmode="numeric"
+            pattern="[6-9][0-9]{9}"
+            maxlength="10"
+            placeholder="Enter another mobile number"
+          >
+          <p class="hint">
+            Use a different number from your primary mobile number.
+          </p>
+        </div>
+      </section>
+
+      <button
+        class="save-button"
+        id="save-button"
+        type="submit"
+      >
+        SAVE PROFILE
+      </button>
+
+      <p id="message" role="status" aria-live="polite"></p>
+
+    </form>
+
+  </main>
+
+  <footer class="setup-footer">
+    <p class="footer-brand">VELFORM PREMIUM</p>
+    <p class="footer-caption">
+      CONSIDERED STYLE. PERSONAL EXPERIENCE.
+    </p>
+  </footer>
+
+  <script type="module">
+    import { auth, db } from "./js/firebase.js";
+
+    import {
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+
+    import {
+      doc,
+      getDoc,
+      setDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+
+    const form = document.getElementById("profile-form");
+    const saveButton = document.getElementById("save-button");
+    const message = document.getElementById("message");
+
+    let currentUser = null;
+    let ready = false;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.replace("login.html");
         return;
       }
 
-      const profile = snapshot.exists() ? snapshot.data() : {};
+      currentUser = user;
 
-      document.getElementById("name").value =
-        profile.name || user.displayName || "";
-      document.getElementById("phone").value =
-        profile.phone || "";
-      document.getElementById("address").value =
-        profile.address || "";
-      document.getElementById("area").value =
-        profile.area || "";
-      document.getElementById("landmark").value =
-        profile.landmark || "";
-      document.getElementById("alternate").value =
-        profile.alternatePhone || "";
+      try {
+        const ref = doc(db, "users", user.uid);
+        const snapshot = await getDoc(ref);
 
-      ready = true;
-    } catch (error) {
-      console.error("Profile load failed:", error.code);
-      message.textContent =
-        "Could not load your profile. Please refresh and try again.";
-    }
-  });
+        if (
+          snapshot.exists() &&
+          snapshot.data().profileComplete === true
+        ) {
+          window.location.replace("index.html");
+          return;
+        }
 
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
+        const profile = snapshot.exists()
+          ? snapshot.data()
+          : {};
 
-    if (!ready || !currentUser) return;
+        document.getElementById("name").value =
+          profile.name || user.displayName || "";
 
-    if (!form.reportValidity()) return;
+        document.getElementById("phone").value =
+          profile.phone || "";
 
-    const phone = document.getElementById("phone").value.trim();
-    const alternatePhone =
-      document.getElementById("alternate").value.trim();
+        document.getElementById("address").value =
+          profile.address || "";
 
-    if (alternatePhone && alternatePhone === phone) {
-      message.textContent =
-        "Alternate number must be different from your main number.";
-      return;
-    }
+        document.getElementById("area").value =
+          profile.area || "";
 
-    saveButton.disabled = true;
-    saveButton.textContent = "Saving...";
-    message.textContent = "";
+        document.getElementById("landmark").value =
+          profile.landmark || "";
 
-    try {
-      const ref = doc(db, "users", currentUser.uid);
-      const oldSnapshot = await getDoc(ref);
-      const oldProfile = oldSnapshot.exists()
-        ? oldSnapshot.data()
-        : {};
+        document.getElementById("alternate").value =
+          profile.alternatePhone || "";
 
-      await setDoc(ref, {
-        name: document.getElementById("name").value.trim(),
-        email: currentUser.email || "",
-        phone,
-        address: document.getElementById("address").value.trim(),
-        area: document.getElementById("area").value.trim(),
-        landmark: document.getElementById("landmark").value.trim(),
-        alternatePhone,
-        profileComplete: true,
-        createdAt: oldProfile.createdAt || serverTimestamp(),
-        updatedAt: serverTimestamp()
-      });
+        ready = true;
 
-      window.location.replace("index.html");
-    } catch (error) {
-      console.error("Profile save failed:", error.code, error.message);
-      message.textContent =
-        "Profile could not be saved. Please try again.";
-      saveButton.disabled = false;
-      saveButton.textContent = "Save profile";
-    }
-  });
-</script>
+      } catch (error) {
+        console.error("Profile load failed:", error.code);
+
+        message.textContent =
+          "Could not load your profile. Please refresh and try again.";
+      }
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (!ready || !currentUser) return;
+
+      if (!form.reportValidity()) return;
+
+      const phone =
+        document.getElementById("phone").value.trim();
+
+      const alternatePhone =
+        document.getElementById("alternate").value.trim();
+
+      if (alternatePhone && alternatePhone === phone) {
+        message.textContent =
+          "Alternate number must be different from your main number.";
+        return;
+      }
+
+      saveButton.disabled = true;
+      saveButton.textContent = "SAVING...";
+      message.textContent = "";
+
+      try {
+        const ref = doc(db, "users", currentUser.uid);
+
+        const oldSnapshot = await getDoc(ref);
+
+        const oldProfile = oldSnapshot.exists()
+          ? oldSnapshot.data()
+          : {};
+
+        await setDoc(ref, {
+          name: document.getElementById("name").value.trim(),
+          email: currentUser.email || "",
+          phone,
+          address: document.getElementById("address").value.trim(),
+          area: document.getElementById("area").value.trim(),
+          landmark: document.getElementById("landmark").value.trim(),
+          alternatePhone,
+          profileComplete: true,
+          createdAt: oldProfile.createdAt || serverTimestamp(),
+          updatedAt: serverTimestamp()
+        });
+
+        window.location.replace("index.html");
+
+      } catch (error) {
+        console.error(
+          "Profile save failed:",
+          error.code,
+          error.message
+        );
+
+        message.textContent =
+          "Profile could not be saved. Please try again.";
+
+        saveButton.disabled = false;
+        saveButton.textContent = "SAVE PROFILE";
+      }
+    });
+  </script>
+
 </body>
 </html>
