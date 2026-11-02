@@ -39,7 +39,47 @@
       display: none !important;
     }
 
-    /* Top navigation */
+    /* LUXURY ANIMATIONS */
+
+    @keyframes luxuryRise {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes luxuryLine {
+      from {
+        opacity: 0;
+        transform: scaleX(0);
+      }
+
+      to {
+        opacity: 1;
+        transform: scaleX(1);
+      }
+    }
+
+    @keyframes luxuryWord {
+      from {
+        opacity: 0;
+        transform: translateY(22px);
+        filter: blur(5px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+      }
+    }
+
+    /* TOP NAVIGATION */
 
     .login-header {
       display: flex;
@@ -57,6 +97,8 @@
       text-decoration: none;
       letter-spacing: 0.04em;
       transition: color 200ms ease;
+      animation: luxuryRise 900ms ease both;
+      animation-delay: 100ms;
     }
 
     .back-link:hover {
@@ -67,9 +109,11 @@
       color: #99938a;
       font-size: 9px;
       letter-spacing: 0.2em;
+      animation: luxuryRise 900ms ease both;
+      animation-delay: 200ms;
     }
 
-    /* Main login area */
+    /* MAIN LOGIN AREA */
 
     .login-main {
       flex: 1;
@@ -83,22 +127,9 @@
       width: 100%;
       max-width: 420px;
       text-align: center;
-      animation: loginReveal 800ms ease both;
     }
 
-    @keyframes loginReveal {
-      from {
-        opacity: 0;
-        transform: translateY(18px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* Brand */
+    /* BRAND */
 
     .brand {
       margin: 0;
@@ -107,6 +138,8 @@
       font-weight: 650;
       letter-spacing: 0.22em;
       text-indent: 0.22em;
+      animation: luxuryRise 1100ms cubic-bezier(.2,.7,.2,1) both;
+      animation-delay: 100ms;
     }
 
     .brand-line {
@@ -114,9 +147,12 @@
       height: 2px;
       margin: 19px auto 42px;
       background: var(--gold);
+      transform-origin: center;
+      animation: luxuryLine 1100ms ease both;
+      animation-delay: 450ms;
     }
 
-    /* Welcome text */
+    /* WELCOME TEXT */
 
     .eyebrow {
       margin: 0 0 15px;
@@ -124,6 +160,8 @@
       font-size: 9px;
       font-weight: 600;
       letter-spacing: 0.25em;
+      animation: luxuryRise 900ms ease both;
+      animation-delay: 650ms;
     }
 
     .login-title {
@@ -134,15 +172,30 @@
       line-height: 1.15;
     }
 
+    .title-word {
+      display: inline-block;
+      animation: luxuryWord 1100ms cubic-bezier(.2,.7,.2,1) both;
+    }
+
+    .title-word:first-child {
+      animation-delay: 800ms;
+    }
+
+    .title-word:last-child {
+      animation-delay: 1000ms;
+    }
+
     .subtitle {
       max-width: 300px;
       margin: 15px auto 36px;
       color: var(--grey);
       font-size: 13px;
       line-height: 1.8;
+      animation: luxuryRise 1000ms ease both;
+      animation-delay: 1200ms;
     }
 
-    /* Google button */
+    /* GOOGLE BUTTON */
 
     .google-btn {
       display: flex;
@@ -165,11 +218,14 @@
         background 220ms ease,
         border-color 220ms ease,
         transform 220ms ease;
+      animation: luxuryRise 1100ms cubic-bezier(.2,.7,.2,1) both;
+      animation-delay: 1500ms;
     }
 
     .google-btn:hover:not(:disabled) {
       border-color: var(--black);
       background: #fdfcf9;
+      transform: translateY(-2px);
     }
 
     .google-btn:active:not(:disabled) {
@@ -187,7 +243,7 @@
       flex-shrink: 0;
     }
 
-    /* Divider and note */
+    /* DIVIDER AND NOTE */
 
     .login-divider {
       display: flex;
@@ -197,6 +253,8 @@
       color: #a19b91;
       font-size: 9px;
       letter-spacing: 0.16em;
+      animation: luxuryRise 1000ms ease both;
+      animation-delay: 1800ms;
     }
 
     .login-divider::before,
@@ -212,9 +270,11 @@
       color: #89837a;
       font-size: 11px;
       line-height: 1.7;
+      animation: luxuryRise 1000ms ease both;
+      animation-delay: 1950ms;
     }
 
-    /* Status message */
+    /* STATUS MESSAGE */
 
     .message {
       min-height: 22px;
@@ -222,14 +282,18 @@
       color: #b42318;
       font-size: 12px;
       line-height: 1.6;
+      animation: luxuryRise 900ms ease both;
+      animation-delay: 1700ms;
     }
 
-    /* Footer */
+    /* FOOTER */
 
     .login-footer {
       padding: 22px;
       border-top: 1px solid var(--line);
       text-align: center;
+      animation: luxuryRise 1100ms ease both;
+      animation-delay: 2200ms;
     }
 
     .footer-brand {
@@ -246,13 +310,15 @@
       letter-spacing: 0.08em;
     }
 
-    /* Accessibility */
+    /* ACCESSIBILITY */
 
     button:focus-visible,
     a:focus-visible {
       outline: 2px solid var(--gold);
       outline-offset: 4px;
     }
+
+    /* MOBILE */
 
     @media (max-width: 480px) {
       .login-header {
@@ -273,11 +339,14 @@
       }
     }
 
+    /* REDUCED MOTION */
+
     @media (prefers-reduced-motion: reduce) {
       *,
       *::before,
       *::after {
         animation-duration: 0.01ms !important;
+        animation-delay: 0ms !important;
         transition-duration: 0.01ms !important;
       }
     }
@@ -287,23 +356,32 @@
 <body>
 
   <header class="login-header">
+
     <a class="back-link" href="index.html">
       <span aria-hidden="true">←</span>
       Back to home
     </a>
 
-    <span class="header-label">THE VELFORM EXPERIENCE</span>
+    <span class="header-label">
+      THE VELFORM EXPERIENCE
+    </span>
+
   </header>
 
   <main class="login-main">
+
     <section class="login">
 
       <h1 class="brand">VELFORM</h1>
+
       <div class="brand-line"></div>
 
       <p class="eyebrow">YOUR ACCOUNT</p>
 
-      <h2 class="login-title">Welcome back.</h2>
+      <h2 class="login-title">
+        <span class="title-word">Welcome</span>
+        <span class="title-word">back.</span>
+      </h2>
 
       <p class="subtitle">
         A more personal way to experience VELFORM.
@@ -315,6 +393,7 @@
         id="google-sign-in"
         type="button"
       >
+
         <svg
           class="google-icon"
           viewBox="0 0 48 48"
@@ -322,18 +401,27 @@
         >
           <path fill="#EA4335"
             d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+
           <path fill="#4285F4"
             d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.91c-.58 2.96-2.25 5.48-4.73 7.18l7.4 5.74c4.32-3.99 7.4-9.87 7.4-17.39z"/>
+
           <path fill="#FBBC05"
             d="M10.53 28.59A14.4 14.4 0 0 1 9.75 24c0-1.59.28-3.13.78-4.59l-7.98-6.19A23.9 23.9 0 0 0 0 24c0 3.87.93 7.52 2.56 10.78l7.97-6.19z"/>
+
           <path fill="#34A853"
             d="M24 48c6.48 0 11.93-2.13 15.9-5.77l-7.4-5.74c-2.05 1.38-4.67 2.2-8.5 2.2-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
         </svg>
 
         <span>Continue with Google</span>
+
       </button>
 
-      <p class="message" id="message" role="status" aria-live="polite"></p>
+      <p
+        class="message"
+        id="message"
+        role="status"
+        aria-live="polite"
+      ></p>
 
       <div class="login-divider">
         <span>ONE ACCOUNT. MORE POSSIBILITIES.</span>
@@ -345,14 +433,23 @@
       </p>
 
     </section>
+
   </main>
 
   <footer class="login-footer">
+
     <p class="footer-brand">VELFORM PREMIUM</p>
-    <p class="footer-caption">CONSIDERED STYLE. PERSONAL EXPERIENCE.</p>
+
+    <p class="footer-caption">
+      CONSIDERED STYLE. PERSONAL EXPERIENCE.
+    </p>
+
   </footer>
 
+  <!-- FIREBASE AUTHENTICATION: PRESERVED -->
+
   <script type="module">
+
     import { signInWithGoogle } from "./js/auth.js";
     import { auth, db } from "./js/firebase.js";
 
@@ -375,6 +472,7 @@
 
       redirecting = true;
       button.disabled = true;
+
       button.querySelector("span").textContent =
         "Checking your profile...";
 
@@ -390,6 +488,7 @@
         } else {
           window.location.replace("setup.html");
         }
+
       } catch (error) {
         console.error(
           "Profile check failed:",
@@ -399,6 +498,7 @@
 
         redirecting = false;
         button.disabled = false;
+
         button.querySelector("span").textContent =
           "Continue with Google";
 
@@ -408,6 +508,7 @@
     }
 
     button.addEventListener("click", async () => {
+
       message.textContent = "";
       button.disabled = true;
 
@@ -438,6 +539,7 @@
     onAuthStateChanged(auth, (user) => {
       if (user) routeUser(user);
     });
+
   </script>
 
 </body>
