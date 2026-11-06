@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f7f4">
+  <title>Raise a Ticket | VELFORM</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --ink: #171717;
+      --muted: #77736d;
+      --gold: #92794f;
+      --line: #e5e0d7;
+      --paper: #f8f7f4;
+      --white: #fff;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Jost", Arial, sans-serif;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 20px;
+    }
+
+    .back {
+      color: var(--muted);
+      font-size: 12px;
+      text-decoration: none;
+    }
+
+    .top-label {
+      color: #99938a;
+      font-size: 9px;
+      letter-spacing: .2em;
+    }
+
+    main {
+      width: min(100% - 36px, 620px);
+      margin: 28px auto 70px;
+      animation: reveal .65s ease both;
+    }
+
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .brand {
+      text-align: center;
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: .22em;
+    }
+
+    .line {
+      width: 44px;
+      height: 2px;
+      background: var(--gold);
+      margin: 13px auto 34px;
+    }
+
+    .eyebrow {
+      text-align: center;
+      color: var(--gold);
+      font-size: 9px;
+      letter-spacing: .24em;
+      margin: 0 0 10px;
+    }
+
+    h1 {
+      font: 500 clamp(34px, 8vw, 43px)/1.1
+        "Cormorant Garamond", Georgia, serif;
+      text-align: center;
+      margin: 0;
+    }
+
+    .intro {
+      max-width: 390px;
+      margin: 12px auto 30px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .panel {
+      padding: 26px 22px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      box-shadow: 0 12px 35px rgba(20,20,20,.035);
+    }
+
+    .signed {
+      margin: 0 0 23px;
+      padding: 12px 13px;
+      background: #f7f6f2;
+      color: #625b50;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .field { margin-bottom: 19px; }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    input, select, textarea {
+      display: block;
+      width: 100%;
+      min-height: 49px;
+      padding: 12px 13px;
+      border: 1px solid #d9d4cb;
+      border-radius: 2px;
+      background: white;
+      color: var(--ink);
+      font: 13px "Jost", Arial, sans-serif;
+    }
+
+    textarea {
+      min-height: 145px;
+      resize: vertical;
+      line-height: 1.65;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: #aaa49a;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid #c6b18b;
+      outline-offset: 1px;
+      border-color: var(--ink);
+    }
+
+    .hint {
+      margin: 7px 0 0;
+      color: #89837a;
+      font-size: 10px;
+      line-height: 1.6;
+    }
+
+    button {
+      width: 100%;
+      min-height: 53px;
+      padding: 13px;
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: white;
+      font: 500 11px "Jost", Arial, sans-serif;
+      letter-spacing: .13em;
+      cursor: pointer;
+      transition: background .2s, color .2s, opacity .2s;
+    }
+
+    button:hover:not(:disabled) {
+      background: white;
+      color: var(--ink);
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: wait;
+    }
+
+    .status {
+      min-height: 22px;
+      margin: 14px 0 0;
+      text-align: center;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #a12b22;
+    }
+
+    .status.success { color: #26734d; }
+
+    .signed-out {
+      padding: 25px 18px;
+      text-align: center;
+      background: white;
+      border: 1px solid var(--line);
+    }
+
+    .signed-out p {
+      margin: 0 0 17px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .signed-out a {
+      display: block;
+      padding: 15px;
+      background: var(--ink);
+      color: white;
+      text-decoration: none;
+      font-size: 11px;
+      letter-spacing: .12em;
+    }
+
+    footer {
+      text-align: center;
+      padding: 22px;
+      border-top: 1px solid var(--line);
+      color: #99938a;
+      font-size: 9px;
+      letter-spacing: .2em;
+    }
+
+    [hidden] { display: none !important; }
+
+    @media (max-width: 480px) {
+      .panel { padding: 22px 17px; }
+      main { margin-top: 20px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="top">
+    <a class="back" href="index.html">← Back to home</a>
+    <span class="top-label">CUSTOMER SUPPORT</span>
+  </header>
+
+  <main>
+    <div class="brand">VELFORM</div>
+    <div class="line"></div>
+
+    <p class="eyebrow">WE'RE HERE TO HELP</p>
+    <h1>How can we help?</h1>
+
+    <p class="intro">
+      Tell us what happened. Our support team will use your
+      account details to follow up about your request.
+    </p>
+
+    <section id="signed-out" class="signed-out" hidden>
+      <p>
+        Please sign in to raise a support ticket.
+        Your account email will be attached automatically.
+      </p>
+      <a href="login.html">SIGN IN TO CONTINUE →</a>
+    </section>
+
+    <form id="ticket-form" class="panel" hidden>
+      <p class="signed" id="account-note">Signed in</p>
+
+      <div class="field">
+        <label for="category">What do you need help with? *</label>
+        <select id="category" required>
+          <option value="">Choose a topic</option>
+          <option value="Order and delivery">Order and delivery</option>
+          <option value="Return or exchange">Return or exchange</option>
+          <option value="Payment or refund">Payment or refund</option>
+          <option value="Product information">Product information</option>
+          <option value="Membership">Membership</option>
+          <option value="Account or login">Account or login</option>
+          <option value="Website or app issue">Website or app issue</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="order-id">
+          Order ID <span style="color:#99938a;font-weight:400">(optional)</span>
+        </label>
+        <input id="order-id" maxlength="80"
+          placeholder="e.g. VF-12345">
+        <p class="hint">Add this if your request is related to an order.</p>
+      </div>
+
+      <div class="field">
+        <label for="subject">Subject *</label>
+        <input id="subject" maxlength="100" required
+          placeholder="Briefly describe the issue">
+      </div>
+
+      <div class="field">
+        <label for="description">How can we help? *</label>
+        <textarea id="description" minlength="10" maxlength="3000"
+          required
+          placeholder="Share the details so we can understand your request (10–3000 characters)."></textarea>
+        <p class="hint">
+          Please don't include passwords, OTPs or payment card details.
+        </p>
+      </div>
+
+      <button id="submit-ticket" type="submit">SUBMIT TICKET</button>
+      <p id="ticket-status" class="status"
+        role="status" aria-live="polite"></p>
+    </form>
+  </main>
+
+  <footer>VELFORM · CUSTOMER SUPPORT</footer>
+
+  <script type="module">
+    import { auth, db } from "./js/firebase.js";
+
+    import {
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+
+    import {
+      addDoc,
+      collection,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+
+    const form = document.getElementById("ticket-form");
+    const signedOut = document.getElementById("signed-out");
+    const accountNote = document.getElementById("account-note");
+    const submitButton = document.getElementById("submit-ticket");
+    const status = document.getElementById("ticket-status");
+
+    let currentUser = null;
+
+    onAuthStateChanged(auth, (user) => {
+      currentUser = user;
+      form.hidden = !user;
+      signedOut.hidden = Boolean(user);
+
+      if (user) {
+        accountNote.textContent =
+          "Signed in as " +
+          (user.displayName || user.email || "your VELFORM account");
+      }
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      status.textContent = "";
+      status.classList.remove("success");
+
+      if (!currentUser) {
+        signedOut.hidden = false;
+        form.hidden = true;
+        return;
+      }
+
+      if (!form.reportValidity()) return;
+
+      const ticket = {
+        uid: currentUser.uid,
+        email: currentUser.email || "",
+        customerName: currentUser.displayName || "",
+        category: document.getElementById("category").value,
+        orderId: document.getElementById("order-id").value.trim(),
+        subject: document.getElementById("subject").value.trim(),
+        description: document.getElementById("description").value.trim(),
+        status: "open",
+        createdAt: serverTimestamp()
+      };
+
+      submitButton.disabled = true;
+      submitButton.textContent = "SUBMITTING...";
+
+      try {
+        await addDoc(collection(db, "supportTickets"), ticket);
+
+        form.reset();
+
+        status.textContent =
+          "Your ticket has been submitted. Thank you for contacting VELFORM.";
+
+        status.classList.add("success");
+
+      } catch (error) {
+        console.error("Ticket submission failed:", error.code, error.message);
+
+        status.textContent =
+          error.code === "permission-denied"
+            ? "Ticket submission is not enabled yet. Please try again later."
+            : "Your ticket could not be submitted. Please try again.";
+
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = "SUBMIT TICKET";
+      }
+    });
+  </script>
+</body>
+</html>
