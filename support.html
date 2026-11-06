@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,6 +21,7 @@
       --line: #e5e0d7;
       --paper: #f8f7f4;
       --white: #fff;
+      --red: #b42318;
     }
 
     body {
@@ -133,6 +135,7 @@
       background: white;
       color: var(--ink);
       font: 13px "Jost", Arial, sans-serif;
+      transition: border-color .2s, background .2s;
     }
 
     textarea {
@@ -156,6 +159,98 @@
       color: #89837a;
       font-size: 10px;
       line-height: 1.6;
+    }
+
+    /* Skeleton loading */
+    .ticket-skeleton {
+      padding: 26px 22px;
+      background: white;
+      border: 1px solid var(--line);
+      box-shadow: 0 12px 35px rgba(20,20,20,.035);
+    }
+
+    .skeleton-line,
+    .skeleton-label,
+    .skeleton-control {
+      position: relative;
+      overflow: hidden;
+      background: #eeece7;
+      border-radius: 2px;
+    }
+
+    .skeleton-line::after,
+    .skeleton-label::after,
+    .skeleton-control::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.75),
+        transparent
+      );
+      animation: skeletonShimmer 1.35s ease-in-out infinite;
+    }
+
+    @keyframes skeletonShimmer {
+      to { transform: translateX(100%); }
+    }
+
+    .skeleton-line {
+      height: 13px;
+      width: 42%;
+      margin-bottom: 24px;
+    }
+
+    .skeleton-label {
+      height: 11px;
+      width: 43%;
+      margin-bottom: 10px;
+    }
+
+    .skeleton-control {
+      height: 49px;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .skeleton-control.large {
+      height: 145px;
+    }
+
+    /* Invalid field feedback */
+    input.invalid,
+    select.invalid,
+    textarea.invalid {
+      border: 1.5px solid var(--red);
+      background: #fffafa;
+    }
+
+    input.invalid:focus,
+    select.invalid:focus,
+    textarea.invalid:focus {
+      outline: 1px solid var(--red);
+      border-color: var(--red);
+    }
+
+    .field-error {
+      margin: 7px 2px 0;
+      color: var(--red);
+      font-size: 11px;
+      line-height: 1.5;
+      animation: reveal .2s ease both;
+    }
+
+    @keyframes fieldShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
+
+    .shake {
+      animation: fieldShake .35s ease;
     }
 
     button {
@@ -228,12 +323,19 @@
     [hidden] { display: none !important; }
 
     @media (max-width: 480px) {
-      .panel { padding: 22px 17px; }
+      .panel,
+      .ticket-skeleton {
+        padding: 22px 17px;
+      }
+
       main { margin-top: 20px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      * { animation: none !important; transition: none !important; }
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
     }
   </style>
 </head>
@@ -256,6 +358,33 @@
       account details to follow up about your request.
     </p>
 
+    <!-- Loading skeleton -->
+    <section
+      id="ticket-skeleton"
+      class="ticket-skeleton"
+      aria-label="Loading support form"
+    >
+      <div class="skeleton-line"></div>
+
+      <div class="skeleton-label"></div>
+      <div class="skeleton-control"></div>
+
+      <div class="skeleton-label" style="width:25%"></div>
+      <div class="skeleton-control"></div>
+
+      <div class="skeleton-label" style="width:31%"></div>
+      <div class="skeleton-control"></div>
+
+      <div class="skeleton-label" style="width:38%"></div>
+      <div class="skeleton-control large"></div>
+
+      <div
+        class="skeleton-control"
+        style="height:53px;margin-bottom:0"
+      ></div>
+    </section>
+
+    <!-- Signed-out message -->
     <section id="signed-out" class="signed-out" hidden>
       <p>
         Please sign in to raise a support ticket.
@@ -264,11 +393,13 @@
       <a href="login.html">SIGN IN TO CONTINUE →</a>
     </section>
 
-    <form id="ticket-form" class="panel" hidden>
+    <!-- Support form -->
+    <form id="ticket-form" class="panel" hidden novalidate>
       <p class="signed" id="account-note">Signed in</p>
 
       <div class="field">
         <label for="category">What do you need help with? *</label>
+
         <select id="category" required>
           <option value="">Choose a topic</option>
           <option value="Order and delivery">Order and delivery</option>
@@ -280,36 +411,74 @@
           <option value="Website or app issue">Website or app issue</option>
           <option value="Other">Other</option>
         </select>
+
+        <p class="field-error" id="category-error" hidden></p>
       </div>
 
       <div class="field">
         <label for="order-id">
-          Order ID <span style="color:#99938a;font-weight:400">(optional)</span>
+          Order ID
+          <span style="color:#99938a;font-weight:400">(optional)</span>
         </label>
-        <input id="order-id" maxlength="80"
-          placeholder="e.g. VF-12345">
-        <p class="hint">Add this if your request is related to an order.</p>
+
+        <input
+          id="order-id"
+          maxlength="80"
+          placeholder="e.g. VF-12345"
+        >
+
+        <p class="hint">
+          Add this if your request is related to an order.
+        </p>
+
+        <p class="field-error" id="order-id-error" hidden></p>
       </div>
 
       <div class="field">
         <label for="subject">Subject *</label>
-        <input id="subject" maxlength="100" required
-          placeholder="Briefly describe the issue">
+
+        <input
+          id="subject"
+          maxlength="100"
+          required
+          placeholder="Briefly describe the issue"
+        >
+
+        <p class="hint">
+          Use a short, clear title (3–100 characters).
+        </p>
+
+        <p class="field-error" id="subject-error" hidden></p>
       </div>
 
       <div class="field">
         <label for="description">How can we help? *</label>
-        <textarea id="description" minlength="10" maxlength="3000"
+
+        <textarea
+          id="description"
+          minlength="10"
+          maxlength="3000"
           required
-          placeholder="Share the details so we can understand your request (10–3000 characters)."></textarea>
+          placeholder="Share the details so we can understand your request (10–3000 characters)."
+        ></textarea>
+
         <p class="hint">
           Please don't include passwords, OTPs or payment card details.
         </p>
+
+        <p class="field-error" id="description-error" hidden></p>
       </div>
 
-      <button id="submit-ticket" type="submit">SUBMIT TICKET</button>
-      <p id="ticket-status" class="status"
-        role="status" aria-live="polite"></p>
+      <button id="submit-ticket" type="submit">
+        SUBMIT TICKET
+      </button>
+
+      <p
+        id="ticket-status"
+        class="status"
+        role="status"
+        aria-live="polite"
+      ></p>
     </form>
   </main>
 
@@ -330,14 +499,143 @@
 
     const form = document.getElementById("ticket-form");
     const signedOut = document.getElementById("signed-out");
+    const skeleton = document.getElementById("ticket-skeleton");
     const accountNote = document.getElementById("account-note");
     const submitButton = document.getElementById("submit-ticket");
     const status = document.getElementById("ticket-status");
 
     let currentUser = null;
 
+    const fields = {
+      category: {
+        input: document.getElementById("category"),
+        error: document.getElementById("category-error")
+      },
+
+      orderId: {
+        input: document.getElementById("order-id"),
+        error: document.getElementById("order-id-error")
+      },
+
+      subject: {
+        input: document.getElementById("subject"),
+        error: document.getElementById("subject-error")
+      },
+
+      description: {
+        input: document.getElementById("description"),
+        error: document.getElementById("description-error")
+      }
+    };
+
+    function clearFieldError(name) {
+      const field = fields[name];
+
+      field.input.classList.remove("invalid", "shake");
+      field.input.removeAttribute("aria-invalid");
+
+      field.error.textContent = "";
+      field.error.hidden = true;
+    }
+
+    function setFieldError(name, message) {
+      const field = fields[name];
+
+      field.input.classList.remove("shake");
+      field.input.classList.add("invalid");
+      field.input.setAttribute("aria-invalid", "true");
+
+      field.error.textContent = message;
+      field.error.hidden = false;
+
+      // Restart the shake animation.
+      void field.input.offsetWidth;
+      field.input.classList.add("shake");
+
+      field.input.focus();
+    }
+
+    function validateTicket() {
+      Object.keys(fields).forEach(clearFieldError);
+
+      const category = fields.category.input.value;
+      const orderId = fields.orderId.input.value.trim();
+      const subject = fields.subject.input.value.trim();
+      const description = fields.description.input.value.trim();
+
+      if (!category) {
+        setFieldError(
+          "category",
+          "Please choose the topic that best matches your request."
+        );
+        return false;
+      }
+
+      if (orderId.length > 80) {
+        setFieldError(
+          "orderId",
+          "Order ID must be 80 characters or fewer."
+        );
+        return false;
+      }
+
+      if (subject.length < 3) {
+        setFieldError(
+          "subject",
+          "Please enter a subject with at least 3 characters."
+        );
+        return false;
+      }
+
+      if (subject.length > 100) {
+        setFieldError(
+          "subject",
+          "Subject must be 100 characters or fewer."
+        );
+        return false;
+      }
+
+      if (description.length < 10) {
+        setFieldError(
+          "description",
+          "Please explain your issue in at least 10 characters."
+        );
+        return false;
+      }
+
+      if (description.length > 3000) {
+        setFieldError(
+          "description",
+          "Description must be 3000 characters or fewer."
+        );
+        return false;
+      }
+
+      return true;
+    }
+
+    // Clear an error as the user corrects the field.
+    fields.category.input.addEventListener("change", () => {
+      clearFieldError("category");
+    });
+
+    fields.orderId.input.addEventListener("input", () => {
+      clearFieldError("orderId");
+    });
+
+    fields.subject.input.addEventListener("input", () => {
+      clearFieldError("subject");
+    });
+
+    fields.description.input.addEventListener("input", () => {
+      clearFieldError("description");
+    });
+
+    // Check the user's Firebase login state.
     onAuthStateChanged(auth, (user) => {
       currentUser = user;
+
+      skeleton.hidden = true;
       form.hidden = !user;
       signedOut.hidden = Boolean(user);
 
@@ -348,6 +646,7 @@
       }
     });
 
+    // Submit support ticket.
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
 
@@ -360,16 +659,16 @@
         return;
       }
 
-      if (!form.reportValidity()) return;
+      if (!validateTicket()) return;
 
       const ticket = {
         uid: currentUser.uid,
         email: currentUser.email || "",
         customerName: currentUser.displayName || "",
-        category: document.getElementById("category").value,
-        orderId: document.getElementById("order-id").value.trim(),
-        subject: document.getElementById("subject").value.trim(),
-        description: document.getElementById("description").value.trim(),
+        category: fields.category.input.value,
+        orderId: fields.orderId.input.value.trim(),
+        subject: fields.subject.input.value.trim(),
+        description: fields.description.input.value.trim(),
         status: "open",
         createdAt: serverTimestamp()
       };
@@ -382,13 +681,19 @@
 
         form.reset();
 
+        Object.keys(fields).forEach(clearFieldError);
+
         status.textContent =
           "Your ticket has been submitted. Thank you for contacting VELFORM.";
 
         status.classList.add("success");
 
       } catch (error) {
-        console.error("Ticket submission failed:", error.code, error.message);
+        console.error(
+          "Ticket submission failed:",
+          error.code,
+          error.message
+        );
 
         status.textContent =
           error.code === "permission-denied"
