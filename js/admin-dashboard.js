@@ -25,7 +25,7 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 
-const ADMIN_UID = "qJDZMxnCuYgf6KQahZ0sXzWYQND3";
+const ADMIN_UID = "kIeZUNa0kOZzeRPxddrq8V86qS02";
 const $ = id => document.getElementById(id);
 
 let isAdmin = false;
