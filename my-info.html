@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f7f4">
+  <title>My Info | VELFORM</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --bg: #f8f7f4;
+      --white: #fff;
+      --black: #171717;
+      --grey: #77736d;
+      --gold: #92794f;
+      --line: #e5e0d7;
+      --red: #a32d2d;
+      --green: #34734b;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--black);
+      font-family: "Jost", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    [hidden] { display: none !important; }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 23px 7%;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .back-link {
+      color: var(--grey);
+      font-size: 12px;
+      text-decoration: none;
+    }
+
+    .header-brand {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: .2em;
+    }
+
+    .header-label {
+      color: #99938a;
+      font-size: 9px;
+      letter-spacing: .18em;
+    }
+
+    main {
+      width: min(100% - 36px, 760px);
+      margin: auto;
+      padding: 54px 0 76px;
+      animation: reveal 650ms ease both;
+    }
+
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .intro { margin-bottom: 32px; }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--gold);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .24em;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: clamp(38px, 8vw, 48px);
+      font-weight: 500;
+    }
+
+    .intro-copy {
+      max-width: 430px;
+      margin: 12px 0 0;
+      color: var(--grey);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .profile-card {
+      margin: 18px 0;
+      padding: 25px 26px;
+      border: 1px solid var(--line);
+      background: var(--white);
+      box-shadow: 0 8px 30px rgba(30,25,15,.025);
+    }
+
+    .card-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .card-heading h2 {
+      margin: 0;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .16em;
+    }
+
+    .card-index {
+      color: #a49d92;
+      font-size: 10px;
+    }
+
+    .info-row {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) auto;
+      align-items: center;
+      gap: 16px;
+      padding: 15px 0;
+      border-bottom: 1px solid #f0ede8;
+    }
+
+    .info-row:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .info-label {
+      display: block;
+      margin-bottom: 5px;
+      color: #8b857b;
+      font-size: 10px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .info-value {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .edit-button {
+      min-width: 66px;
+      padding: 8px 11px;
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--black);
+      font: 10px "Jost", Arial, sans-serif;
+      letter-spacing: .06em;
+      cursor: pointer;
+      transition: border-color 180ms ease, background 180ms ease;
+    }
+
+    .edit-button:hover {
+      border-color: var(--black);
+      background: #faf9f6;
+    }
+
+    .read-only {
+      color: #aaa49a;
+      font-size: 10px;
+    }
+
+    .status {
+      min-height: 20px;
+      margin: 16px 0 0;
+      color: var(--red);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .status.success { color: var(--green); }
+
+    .loading-line {
+      height: 48px;
+      margin: 10px 0;
+      background: linear-gradient(
+        90deg,#eeece7 25%,#f8f7f4 50%,#eeece7 75%
+      );
+      background-size: 200% 100%;
+      animation: shimmer 1.35s infinite;
+    }
+
+    @keyframes shimmer {
+      to { background-position: -200% 0; }
+    }
+
+    .page-footer {
+      padding: 24px 18px;
+      border-top: 1px solid var(--line);
+      text-align: center;
+    }
+
+    .footer-brand {
+      margin: 0;
+      color: #918b81;
+      font-size: 9px;
+      letter-spacing: .22em;
+    }
+
+    .footer-caption {
+      margin: 7px 0 0;
+      color: #aaa49a;
+      font-size: 9px;
+      letter-spacing: .08em;
+    }
+
+    button:focus-visible, a:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 520px) {
+      .page-header { padding: 20px 18px; }
+      .header-label { font-size: 8px; }
+      main { padding-top: 39px; }
+      .profile-card { padding: 20px 17px; }
+      .info-row { gap: 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="page-header">
+    <a class="back-link" href="index.html">← Back to store</a>
+    <div class="header-brand">VELFORM</div>
+    <span class="header-label">MY ACCOUNT</span>
+  </header>
+
+  <main>
+    <section class="intro">
+      <p class="eyebrow">YOUR PERSONAL DETAILS</p>
+      <h1>My Info.</h1>
+      <p class="intro-copy">
+        Your information, kept in one place. Review your details
+        and update individual fields whenever something changes.
+      </p>
+    </section>
+
+    <div id="profile-loading" aria-label="Loading your information">
+      <div class="profile-card">
+        <div class="loading-line"></div>
+        <div class="loading-line"></div>
+        <div class="loading-line"></div>
+      </div>
+      <div class="profile-card">
+        <div class="loading-line"></div>
+        <div class="loading-line"></div>
+      </div>
+    </div>
+
+    <div id="profile-content" hidden>
+      <section class="profile-card">
+        <div class="card-heading">
+          <h2>PERSONAL DETAILS</h2>
+          <span class="card-index">01</span>
+        </div>
+
+        <div class="info-row">
+          <div>
+            <span class="info-label">Full name</span>
+            <p class="info-value" id="info-name">—</p>
+          </div>
+          <button class="edit-button" type="button" data-edit="name">EDIT</button>
+        </div>
+
+        <div class="info-row">
+          <div>
+            <span class="info-label">Email address</span>
+            <p class="info-value" id="info-email">—</p>
+          </div>
+          <span class="read-only">READ ONLY</span>
+        </div>
+
+        <div class="info-row">
+          <div>
+            <span class="info-label">Mobile number</span>
+            <p class="info-value" id="info-phone">—</p>
+          </div>
+          <button class="edit-button" type="button" data-edit="phone">EDIT</button>
+        </div>
+
+        <div class="info-row">
+          <div>
+            <span class="info-label">Alternate mobile number</span>
+            <p class="info-value" id="info-alternatePhone">—</p>
+          </div>
+          <button class="edit-button" type="button" data-edit="alternatePhone">EDIT</button>
+        </div>
+      </section>
+
+      <section class="profile-card">
+        <div class="card-heading">
+          <h2>DELIVERY ADDRESS</h2>
+          <span class="card-index">02</span>
+        </div>
+
+        <div class="info-row">
+          <div>
+            <span class="info-label">House / flat and street</span>
+            <p class="info-value" id="info-address">—</p>
+          </div>
+          <button class="edit-button" type="button" data-edit="address">EDIT</button>
+        </div>
+
+        <div class="info-row">
+          <div>
+            <span class="info-label">Area / locality</span>
+            <p class="info-value" id="info-area">—</p>
+          </div>
+          <button class="edit-button" type="button" data-edit="area">EDIT</button>
+        </div>
+
+        <div class="info-row">
+          <div>
+            <span class="info-label">Landmark</span>
+            <p class="info-value" id="info-landmark">—</p>
+          </div>
+          <button class="edit-button" type="button" data-edit="landmark">EDIT</button>
+        </div>
+      </section>
+
+      <p id="profile-message" class="status" role="status" aria-live="polite"></p>
+    </div>
+
+    <p id="page-error" class="status" role="alert"></p>
+  </main>
+
+  <footer class="page-footer">
+    <p class="footer-brand">VELFORM PREMIUM</p>
+    <p class="footer-caption">CONSIDERED STYLE. PERSONAL EXPERIENCE.</p>
+  </footer>
+
+  <script type="module" src="./js/my-info.js"></script>
+</body>
+            </html>
+            
