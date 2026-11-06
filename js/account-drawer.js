@@ -37,7 +37,7 @@ export function createAccountDrawer({
     </div>
 
     <nav class="vf-drawer-links" aria-label="Account options">
-      <a href="setup.html" data-menu-item="info">
+      <a href="my-info.html" data-menu-item="info">
         <span>My Info</span><span>›</span>
       </a>
       <button type="button" data-menu-item="orders">
