@@ -4,8 +4,7 @@ import {
 } from "./firebase.js";
 
 import {
-  signInWithGoogleRedirect,
-  getGoogleRedirectResult,
+  signInWithGoogleChooser,
   signOutUser
 } from "./auth.js";
 
@@ -67,12 +66,33 @@ function requireAdmin() {
 /* GOOGLE AUTHENTICATION */
 
 $("sign-in").addEventListener("click", async () => {
+  const button = $("sign-in");
+
   try {
-    message("login-message", "Redirecting to Google...");
-    await signInWithGoogleRedirect();
+    button.disabled = true;
+    message("login-message", "Opening Google account chooser...");
+
+    await signInWithGoogleChooser();
+
+    // onAuthStateChanged will verify the admin UID
   } catch (error) {
     console.error("Admin Google sign-in:", error);
-    message("login-message", `Sign-in failed: ${error.code || error.message}`);
+
+    let errorMessage = error.code || error.message;
+
+    if (error.code === "auth/popup-blocked") {
+      errorMessage = "Popup blocked. Please allow popups and try again.";
+    } else if (error.code === "auth/popup-closed-by-user") {
+      errorMessage = "Sign-in cancelled. Please try again.";
+    } else if (error.code === "auth/unauthorized-domain") {
+      errorMessage = "This website is not authorized for Google sign-in.";
+    } else if (error.code === "auth/operation-not-allowed") {
+      errorMessage = "Google sign-in is not enabled in Firebase.";
+    }
+
+    message("login-message", `Sign-in failed: ${errorMessage}`);
+  } finally {
+    button.disabled = false;
   }
 });
 
@@ -83,17 +103,6 @@ $("sign-out").addEventListener("click", async () => {
 $("denied-signout").addEventListener("click", async () => {
   await signOutUser();
 });
-
-// Read the result returned by Google's redirect.
-try {
-  await getGoogleRedirectResult();
-} catch (error) {
-  console.error("Google redirect result:", error);
-  message(
-    "login-message",
-    `Google sign-in failed: ${error.code || error.message}`
-  );
-}
 
 onAuthStateChanged(auth, async user => {
   isAdmin = Boolean(user && user.uid === ADMIN_UID);
