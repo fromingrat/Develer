@@ -344,7 +344,11 @@ function openEditor(fieldKey, button) {
       cancelButton.disabled = false;
       saveButton.textContent = "SAVE";
 
-      errorMessage(error, error);
+      const editorError = editor.querySelector("p");
+      editorError.textContent =
+      "Could not save this information. Please try again.";
+      editorError.style.display = "block";
+      input.style.borderColor = "#a32d2d";
     }
   });
 }
