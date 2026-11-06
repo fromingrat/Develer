@@ -52,6 +52,9 @@ export function createAccountDrawer({
       <button type="button" data-menu-item="wishlist">
         <span>Wishlist</span><span>›</span>
       </button>
+      <a href="support.html" data-menu-item="support">
+       <span>Raise a Ticket</span><span>›</span>
+      </a>
       <a href="#about" data-menu-item="about">
         <span>About Us</span><span>›</span>
       </a>
@@ -202,7 +205,7 @@ export function createAccountDrawer({
         window.location.href = "login.html";
       }
 
-      if (["about", "info", "privacy"].includes(action)) {
+      if (["about", "info", "privacy", "support"].includes(action)) {
         closeAccountDrawer();
       }
     });
