@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f8f7f4">
-
   <title>Sign in | VELFORM</title>
 
   <style>
@@ -39,14 +38,13 @@
       display: none !important;
     }
 
-    /* LUXURY ANIMATIONS */
+    /* ANIMATIONS */
 
     @keyframes luxuryRise {
       from {
         opacity: 0;
         transform: translateY(18px);
       }
-
       to {
         opacity: 1;
         transform: translateY(0);
@@ -58,7 +56,6 @@
         opacity: 0;
         transform: scaleX(0);
       }
-
       to {
         opacity: 1;
         transform: scaleX(1);
@@ -71,7 +68,6 @@
         transform: translateY(22px);
         filter: blur(5px);
       }
-
       to {
         opacity: 1;
         transform: translateY(0);
@@ -79,7 +75,7 @@
       }
     }
 
-    /* TOP NAVIGATION */
+    /* HEADER */
 
     .login-header {
       display: flex;
@@ -105,15 +101,7 @@
       color: var(--black);
     }
 
-    .header-label {
-      color: #99938a;
-      font-size: 9px;
-      letter-spacing: 0.2em;
-      animation: luxuryRise 900ms ease both;
-      animation-delay: 200ms;
-    }
-
-    /* MAIN LOGIN AREA */
+    /* MAIN */
 
     .login-main {
       flex: 1;
@@ -152,7 +140,7 @@
       animation-delay: 450ms;
     }
 
-    /* WELCOME TEXT */
+    /* WELCOME */
 
     .eyebrow {
       margin: 0 0 15px;
@@ -195,6 +183,117 @@
       animation-delay: 1200ms;
     }
 
+    /* EMAIL AUTHENTICATION */
+
+    .email-auth {
+      margin-top: 0;
+      text-align: left;
+      animation: luxuryRise 1000ms ease both;
+      animation-delay: 1400ms;
+    }
+
+    .email-auth input {
+      display: block;
+      width: 100%;
+      min-height: 52px;
+      margin-bottom: 13px;
+      padding: 14px 15px;
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      background: #fff;
+      color: var(--black);
+      font-family: var(--sans);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 200ms ease;
+    }
+
+    .email-auth input:focus {
+      border-color: var(--gold);
+    }
+
+    .email-auth input::placeholder {
+      color: #99938a;
+    }
+
+    .email-submit {
+      width: 100%;
+      min-height: 54px;
+      margin-top: 3px;
+      border: 1px solid var(--black);
+      border-radius: 2px;
+      background: var(--black);
+      color: #fff;
+      font-family: var(--sans);
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: background 200ms ease, transform 200ms ease;
+    }
+
+    .email-submit:hover:not(:disabled) {
+      background: #39352f;
+      transform: translateY(-2px);
+    }
+
+    .email-submit:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .auth-links {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 17px;
+      font-size: 11px;
+    }
+
+    .auth-links button {
+      padding: 4px 0;
+      border: 0;
+      background: transparent;
+      color: var(--grey);
+      font: inherit;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .auth-links button:hover {
+      color: var(--black);
+    }
+
+    .auth-mode {
+      margin: 0 0 17px;
+      color: var(--grey);
+      font-size: 11px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    /* DIVIDER */
+
+    .login-divider {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin: 29px 0 17px;
+      color: #a19b91;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      animation: luxuryRise 1000ms ease both;
+      animation-delay: 1600ms;
+    }
+
+    .login-divider::before,
+    .login-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
     /* GOOGLE BUTTON */
 
     .google-btn {
@@ -219,7 +318,7 @@
         border-color 220ms ease,
         transform 220ms ease;
       animation: luxuryRise 1100ms cubic-bezier(.2,.7,.2,1) both;
-      animation-delay: 1500ms;
+      animation-delay: 1700ms;
     }
 
     .google-btn:hover:not(:disabled) {
@@ -242,116 +341,16 @@
       height: 19px;
       flex-shrink: 0;
     }
-    
-/* EMAIL AND PASSWORD AUTHENTICATION */
 
-.email-auth {
-  margin-top: 25px;
-  text-align: left;
-  animation: luxuryRise 1000ms ease both;
-  animation-delay: 1700ms;
-}
+    /* STATUS */
 
-.email-auth input {
-  display: block;
-  width: 100%;
-  min-height: 52px;
-  margin-bottom: 13px;
-  padding: 14px 15px;
-  border: 1px solid var(--line);
-  border-radius: 2px;
-  background: #fff;
-  color: var(--black);
-  font-family: var(--sans);
-  font-size: 13px;
-  outline: none;
-  transition: border-color 200ms ease;
-}
-
-.email-auth input:focus {
-  border-color: var(--gold);
-}
-
-.email-auth input::placeholder {
-  color: #99938a;
-}
-
-.email-submit {
-  width: 100%;
-  min-height: 54px;
-  margin-top: 3px;
-  border: 1px solid var(--black);
-  border-radius: 2px;
-  background: var(--black);
-  color: #fff;
-  font-family: var(--sans);
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-  transition: background 200ms ease, transform 200ms ease;
-}
-
-.email-submit:hover:not(:disabled) {
-  background: #39352f;
-  transform: translateY(-2px);
-}
-
-.email-submit:disabled {
-  opacity: 0.6;
-  cursor: wait;
-}
-
-.auth-links {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 17px;
-  font-size: 11px;
-}
-
-.auth-links button {
-  padding: 4px 0;
-  border: 0;
-  background: transparent;
-  color: var(--grey);
-  font: inherit;
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.auth-links button:hover {
-  color: var(--black);
-}
-
-.auth-mode {
-  margin: 0 0 17px;
-  color: var(--grey);
-  font-size: 11px;
-  line-height: 1.6;
-  text-align: center;
-}
-    
-    /* DIVIDER AND NOTE */
-
-    .login-divider {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      margin: 29px 0 17px;
-      color: #a19b91;
-      font-size: 9px;
-      letter-spacing: 0.16em;
-      animation: luxuryRise 1000ms ease both;
-      animation-delay: 1800ms;
-    }
-
-    .login-divider::before,
-    .login-divider::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: var(--line);
+    .message {
+      min-height: 22px;
+      margin: 17px 0 0;
+      color: #b42318;
+      font-size: 12px;
+      line-height: 1.6;
+      animation: luxuryRise 900ms ease both;
     }
 
     .login-note {
@@ -361,18 +360,6 @@
       line-height: 1.7;
       animation: luxuryRise 1000ms ease both;
       animation-delay: 1950ms;
-    }
-
-    /* STATUS MESSAGE */
-
-    .message {
-      min-height: 22px;
-      margin: 17px 0 0;
-      color: #b42318;
-      font-size: 12px;
-      line-height: 1.6;
-      animation: luxuryRise 900ms ease both;
-      animation-delay: 1700ms;
     }
 
     /* FOOTER */
@@ -414,10 +401,6 @@
         padding: 21px 20px;
       }
 
-      .header-label {
-        font-size: 8px;
-      }
-
       .login-main {
         padding-top: 25px;
         padding-bottom: 55px;
@@ -445,7 +428,6 @@
 <body>
 
   <header class="login-header">
-
     <a class="back-link" href="index.html">
       <span aria-hidden="true">←</span>
       Back to home
@@ -471,6 +453,61 @@
         A more personal way to experience VELFORM.
         Sign in to continue where you left off.
       </p>
+
+      <!-- EMAIL LOGIN: PRIMARY OPTION -->
+
+      <form class="email-auth" id="email-auth-form">
+
+        <p class="auth-mode" id="auth-mode-text">
+          Sign in to your VELFORM account.
+        </p>
+
+        <input
+          type="text"
+          id="auth-name"
+          placeholder="Your full name"
+          autocomplete="name"
+          hidden
+        >
+
+        <input
+          type="email"
+          id="auth-email"
+          placeholder="Email address"
+          autocomplete="email"
+          required
+        >
+
+        <input
+          type="password"
+          id="auth-password"
+          placeholder="Password"
+          autocomplete="current-password"
+          minlength="6"
+          required
+        >
+
+        <button class="email-submit" id="email-submit" type="submit">
+          SIGN IN
+        </button>
+
+        <div class="auth-links">
+          <button type="button" id="auth-mode-toggle">
+            Create an account
+          </button>
+
+          <button type="button" id="forgot-password">
+            Forgot password?
+          </button>
+        </div>
+
+      </form>
+
+      <!-- GOOGLE LOGIN: ALTERNATIVE OPTION -->
+
+      <div class="login-divider">
+        <span>OR CONTINUE WITH GOOGLE</span>
+      </div>
 
       <button
         class="google-btn"
@@ -499,58 +536,9 @@
         <span>Continue with Google</span>
 
       </button>
-      
-<div class="login-divider">
-  <span>OR CONTINUE WITH EMAIL</span>
-</div>
 
-<form class="email-auth" id="email-auth-form">
+      <!-- STATUS MESSAGE -->
 
-  <p class="auth-mode" id="auth-mode-text">
-    Sign in to your VELFORM account.
-  </p>
-
-  <input
-    type="text"
-    id="auth-name"
-    placeholder="Your full name"
-    autocomplete="name"
-    hidden
-  >
-
-  <input
-    type="email"
-    id="auth-email"
-    placeholder="Email address"
-    autocomplete="email"
-    required
-  >
-
-  <input
-    type="password"
-    id="auth-password"
-    placeholder="Password"
-    autocomplete="current-password"
-    minlength="6"
-    required
-  >
-
-  <button class="email-submit" id="email-submit" type="submit">
-    SIGN IN
-  </button>
-
-  <div class="auth-links">
-    <button type="button" id="auth-mode-toggle">
-      Create an account
-    </button>
-
-    <button type="button" id="forgot-password">
-      Forgot password?
-    </button>
-  </div>
-
-</form>
-      
       <p
         class="message"
         id="message"
@@ -572,25 +560,24 @@
   </main>
 
   <footer class="login-footer">
-
     <p class="footer-brand">VELFORM PREMIUM</p>
 
     <p class="footer-caption">
       CONSIDERED STYLE. PERSONAL EXPERIENCE.
     </p>
-
   </footer>
 
-  <!-- FIREBASE AUTHENTICATION: PRESERVED -->
+  <!-- FIREBASE AUTHENTICATION -->
 
   <script type="module">
 
     import {
-    signInWithGoogle,
-    signInWithEmail,
-    createEmailAccount,
-    sendPasswordReset
+      signInWithGoogle,
+      signInWithEmail,
+      createEmailAccount,
+      sendPasswordReset
     } from "./js/auth.js";
+
     import { auth, db } from "./js/firebase.js";
 
     import {
@@ -602,19 +589,40 @@
       getDoc
     } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 
+
+    // ELEMENTS
+
     const button = document.getElementById("google-sign-in");
     const message = document.getElementById("message");
 
+    const emailForm = document.getElementById("email-auth-form");
+    const emailInput = document.getElementById("auth-email");
+    const passwordInput = document.getElementById("auth-password");
+    const nameInput = document.getElementById("auth-name");
+    const emailSubmit = document.getElementById("email-submit");
+
+    const modeToggle = document.getElementById("auth-mode-toggle");
+    const modeText = document.getElementById("auth-mode-text");
+    const forgotPassword = document.getElementById("forgot-password");
+
     let redirecting = false;
+    let isCreatingAccount = false;
+
+
+    // PROFILE ROUTING
 
     async function routeUser(user) {
       if (!user || redirecting) return;
 
       redirecting = true;
+
       button.disabled = true;
+      emailSubmit.disabled = true;
 
       button.querySelector("span").textContent =
         "Checking your profile...";
+
+      emailSubmit.textContent = "PLEASE WAIT...";
 
       try {
         const profileRef = doc(db, "users", user.uid);
@@ -637,159 +645,210 @@
         );
 
         redirecting = false;
+
         button.disabled = false;
+        emailSubmit.disabled = false;
 
         button.querySelector("span").textContent =
           "Continue with Google";
+
+        emailSubmit.textContent = isCreatingAccount
+          ? "CREATE ACCOUNT"
+          : "SIGN IN";
 
         message.textContent =
           "We couldn't check your profile. Please try again.";
       }
     }
-    
-// EMAIL AUTHENTICATION
 
-const emailForm = document.getElementById("email-auth-form");
-const emailInput = document.getElementById("auth-email");
-const passwordInput = document.getElementById("auth-password");
-const nameInput = document.getElementById("auth-name");
-const emailSubmit = document.getElementById("email-submit");
-const modeToggle = document.getElementById("auth-mode-toggle");
-const modeText = document.getElementById("auth-mode-text");
-const forgotPassword = document.getElementById("forgot-password");
 
-let isCreatingAccount = false;
+    // AUTHENTICATION ERROR MESSAGES
 
-function showAuthError(error) {
-  const errors = {
-    "auth/invalid-email": "Please enter a valid email address.",
-    "auth/user-not-found": "No account found with this email.",
-    "auth/wrong-password": "Incorrect email or password.",
-    "auth/invalid-credential": "Incorrect email or password.",
-    "auth/email-already-in-use": "An account already exists with this email. Try signing in.",
-    "auth/weak-password": "Your password must contain at least 6 characters.",
-    "auth/too-many-requests": "Too many attempts. Please try again later.",
-    "auth/network-request-failed": "Network error. Please check your connection."
-  };
+    function showAuthError(error) {
 
-  message.textContent =
-    errors[error.code] || "Something went wrong. Please try again.";
-}
+      const errors = {
+        "auth/invalid-email":
+          "Please enter a valid email address.",
 
-modeToggle.addEventListener("click", () => {
-  isCreatingAccount = !isCreatingAccount;
+        "auth/user-not-found":
+          "No account found with this email.",
 
-  message.textContent = "";
-  passwordInput.value = "";
+        "auth/wrong-password":
+          "Incorrect email or password.",
 
-  nameInput.hidden = !isCreatingAccount;
-  nameInput.required = isCreatingAccount;
+        "auth/invalid-credential":
+          "Incorrect email or password.",
 
-  passwordInput.autocomplete = isCreatingAccount
-    ? "new-password"
-    : "current-password";
+        "auth/email-already-in-use":
+          "An account already exists with this email. Try signing in.",
 
-  modeText.textContent = isCreatingAccount
-    ? "Create your personal VELFORM account."
-    : "Sign in to your VELFORM account.";
+        "auth/weak-password":
+          "Your password must contain at least 6 characters.",
 
-  emailSubmit.textContent = isCreatingAccount
-    ? "CREATE ACCOUNT"
-    : "SIGN IN";
+        "auth/too-many-requests":
+          "Too many attempts. Please try again later.",
 
-  modeToggle.textContent = isCreatingAccount
-    ? "Already have an account? Sign in"
-    : "Create an account";
+        "auth/network-request-failed":
+          "Network error. Please check your connection."
+      };
 
-  forgotPassword.hidden = isCreatingAccount;
-});
+      message.style.color = "#b42318";
 
-emailForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-
-  message.textContent = "";
-
-  const email = emailInput.value.trim();
-  const password = passwordInput.value;
-  const name = nameInput.value.trim();
-
-  if (isCreatingAccount && !name) {
-    message.textContent = "Please enter your full name.";
-    return;
-  }
-
-  emailSubmit.disabled = true;
-  emailSubmit.textContent = "PLEASE WAIT...";
-
-  try {
-    let user;
-
-    if (isCreatingAccount) {
-      user = await createEmailAccount(name, email, password);
-    } else {
-      user = await signInWithEmail(email, password);
+      message.textContent =
+        errors[error.code] || "Something went wrong. Please try again.";
     }
 
-    await routeUser(user);
 
-  } catch (error) {
-    console.error("Email authentication failed:", error.code, error.message);
+    // SWITCH BETWEEN SIGN-IN AND ACCOUNT CREATION
 
-    showAuthError(error);
+    modeToggle.addEventListener("click", () => {
 
-    emailSubmit.disabled = false;
-    emailSubmit.textContent = isCreatingAccount
-      ? "CREATE ACCOUNT"
-      : "SIGN IN";
-  }
-});
+      isCreatingAccount = !isCreatingAccount;
 
-// FORGOT PASSWORD
+      message.textContent = "";
+      passwordInput.value = "";
 
-forgotPassword.addEventListener("click", async () => {
-  const email = emailInput.value.trim();
+      nameInput.hidden = !isCreatingAccount;
+      nameInput.required = isCreatingAccount;
 
-  if (!email) {
-    message.textContent = "Enter your email address first.";
-    emailInput.focus();
-    return;
-  }
+      passwordInput.autocomplete = isCreatingAccount
+        ? "new-password"
+        : "current-password";
 
-  message.textContent = "";
+      modeText.textContent = isCreatingAccount
+        ? "Create your personal VELFORM account."
+        : "Sign in to your VELFORM account.";
 
-  forgotPassword.disabled = true;
+      emailSubmit.textContent = isCreatingAccount
+        ? "CREATE ACCOUNT"
+        : "SIGN IN";
 
-  try {
-    await sendPasswordReset(email);
+      modeToggle.textContent = isCreatingAccount
+        ? "Already have an account? Sign in"
+        : "Create an account";
 
-    message.style.color = "#287a46";
-    message.textContent =
-      "Password reset email sent. Please check your inbox.";
+      forgotPassword.hidden = isCreatingAccount;
 
-  } catch (error) {
-    console.error("Password reset failed:", error.code, error.message);
+    });
 
-    message.style.color = "#b42318";
-    showAuthError(error);
 
-  } finally {
-    forgotPassword.disabled = false;
-  }
-});
-    
+    // EMAIL SIGN-IN AND ACCOUNT CREATION
+
+    emailForm.addEventListener("submit", async (event) => {
+
+      event.preventDefault();
+
+      message.textContent = "";
+      message.style.color = "#b42318";
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      const name = nameInput.value.trim();
+
+      if (isCreatingAccount && !name) {
+        message.textContent = "Please enter your full name.";
+        return;
+      }
+
+      emailSubmit.disabled = true;
+      emailSubmit.textContent = "PLEASE WAIT...";
+
+      try {
+
+        let user;
+
+        if (isCreatingAccount) {
+          user = await createEmailAccount(name, email, password);
+        } else {
+          user = await signInWithEmail(email, password);
+        }
+
+        await routeUser(user);
+
+      } catch (error) {
+
+        console.error(
+          "Email authentication failed:",
+          error.code,
+          error.message
+        );
+
+        showAuthError(error);
+
+        emailSubmit.disabled = false;
+
+        emailSubmit.textContent = isCreatingAccount
+          ? "CREATE ACCOUNT"
+          : "SIGN IN";
+
+      }
+
+    });
+
+
+    // FORGOT PASSWORD
+
+    forgotPassword.addEventListener("click", async () => {
+
+      const email = emailInput.value.trim();
+
+      if (!email) {
+        message.textContent = "Enter your email address first.";
+        message.style.color = "#b42318";
+        emailInput.focus();
+        return;
+      }
+
+      message.textContent = "";
+      forgotPassword.disabled = true;
+
+      try {
+
+        await sendPasswordReset(email);
+
+        message.style.color = "#287a46";
+
+        message.textContent =
+          "Password reset email sent. Please check your inbox.";
+
+      } catch (error) {
+
+        console.error(
+          "Password reset failed:",
+          error.code,
+          error.message
+        );
+
+        showAuthError(error);
+
+      } finally {
+
+        forgotPassword.disabled = false;
+
+      }
+
+    });
+
+
+    // GOOGLE SIGN-IN
+
     button.addEventListener("click", async () => {
 
       message.textContent = "";
+
       button.disabled = true;
 
       button.querySelector("span").textContent =
         "Connecting to Google...";
 
       try {
+
         const user = await signInWithGoogle();
+
         await routeUser(user);
 
       } catch (error) {
+
         console.error(
           "Google sign-in failed:",
           error.code,
@@ -797,21 +856,26 @@ forgotPassword.addEventListener("click", async () => {
         );
 
         button.disabled = false;
-        emailSubmit.disabled = false;
-        emailSubmit.textContent = isCreatingAccount
-        ? "CREATE ACCOUNT"
-        : "SIGN IN";
 
         button.querySelector("span").textContent =
           "Continue with Google";
 
         message.textContent =
           "Sign-in failed. Please try again.";
+
       }
+
     });
 
+
+    // MONITOR FIREBASE AUTHENTICATION
+
     onAuthStateChanged(auth, (user) => {
-      if (user) routeUser(user);
+
+      if (user) {
+        routeUser(user);
+      }
+
     });
 
   </script>
