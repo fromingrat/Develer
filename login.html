@@ -797,6 +797,10 @@ forgotPassword.addEventListener("click", async () => {
         );
 
         button.disabled = false;
+        emailSubmit.disabled = false;
+        emailSubmit.textContent = isCreatingAccount
+        ? "CREATE ACCOUNT"
+        : "SIGN IN";
 
         button.querySelector("span").textContent =
           "Continue with Google";
