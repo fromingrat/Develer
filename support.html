@@ -186,10 +186,7 @@
       inset: 0;
       transform: translateX(-100%);
       background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255,255,255,.75),
-        transparent
+        90deg, transparent, rgba(255,255,255,.75), transparent
       );
       animation: skeletonShimmer 1.35s ease-in-out infinite;
     }
@@ -253,6 +250,33 @@
       animation: fieldShake .35s ease;
     }
 
+    /* Sign-in prompt */
+    .signed-out {
+      margin-bottom: 20px;
+      padding: 22px 18px;
+      text-align: center;
+      background: #f7f6f2;
+      border: 1px solid var(--line);
+      animation: reveal .3s ease both;
+    }
+
+    .signed-out p {
+      margin: 0 0 15px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .signed-out a {
+      display: block;
+      padding: 15px;
+      background: var(--ink);
+      color: white;
+      text-decoration: none;
+      font-size: 11px;
+      letter-spacing: .12em;
+    }
+
     button {
       width: 100%;
       min-height: 53px;
@@ -286,30 +310,6 @@
     }
 
     .status.success { color: #26734d; }
-
-    .signed-out {
-      padding: 25px 18px;
-      text-align: center;
-      background: white;
-      border: 1px solid var(--line);
-    }
-
-    .signed-out p {
-      margin: 0 0 17px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.7;
-    }
-
-    .signed-out a {
-      display: block;
-      padding: 15px;
-      background: var(--ink);
-      color: white;
-      text-decoration: none;
-      font-size: 11px;
-      letter-spacing: .12em;
-    }
 
     footer {
       text-align: center;
@@ -365,41 +365,34 @@
       aria-label="Loading support form"
     >
       <div class="skeleton-line"></div>
-
       <div class="skeleton-label"></div>
       <div class="skeleton-control"></div>
-
       <div class="skeleton-label" style="width:25%"></div>
       <div class="skeleton-control"></div>
-
       <div class="skeleton-label" style="width:31%"></div>
       <div class="skeleton-control"></div>
-
       <div class="skeleton-label" style="width:38%"></div>
       <div class="skeleton-control large"></div>
-
-      <div
-        class="skeleton-control"
-        style="height:53px;margin-bottom:0"
-      ></div>
+      <div class="skeleton-control" style="height:53px;margin-bottom:0"></div>
     </section>
 
-    <!-- Signed-out message -->
+    <!-- Sign-in prompt: appears only after a signed-out user submits -->
     <section id="signed-out" class="signed-out" hidden>
       <p>
-        Please sign in to raise a support ticket.
-        Your account email will be attached automatically.
+        Please sign in before submitting your ticket.
+        Your details will remain in this form while you sign in.
       </p>
-      <a href="login.html">SIGN IN TO CONTINUE →</a>
+      <a href="login.html" target="_blank" rel="noopener">
+        SIGN IN IN A NEW TAB →
+      </a>
     </section>
 
     <!-- Support form -->
     <form id="ticket-form" class="panel" hidden novalidate>
-      <p class="signed" id="account-note">Signed in</p>
+      <p class="signed" id="account-note" hidden></p>
 
       <div class="field">
         <label for="category">What do you need help with? *</label>
-
         <select id="category" required>
           <option value="">Choose a topic</option>
           <option value="Order and delivery">Order and delivery</option>
@@ -411,74 +404,41 @@
           <option value="Website or app issue">Website or app issue</option>
           <option value="Other">Other</option>
         </select>
-
         <p class="field-error" id="category-error" hidden></p>
       </div>
 
       <div class="field">
         <label for="order-id">
-          Order ID
-          <span style="color:#99938a;font-weight:400">(optional)</span>
+          Order ID <span style="color:#99938a;font-weight:400">(optional)</span>
         </label>
-
-        <input
-          id="order-id"
-          maxlength="80"
-          placeholder="e.g. VF-12345"
-        >
-
-        <p class="hint">
-          Add this if your request is related to an order.
-        </p>
-
+        <input id="order-id" maxlength="80" placeholder="e.g. VF-12345">
+        <p class="hint">Add this if your request is related to an order.</p>
         <p class="field-error" id="order-id-error" hidden></p>
       </div>
 
       <div class="field">
         <label for="subject">Subject *</label>
-
-        <input
-          id="subject"
-          maxlength="100"
-          required
-          placeholder="Briefly describe the issue"
-        >
-
-        <p class="hint">
-          Use a short, clear title (3–100 characters).
-        </p>
-
+        <input id="subject" maxlength="100" required
+          placeholder="Briefly describe the issue">
+        <p class="hint">Use a short, clear title (3–100 characters).</p>
         <p class="field-error" id="subject-error" hidden></p>
       </div>
 
       <div class="field">
         <label for="description">How can we help? *</label>
-
-        <textarea
-          id="description"
-          minlength="10"
-          maxlength="3000"
+        <textarea id="description" minlength="10" maxlength="3000"
           required
-          placeholder="Share the details so we can understand your request (10–3000 characters)."
-        ></textarea>
-
+          placeholder="Share the details so we can understand your request (10–3000 characters)."></textarea>
         <p class="hint">
           Please don't include passwords, OTPs or payment card details.
         </p>
-
         <p class="field-error" id="description-error" hidden></p>
       </div>
 
-      <button id="submit-ticket" type="submit">
-        SUBMIT TICKET
-      </button>
+      <button id="submit-ticket" type="submit">SUBMIT TICKET</button>
 
-      <p
-        id="ticket-status"
-        class="status"
-        role="status"
-        aria-live="polite"
-      ></p>
+      <p id="ticket-status" class="status"
+        role="status" aria-live="polite"></p>
     </form>
   </main>
 
@@ -511,17 +471,14 @@
         input: document.getElementById("category"),
         error: document.getElementById("category-error")
       },
-
       orderId: {
         input: document.getElementById("order-id"),
         error: document.getElementById("order-id-error")
       },
-
       subject: {
         input: document.getElementById("subject"),
         error: document.getElementById("subject-error")
       },
-
       description: {
         input: document.getElementById("description"),
         error: document.getElementById("description-error")
@@ -548,7 +505,6 @@
       field.error.textContent = message;
       field.error.hidden = false;
 
-      // Restart the shake animation.
       void field.input.offsetWidth;
       field.input.classList.add("shake");
 
@@ -614,7 +570,7 @@
       return true;
     }
 
-    // Clear an error as the user corrects the field.
+    // Clear errors when the user corrects a field.
     fields.category.input.addEventListener("change", () => {
       clearFieldError("category");
     });
@@ -631,18 +587,25 @@
       clearFieldError("description");
     });
 
-    // Check the user's Firebase login state.
+    // Resolve Firebase authentication.
     onAuthStateChanged(auth, (user) => {
       currentUser = user;
 
       skeleton.hidden = true;
-      form.hidden = !user;
-      signedOut.hidden = Boolean(user);
+
+      // Always show the form, even when signed out.
+      form.hidden = false;
+
+      // Hide the sign-in prompt until submission is attempted.
+      signedOut.hidden = true;
 
       if (user) {
+        accountNote.hidden = false;
         accountNote.textContent =
           "Signed in as " +
           (user.displayName || user.email || "your VELFORM account");
+      } else {
+        accountNote.hidden = true;
       }
     });
 
@@ -653,9 +616,14 @@
       status.textContent = "";
       status.classList.remove("success");
 
+      // Ask for sign-in only after the user clicks Submit.
+      // Keep the form visible so their information is not lost.
       if (!currentUser) {
         signedOut.hidden = false;
-        form.hidden = true;
+        signedOut.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
         return;
       }
 
@@ -682,6 +650,8 @@
         form.reset();
 
         Object.keys(fields).forEach(clearFieldError);
+
+        signedOut.hidden = true;
 
         status.textContent =
           "Your ticket has been submitted. Thank you for contacting VELFORM.";
