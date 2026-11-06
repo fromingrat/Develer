@@ -1,5 +1,6 @@
 
 import {
+  GoogleAuthProvider,
   signInWithPopup,
   signInWithRedirect,
   getRedirectResult,
@@ -13,7 +14,7 @@ import {
 
 import { auth, googleProvider } from "./firebase.js";
 
-// Existing Google sign-in for customer login
+// Customer Google sign-in — unchanged
 export async function signInWithGoogle() {
   try {
     const result = await signInWithPopup(auth, googleProvider);
@@ -24,12 +25,28 @@ export async function signInWithGoogle() {
   }
 }
 
-// Redirect-based Google sign-in for admin pages
+// Admin Google sign-in — always request account selection
+export async function signInWithGoogleChooser() {
+  try {
+    const adminProvider = new GoogleAuthProvider();
+
+    adminProvider.setCustomParameters({
+      prompt: "select_account"
+    });
+
+    const result = await signInWithPopup(auth, adminProvider);
+    return result.user;
+  } catch (error) {
+    console.error("Admin Google sign-in failed:", error);
+    throw error;
+  }
+}
+
+// Existing redirect functions — retained for compatibility
 export async function signInWithGoogleRedirect() {
   await signInWithRedirect(auth, googleProvider);
 }
 
-// Read Google's response after returning to the admin page
 export async function getGoogleRedirectResult() {
   return getRedirectResult(auth);
 }
