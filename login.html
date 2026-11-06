@@ -786,48 +786,73 @@
     });
 
 
-    // FORGOT PASSWORD
+    
+// FORGOT PASSWORD WITH 30-SECOND COOLDOWN
 
-    forgotPassword.addEventListener("click", async () => {
+let resetCooldown = false;
+let resetCooldownTimer = null;
 
-      const email = emailInput.value.trim();
+forgotPassword.addEventListener("click", async () => {
 
-      if (!email) {
-        message.textContent = "Enter your email address first.";
-        message.style.color = "#b42318";
-        emailInput.focus();
-        return;
-      }
+  const email = emailInput.value.trim();
 
-      message.textContent = "";
-      forgotPassword.disabled = true;
+  if (!email) {
+    message.textContent = "Enter your email address first.";
+    message.style.color = "#b42318";
+    emailInput.focus();
+    return;
+  }
 
-      try {
+  if (resetCooldown) return;
 
-        await sendPasswordReset(email);
+  resetCooldown = true;
+  forgotPassword.disabled = true;
 
-        message.style.color = "#287a46";
+  let secondsLeft = 30;
 
-        message.textContent =
-          "Password reset email sent. Please check your inbox.";
+  forgotPassword.textContent = `Resend in ${secondsLeft}s`;
 
-      } catch (error) {
+  resetCooldownTimer = setInterval(() => {
 
-        console.error(
-          "Password reset failed:",
-          error.code,
-          error.message
-        );
+    secondsLeft--;
 
-        showAuthError(error);
+    if (secondsLeft > 0) {
+      forgotPassword.textContent = `Resend in ${secondsLeft}s`;
+    } else {
+      clearInterval(resetCooldownTimer);
+      resetCooldownTimer = null;
 
-      } finally {
+      resetCooldown = false;
+      forgotPassword.disabled = false;
+      forgotPassword.textContent = "Forgot password?";
+    }
 
-        forgotPassword.disabled = false;
+  }, 1000);
 
-      }
+  message.textContent = "";
+  message.style.color = "#b42318";
 
-    });
+  try {
+
+    await sendPasswordReset(email);
+
+    message.style.color = "#287a46";
+    message.textContent =
+      "Password reset email sent. Please check your inbox.";
+
+  } catch (error) {
+
+    console.error(
+      "Password reset failed:",
+      error.code,
+      error.message
+    );
+
+    showAuthError(error);
+
+  }
+
+});
 
 
     // GOOGLE SIGN-IN
