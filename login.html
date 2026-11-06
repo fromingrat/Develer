@@ -8,9 +8,7 @@
   <title>Sign in | VELFORM</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     :root {
       --background: #f8f7f4;
@@ -18,6 +16,8 @@
       --grey: #77736d;
       --gold: #92794f;
       --line: #e5e0d7;
+      --red: #b42318;
+      --green: #287a46;
       --sans: "Jost", "Segoe UI", Arial, sans-serif;
       --serif: Georgia, "Times New Roman", serif;
     }
@@ -34,32 +34,18 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    [hidden] {
-      display: none !important;
-    }
+    [hidden] { display: none !important; }
 
     /* ANIMATIONS */
 
     @keyframes luxuryRise {
-      from {
-        opacity: 0;
-        transform: translateY(18px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes luxuryLine {
-      from {
-        opacity: 0;
-        transform: scaleX(0);
-      }
-      to {
-        opacity: 1;
-        transform: scaleX(1);
-      }
+      from { opacity: 0; transform: scaleX(0); }
+      to { opacity: 1; transform: scaleX(1); }
     }
 
     @keyframes luxuryWord {
@@ -73,6 +59,35 @@
         transform: translateY(0);
         filter: blur(0);
       }
+    }
+
+    @keyframes fieldShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
+
+    @keyframes resetSuccess {
+      0% {
+        opacity: 0;
+        transform: translateY(12px) scale(.98);
+        box-shadow: 0 0 0 0 rgba(40,122,70,0);
+      }
+      60% {
+        opacity: 1;
+        transform: translateY(-2px) scale(1.01);
+        box-shadow: 0 0 0 5px rgba(40,122,70,.08);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        box-shadow: 0 0 0 0 rgba(40,122,70,0);
+      }
+    }
+
+    @keyframes resetError {
+      0% { opacity: 0; transform: translateY(8px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
     /* HEADER */
@@ -91,15 +106,12 @@
       color: var(--grey);
       font-size: 12px;
       text-decoration: none;
-      letter-spacing: 0.04em;
+      letter-spacing: .04em;
       transition: color 200ms ease;
       animation: luxuryRise 900ms ease both;
-      animation-delay: 100ms;
     }
 
-    .back-link:hover {
-      color: var(--black);
-    }
+    .back-link:hover { color: var(--black); }
 
     /* MAIN */
 
@@ -124,10 +136,9 @@
       font-family: var(--sans);
       font-size: clamp(38px, 10vw, 49px);
       font-weight: 650;
-      letter-spacing: 0.22em;
-      text-indent: 0.22em;
+      letter-spacing: .22em;
+      text-indent: .22em;
       animation: luxuryRise 1100ms cubic-bezier(.2,.7,.2,1) both;
-      animation-delay: 100ms;
     }
 
     .brand-line {
@@ -137,7 +148,7 @@
       background: var(--gold);
       transform-origin: center;
       animation: luxuryLine 1100ms ease both;
-      animation-delay: 450ms;
+      animation-delay: 350ms;
     }
 
     /* WELCOME */
@@ -147,9 +158,9 @@
       color: var(--gold);
       font-size: 9px;
       font-weight: 600;
-      letter-spacing: 0.25em;
+      letter-spacing: .25em;
       animation: luxuryRise 900ms ease both;
-      animation-delay: 650ms;
+      animation-delay: 500ms;
     }
 
     .login-title {
@@ -165,13 +176,8 @@
       animation: luxuryWord 1100ms cubic-bezier(.2,.7,.2,1) both;
     }
 
-    .title-word:first-child {
-      animation-delay: 800ms;
-    }
-
-    .title-word:last-child {
-      animation-delay: 1000ms;
-    }
+    .title-word:first-child { animation-delay: 650ms; }
+    .title-word:last-child { animation-delay: 850ms; }
 
     .subtitle {
       max-width: 300px;
@@ -180,23 +186,32 @@
       font-size: 13px;
       line-height: 1.8;
       animation: luxuryRise 1000ms ease both;
-      animation-delay: 1200ms;
+      animation-delay: 1000ms;
     }
 
-    /* EMAIL AUTHENTICATION */
+    /* FORM */
 
     .email-auth {
       margin-top: 0;
       text-align: left;
       animation: luxuryRise 1000ms ease both;
-      animation-delay: 1400ms;
+      animation-delay: 1200ms;
     }
+
+    .auth-mode {
+      margin: 0 0 17px;
+      color: var(--grey);
+      font-size: 11px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .field-group { margin-bottom: 14px; }
 
     .email-auth input {
       display: block;
       width: 100%;
       min-height: 52px;
-      margin-bottom: 13px;
       padding: 14px 15px;
       border: 1px solid var(--line);
       border-radius: 2px;
@@ -205,28 +220,54 @@
       font-family: var(--sans);
       font-size: 13px;
       outline: none;
-      transition: border-color 200ms ease;
+      transition: border-color 200ms ease, background 200ms ease;
     }
 
     .email-auth input:focus {
       border-color: var(--gold);
     }
 
-    .email-auth input::placeholder {
+    .email-auth input::placeholder { color: #99938a; }
+
+    .email-auth input.invalid {
+      border-color: var(--red);
+      background: #fffafa;
+    }
+
+    .email-auth input.invalid:focus {
+      border-color: var(--red);
+    }
+
+    .field-hint {
+      margin: 7px 2px 0;
       color: #99938a;
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    .field-error {
+      margin: 7px 2px 0;
+      color: var(--red);
+      font-size: 11px;
+      line-height: 1.5;
+      animation: luxuryRise 200ms ease both;
+    }
+
+    .shake {
+      animation: fieldShake 350ms ease;
     }
 
     .email-submit {
       width: 100%;
       min-height: 54px;
-      margin-top: 3px;
+      margin-top: 5px;
       border: 1px solid var(--black);
       border-radius: 2px;
       background: var(--black);
       color: #fff;
       font-family: var(--sans);
       font-size: 13px;
-      letter-spacing: 0.08em;
+      letter-spacing: .08em;
       cursor: pointer;
       transition: background 200ms ease, transform 200ms ease;
     }
@@ -237,7 +278,7 @@
     }
 
     .email-submit:disabled {
-      opacity: 0.6;
+      opacity: .6;
       cursor: wait;
     }
 
@@ -260,16 +301,43 @@
       text-underline-offset: 3px;
     }
 
-    .auth-links button:hover {
-      color: var(--black);
+    .auth-links button:hover { color: var(--black); }
+
+    .auth-links button:disabled {
+      opacity: .55;
+      cursor: wait;
     }
 
-    .auth-mode {
-      margin: 0 0 17px;
-      color: var(--grey);
-      font-size: 11px;
-      line-height: 1.6;
+    /* PASSWORD RESET FEEDBACK */
+
+    .reset-message {
+      margin: 25px 0 0;
+      padding: 15px 16px;
+      border: 1px solid #b9d8c1;
+      border-radius: 3px;
+      background: #f0f8f1;
+      color: var(--green);
+      font-size: 12px;
+      line-height: 1.7;
       text-align: center;
+    }
+
+    .reset-message.success {
+      animation: resetSuccess 650ms cubic-bezier(.2,.7,.2,1) both;
+    }
+
+    .reset-message.error {
+      border-color: #e6b8b4;
+      background: #fff5f4;
+      color: var(--red);
+      animation: resetError 350ms ease both;
+    }
+
+    .reset-message strong {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 12px;
+      font-weight: 600;
     }
 
     /* DIVIDER */
@@ -281,9 +349,9 @@
       margin: 29px 0 17px;
       color: #a19b91;
       font-size: 9px;
-      letter-spacing: 0.16em;
+      letter-spacing: .16em;
       animation: luxuryRise 1000ms ease both;
-      animation-delay: 1600ms;
+      animation-delay: 1500ms;
     }
 
     .login-divider::before,
@@ -294,7 +362,7 @@
       background: var(--line);
     }
 
-    /* GOOGLE BUTTON */
+    /* GOOGLE */
 
     .google-btn {
       display: flex;
@@ -306,19 +374,16 @@
       padding: 14px 18px;
       border: 1px solid #d9d4cb;
       border-radius: 2px;
-      background: #ffffff;
+      background: #fff;
       color: var(--black);
       font-family: var(--sans);
       font-size: 14px;
       font-weight: 550;
-      letter-spacing: 0.02em;
+      letter-spacing: .02em;
       cursor: pointer;
-      transition:
-        background 220ms ease,
-        border-color 220ms ease,
-        transform 220ms ease;
-      animation: luxuryRise 1100ms cubic-bezier(.2,.7,.2,1) both;
-      animation-delay: 1700ms;
+      transition: background 220ms ease, border-color 220ms ease, transform 220ms ease;
+      animation: luxuryRise 1100ms ease both;
+      animation-delay: 1600ms;
     }
 
     .google-btn:hover:not(:disabled) {
@@ -327,12 +392,8 @@
       transform: translateY(-2px);
     }
 
-    .google-btn:active:not(:disabled) {
-      transform: scale(0.99);
-    }
-
     .google-btn:disabled {
-      opacity: 0.6;
+      opacity: .6;
       cursor: wait;
     }
 
@@ -342,15 +403,14 @@
       flex-shrink: 0;
     }
 
-    /* STATUS */
+    /* GENERAL MESSAGE */
 
     .message {
       min-height: 22px;
       margin: 17px 0 0;
-      color: #b42318;
+      color: var(--red);
       font-size: 12px;
       line-height: 1.6;
-      animation: luxuryRise 900ms ease both;
     }
 
     .login-note {
@@ -359,7 +419,7 @@
       font-size: 11px;
       line-height: 1.7;
       animation: luxuryRise 1000ms ease both;
-      animation-delay: 1950ms;
+      animation-delay: 1900ms;
     }
 
     /* FOOTER */
@@ -369,24 +429,22 @@
       border-top: 1px solid var(--line);
       text-align: center;
       animation: luxuryRise 1100ms ease both;
-      animation-delay: 2200ms;
+      animation-delay: 2100ms;
     }
 
     .footer-brand {
       margin: 0;
       color: #918b81;
       font-size: 9px;
-      letter-spacing: 0.22em;
+      letter-spacing: .22em;
     }
 
     .footer-caption {
       margin: 7px 0 0;
       color: #aaa49a;
       font-size: 9px;
-      letter-spacing: 0.08em;
+      letter-spacing: .08em;
     }
-
-    /* ACCESSIBILITY */
 
     button:focus-visible,
     a:focus-visible {
@@ -394,32 +452,20 @@
       outline-offset: 4px;
     }
 
-    /* MOBILE */
-
     @media (max-width: 480px) {
-      .login-header {
-        padding: 21px 20px;
-      }
-
+      .login-header { padding: 21px 20px; }
       .login-main {
         padding-top: 25px;
         padding-bottom: 55px;
       }
-
-      .brand-line {
-        margin-bottom: 36px;
-      }
+      .brand-line { margin-bottom: 36px; }
     }
 
-    /* REDUCED MOTION */
-
     @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation-duration: 0.01ms !important;
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
         animation-delay: 0ms !important;
-        transition-duration: 0.01ms !important;
+        transition-duration: .01ms !important;
       }
     }
   </style>
@@ -435,11 +481,9 @@
   </header>
 
   <main class="login-main">
-
     <section class="login">
 
       <h1 class="brand">VELFORM</h1>
-
       <div class="brand-line"></div>
 
       <p class="eyebrow">YOUR ACCOUNT</p>
@@ -454,38 +498,55 @@
         Sign in to continue where you left off.
       </p>
 
-      <!-- EMAIL LOGIN: PRIMARY OPTION -->
+      <!-- EMAIL LOGIN -->
 
-      <form class="email-auth" id="email-auth-form">
+      <form class="email-auth" id="email-auth-form" novalidate>
 
         <p class="auth-mode" id="auth-mode-text">
           Sign in to your VELFORM account.
         </p>
 
-        <input
-          type="text"
-          id="auth-name"
-          placeholder="Your full name"
-          autocomplete="name"
-          hidden
-        >
+        <div class="field-group" id="name-group" hidden>
+          <input
+            type="text"
+            id="auth-name"
+            placeholder="Full name"
+            autocomplete="name"
+            aria-describedby="name-hint"
+          >
+          <p class="field-hint" id="name-hint">
+            Enter your first and last name.
+          </p>
+          <p class="field-error" id="name-error" hidden></p>
+        </div>
 
-        <input
-          type="email"
-          id="auth-email"
-          placeholder="Email address"
-          autocomplete="email"
-          required
-        >
+        <div class="field-group" id="email-group">
+          <input
+            type="email"
+            id="auth-email"
+            placeholder="Email address (e.g. name@example.com)"
+            autocomplete="email"
+            aria-describedby="email-hint"
+          >
+          <p class="field-hint" id="email-hint">
+            Use the email address linked to your account.
+          </p>
+          <p class="field-error" id="email-error" hidden></p>
+        </div>
 
-        <input
-          type="password"
-          id="auth-password"
-          placeholder="Password"
-          autocomplete="current-password"
-          minlength="6"
-          required
-        >
+        <div class="field-group" id="password-group">
+          <input
+            type="password"
+            id="auth-password"
+            placeholder="Password (at least 6 characters)"
+            autocomplete="current-password"
+            aria-describedby="password-hint"
+          >
+          <p class="field-hint" id="password-hint">
+            Enter your account password.
+          </p>
+          <p class="field-error" id="password-error" hidden></p>
+        </div>
 
         <button class="email-submit" id="email-submit" type="submit">
           SIGN IN
@@ -503,48 +564,37 @@
 
       </form>
 
-      <!-- GOOGLE LOGIN: ALTERNATIVE OPTION -->
+      <!-- RESET MESSAGE: ABOVE GOOGLE DIVIDER -->
+
+      <div
+        class="reset-message"
+        id="reset-message"
+        role="status"
+        aria-live="polite"
+        hidden
+      ></div>
+
+      <!-- GOOGLE LOGIN -->
 
       <div class="login-divider">
         <span>OR CONTINUE WITH GOOGLE</span>
       </div>
 
-      <button
-        class="google-btn"
-        id="google-sign-in"
-        type="button"
-      >
-
-        <svg
-          class="google-icon"
-          viewBox="0 0 48 48"
-          aria-hidden="true"
-        >
+      <button class="google-btn" id="google-sign-in" type="button">
+        <svg class="google-icon" viewBox="0 0 48 48" aria-hidden="true">
           <path fill="#EA4335"
             d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-
           <path fill="#4285F4"
             d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.91c-.58 2.96-2.25 5.48-4.73 7.18l7.4 5.74c4.32-3.99 7.4-9.87 7.4-17.39z"/>
-
           <path fill="#FBBC05"
             d="M10.53 28.59A14.4 14.4 0 0 1 9.75 24c0-1.59.28-3.13.78-4.59l-7.98-6.19A23.9 23.9 0 0 0 0 24c0 3.87.93 7.52 2.56 10.78l7.97-6.19z"/>
-
           <path fill="#34A853"
             d="M24 48c6.48 0 11.93-2.13 15.9-5.77l-7.4-5.74c-2.05 1.38-4.67 2.2-8.5 2.2-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
         </svg>
-
         <span>Continue with Google</span>
-
       </button>
 
-      <!-- STATUS MESSAGE -->
-
-      <p
-        class="message"
-        id="message"
-        role="status"
-        aria-live="polite"
-      ></p>
+      <p class="message" id="message" role="status" aria-live="polite"></p>
 
       <div class="login-divider">
         <span>ONE ACCOUNT. MORE POSSIBILITIES.</span>
@@ -556,12 +606,10 @@
       </p>
 
     </section>
-
   </main>
 
   <footer class="login-footer">
     <p class="footer-brand">VELFORM PREMIUM</p>
-
     <p class="footer-caption">
       CONSIDERED STYLE. PERSONAL EXPERIENCE.
     </p>
@@ -594,6 +642,7 @@
 
     const button = document.getElementById("google-sign-in");
     const message = document.getElementById("message");
+    const resetMessage = document.getElementById("reset-message");
 
     const emailForm = document.getElementById("email-auth-form");
     const emailInput = document.getElementById("auth-email");
@@ -601,12 +650,100 @@
     const nameInput = document.getElementById("auth-name");
     const emailSubmit = document.getElementById("email-submit");
 
+    const nameGroup = document.getElementById("name-group");
     const modeToggle = document.getElementById("auth-mode-toggle");
     const modeText = document.getElementById("auth-mode-text");
     const forgotPassword = document.getElementById("forgot-password");
 
     let redirecting = false;
     let isCreatingAccount = false;
+    let resetCooldown = false;
+    let resetCooldownTimer = null;
+
+
+    // FIELD VALIDATION HELPERS
+
+    const fieldDetails = {
+      name: {
+        input: nameInput,
+        error: document.getElementById("name-error")
+      },
+      email: {
+        input: emailInput,
+        error: document.getElementById("email-error")
+      },
+      password: {
+        input: passwordInput,
+        error: document.getElementById("password-error")
+      }
+    };
+
+    function clearFieldError(fieldName) {
+      const field = fieldDetails[fieldName];
+      if (!field) return;
+
+      field.input.classList.remove("invalid", "shake");
+      field.input.removeAttribute("aria-invalid");
+      field.error.hidden = true;
+      field.error.textContent = "";
+    }
+
+    function setFieldError(fieldName, text) {
+      const field = fieldDetails[fieldName];
+      if (!field) return;
+
+      field.input.classList.remove("shake");
+      field.input.classList.add("invalid");
+      field.input.setAttribute("aria-invalid", "true");
+
+      field.error.textContent = text;
+      field.error.hidden = false;
+
+      // Restart the shake animation.
+      void field.input.offsetWidth;
+      field.input.classList.add("shake");
+
+      field.input.focus();
+    }
+
+    function clearAllFieldErrors() {
+      Object.keys(fieldDetails).forEach(clearFieldError);
+    }
+
+    function showGeneralError(text) {
+      message.style.color = "#b42318";
+      message.textContent = text;
+    }
+
+    function showResetFeedback(type, heading, text) {
+      resetMessage.hidden = false;
+      resetMessage.className = `reset-message ${type}`;
+
+      resetMessage.innerHTML = "";
+
+      const title = document.createElement("strong");
+      title.textContent = heading;
+
+      const description = document.createElement("span");
+      description.textContent = text;
+
+      resetMessage.append(title, description);
+
+      // Restart the feedback animation.
+      resetMessage.classList.remove(type);
+      void resetMessage.offsetWidth;
+      resetMessage.classList.add(type);
+    }
+
+
+    // LIVE FIELD FEEDBACK
+
+    Object.entries(fieldDetails).forEach(([fieldName, field]) => {
+      field.input.addEventListener("input", () => {
+        clearFieldError(fieldName);
+        message.textContent = "";
+      });
+    });
 
 
     // PROFILE ROUTING
@@ -638,11 +775,7 @@
         }
 
       } catch (error) {
-        console.error(
-          "Profile check failed:",
-          error.code,
-          error.message
-        );
+        console.error("Profile check failed:", error);
 
         redirecting = false;
 
@@ -656,64 +789,129 @@
           ? "CREATE ACCOUNT"
           : "SIGN IN";
 
-        message.textContent =
-          "We couldn't check your profile. Please try again.";
+        showGeneralError(
+          "We couldn't check your profile. Please try again."
+        );
       }
     }
 
 
-    // AUTHENTICATION ERROR MESSAGES
+    // FIREBASE ERROR HANDLING
 
     function showAuthError(error) {
+      console.error("Authentication error:", error.code, error.message);
 
-      const errors = {
-        "auth/invalid-email":
-          "Please enter a valid email address.",
+      switch (error.code) {
+        case "auth/invalid-email":
+          setFieldError("email", "This email address is not valid. Check the spelling and try again.");
+          break;
 
-        "auth/user-not-found":
-          "No account found with this email.",
+        case "auth/user-not-found":
+          setFieldError("email", "No account was found with this email. Check the address or create an account.");
+          break;
 
-        "auth/wrong-password":
-          "Incorrect email or password.",
+        case "auth/wrong-password":
+        case "auth/invalid-credential":
+          setFieldError("password", "The email or password doesn't match. Check your details and try again.");
+          break;
 
-        "auth/invalid-credential":
-          "Incorrect email or password.",
+        case "auth/email-already-in-use":
+          setFieldError("email", "An account already uses this email. Switch to Sign In instead.");
+          break;
 
-        "auth/email-already-in-use":
-          "An account already exists with this email. Try signing in.",
+        case "auth/weak-password":
+          setFieldError("password", "Choose a stronger password with at least 6 characters.");
+          break;
 
-        "auth/weak-password":
-          "Your password must contain at least 6 characters.",
+        case "auth/too-many-requests":
+          showGeneralError("Too many attempts. Please wait before trying again.");
+          break;
 
-        "auth/too-many-requests":
-          "Too many attempts. Please try again later.",
+        case "auth/network-request-failed":
+          showGeneralError("Network error. Check your internet connection and try again.");
+          break;
 
-        "auth/network-request-failed":
-          "Network error. Please check your connection."
-      };
+        default:
+          showGeneralError("Something went wrong. Please check your details and try again.");
+      }
+    }
 
-      message.style.color = "#b42318";
 
-      message.textContent =
-        errors[error.code] || "Something went wrong. Please try again.";
+    // LOCAL VALIDATION
+
+    function validateEmail() {
+      const email = emailInput.value.trim();
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!email) {
+        setFieldError("email", "Please enter your email address.");
+        return false;
+      }
+
+      if (!emailPattern.test(email)) {
+        setFieldError("email", "Enter a valid email, for example name@example.com.");
+        return false;
+      }
+
+      clearFieldError("email");
+      return true;
+    }
+
+    function validatePassword() {
+      const password = passwordInput.value;
+
+      if (!password) {
+        setFieldError("password", "Please enter your password.");
+        return false;
+      }
+
+      if (password.length < 6) {
+        setFieldError("password", "Your password must contain at least 6 characters.");
+        return false;
+      }
+
+      clearFieldError("password");
+      return true;
+    }
+
+    function validateName() {
+      if (!isCreatingAccount) return true;
+
+      if (!nameInput.value.trim()) {
+        setFieldError("name", "Please enter your full name.");
+        return false;
+      }
+
+      clearFieldError("name");
+      return true;
     }
 
 
     // SWITCH BETWEEN SIGN-IN AND ACCOUNT CREATION
 
     modeToggle.addEventListener("click", () => {
-
       isCreatingAccount = !isCreatingAccount;
 
+      clearAllFieldErrors();
       message.textContent = "";
+      resetMessage.hidden = true;
       passwordInput.value = "";
 
-      nameInput.hidden = !isCreatingAccount;
+      nameGroup.hidden = !isCreatingAccount;
       nameInput.required = isCreatingAccount;
 
       passwordInput.autocomplete = isCreatingAccount
         ? "new-password"
         : "current-password";
+
+      passwordInput.placeholder = isCreatingAccount
+        ? "Create password (at least 6 characters)"
+        : "Password (at least 6 characters)";
+
+      document.getElementById("password-hint").textContent =
+        isCreatingAccount
+          ? "Choose a password with at least 6 characters."
+          : "Enter your account password.";
 
       modeText.textContent = isCreatingAccount
         ? "Create your personal VELFORM account."
@@ -728,179 +926,150 @@
         : "Create an account";
 
       forgotPassword.hidden = isCreatingAccount;
-
     });
 
 
     // EMAIL SIGN-IN AND ACCOUNT CREATION
 
     emailForm.addEventListener("submit", async (event) => {
-
       event.preventDefault();
 
       message.textContent = "";
-      message.style.color = "#b42318";
+      resetMessage.hidden = true;
+      clearAllFieldErrors();
 
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
-      const name = nameInput.value.trim();
+      const validName = validateName();
+      const validEmail = validateEmail();
+      const validPassword = validatePassword();
 
-      if (isCreatingAccount && !name) {
-        message.textContent = "Please enter your full name.";
-        return;
-      }
+      if (!validName || !validEmail || !validPassword) return;
 
       emailSubmit.disabled = true;
       emailSubmit.textContent = "PLEASE WAIT...";
 
       try {
-
         let user;
 
         if (isCreatingAccount) {
-          user = await createEmailAccount(name, email, password);
+          user = await createEmailAccount(
+            nameInput.value.trim(),
+            emailInput.value.trim(),
+            passwordInput.value
+          );
         } else {
-          user = await signInWithEmail(email, password);
+          user = await signInWithEmail(
+            emailInput.value.trim(),
+            passwordInput.value
+          );
         }
 
         await routeUser(user);
 
       } catch (error) {
-
-        console.error(
-          "Email authentication failed:",
-          error.code,
-          error.message
-        );
-
         showAuthError(error);
 
         emailSubmit.disabled = false;
-
         emailSubmit.textContent = isCreatingAccount
           ? "CREATE ACCOUNT"
           : "SIGN IN";
-
       }
-
     });
 
 
-    
-// FORGOT PASSWORD WITH 30-SECOND COOLDOWN
+    // FORGOT PASSWORD WITH 30-SECOND COOLDOWN
 
-let resetCooldown = false;
-let resetCooldownTimer = null;
+    forgotPassword.addEventListener("click", async () => {
+      resetMessage.hidden = true;
+      message.textContent = "";
 
-forgotPassword.addEventListener("click", async () => {
+      if (!validateEmail()) return;
 
-  const email = emailInput.value.trim();
+      if (resetCooldown) return;
 
-  if (!email) {
-    message.textContent = "Enter your email address first.";
-    message.style.color = "#b42318";
-    emailInput.focus();
-    return;
-  }
+      resetCooldown = true;
+      forgotPassword.disabled = true;
 
-  if (resetCooldown) return;
+      let secondsLeft = 30;
 
-  resetCooldown = true;
-  forgotPassword.disabled = true;
-
-  let secondsLeft = 30;
-
-  forgotPassword.textContent = `Resend in ${secondsLeft}s`;
-
-  resetCooldownTimer = setInterval(() => {
-
-    secondsLeft--;
-
-    if (secondsLeft > 0) {
       forgotPassword.textContent = `Resend in ${secondsLeft}s`;
-    } else {
-      clearInterval(resetCooldownTimer);
-      resetCooldownTimer = null;
 
-      resetCooldown = false;
-      forgotPassword.disabled = false;
-      forgotPassword.textContent = "Forgot password?";
-    }
+      resetCooldownTimer = setInterval(() => {
+        secondsLeft--;
 
-  }, 1000);
+        if (secondsLeft > 0) {
+          forgotPassword.textContent = `Resend in ${secondsLeft}s`;
+        } else {
+          clearInterval(resetCooldownTimer);
+          resetCooldownTimer = null;
 
-  message.textContent = "";
-  message.style.color = "#b42318";
+          resetCooldown = false;
+          forgotPassword.disabled = false;
+          forgotPassword.textContent = "Forgot password?";
+        }
+      }, 1000);
 
-  try {
+      try {
+        await sendPasswordReset(emailInput.value.trim());
 
-    await sendPasswordReset(email);
+        showResetFeedback(
+          "success",
+          "EMAIL SENT SUCCESSFULLY",
+          "Password reset email sent. Please check your inbox."
+        );
 
-    message.style.color = "#287a46";
-    message.textContent =
-      "Password reset email sent. Please check your inbox.";
+      } catch (error) {
+        console.error("Password reset failed:", error.code, error.message);
 
-  } catch (error) {
+        const resetErrors = {
+          "auth/invalid-email":
+            "This email address is not valid. Check the spelling and try again.",
+          "auth/user-not-found":
+            "No account was found with this email. Check the address.",
+          "auth/too-many-requests":
+            "Too many requests. Please wait before trying again.",
+          "auth/network-request-failed":
+            "Network error. Check your internet connection and try again."
+        };
 
-    console.error(
-      "Password reset failed:",
-      error.code,
-      error.message
-    );
-
-    showAuthError(error);
-
-  }
-
-});
+        showResetFeedback(
+          "error",
+          "COULDN'T SEND EMAIL",
+          resetErrors[error.code] || "Something went wrong. Please try again later."
+        );
+      }
+    });
 
 
     // GOOGLE SIGN-IN
 
     button.addEventListener("click", async () => {
-
       message.textContent = "";
-
       button.disabled = true;
 
       button.querySelector("span").textContent =
         "Connecting to Google...";
 
       try {
-
         const user = await signInWithGoogle();
-
         await routeUser(user);
 
       } catch (error) {
-
-        console.error(
-          "Google sign-in failed:",
-          error.code,
-          error.message
-        );
+        console.error("Google sign-in failed:", error);
 
         button.disabled = false;
 
         button.querySelector("span").textContent =
           "Continue with Google";
 
-        message.textContent =
-          "Sign-in failed. Please try again.";
-
+        showGeneralError("Google sign-in failed. Please try again.");
       }
-
     });
 
 
-    // MONITOR FIREBASE AUTHENTICATION
+    // AUTH STATE
 
     onAuthStateChanged(auth, (user) => {
-
-      if (user) {
-        routeUser(user);
-      }
-
+      if (user) routeUser(user);
     });
 
   </script>
