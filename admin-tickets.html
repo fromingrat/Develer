@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f7f4">
+  <title>VELFORM | Support Administration</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --ink: #171717;
+      --muted: #77736d;
+      --gold: #92794f;
+      --line: #e5e0d7;
+      --paper: #f8f7f4;
+      --white: #fff;
+      --red: #b42318;
+      --green: #26734d;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Jost", Arial, sans-serif;
+    }
+
+    [hidden] { display: none !important; }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px;
+      border-bottom: 1px solid var(--line);
+      background: white;
+    }
+
+    .brand {
+      font-size: 19px;
+      font-weight: 600;
+      letter-spacing: .2em;
+    }
+
+    header a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 11px;
+    }
+
+    main {
+      width: min(100% - 32px, 850px);
+      margin: 35px auto 70px;
+    }
+
+    h1 {
+      margin: 0;
+      font: 500 38px/1.1 "Cormorant Garamond", Georgia, serif;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+      margin: 9px 0 25px;
+    }
+
+    .panel {
+      background: white;
+      border: 1px solid var(--line);
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.7;
+    }
+
+    button {
+      min-height: 43px;
+      padding: 11px 15px;
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: white;
+      font: 500 11px "Jost", Arial, sans-serif;
+      letter-spacing: .07em;
+      cursor: pointer;
+    }
+
+    button:hover:not(:disabled) {
+      background: white;
+      color: var(--ink);
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: wait;
+    }
+
+    button.secondary {
+      background: white;
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    button.secondary:hover:not(:disabled) {
+      border-color: var(--ink);
+    }
+
+    button.danger {
+      background: #9b2525;
+      border-color: #9b2525;
+    }
+
+    .full-button { width: 100%; }
+
+    .tabs {
+      display: flex;
+      gap: 22px;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 17px;
+      scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar { display: none; }
+
+    .tab {
+      flex: 0 0 auto;
+      position: relative;
+      min-height: 43px;
+      padding: 0 2px;
+      border: 0;
+      background: transparent;
+      color: #827d74;
+      letter-spacing: .03em;
+    }
+
+    .tab:hover:not(:disabled) {
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .tab.active { color: var(--ink); }
+
+    .tab.active::after {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--ink);
+    }
+
+    .ticket-list {
+      display: grid;
+      gap: 11px;
+    }
+
+    .ticket-card {
+      width: 100%;
+      min-height: auto;
+      padding: 17px;
+      text-align: left;
+      background: white;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      letter-spacing: normal;
+    }
+
+    .ticket-card:hover:not(:disabled) {
+      background: white;
+      color: var(--ink);
+      border-color: var(--gold);
+    }
+
+    .ticket-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .ticket-subject {
+      font-size: 14px;
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+
+    .ticket-customer {
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 5px;
+      overflow-wrap: anywhere;
+    }
+
+    .ticket-date {
+      color: #99938a;
+      font-size: 10px;
+      margin-top: 13px;
+    }
+
+    .badge {
+      flex: 0 0 auto;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 9px;
+    }
+
+    .badge.pending {
+      background: #f5eddd;
+      color: #8b6525;
+    }
+
+    .badge.solved {
+      background: #e8f2eb;
+      color: #276b49;
+    }
+
+    .empty {
+      padding: 30px 18px;
+      background: #faf9f6;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    .detail {
+      animation: reveal .3s ease both;
+    }
+
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .back-button {
+      padding: 7px 0;
+      min-height: auto;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      letter-spacing: .03em;
+    }
+
+    .back-button:hover:not(:disabled) {
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .detail-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 15px 0;
+    }
+
+    .detail-title {
+      font-size: 19px;
+      font-weight: 500;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-meta {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.9;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      margin-bottom: 18px;
+    }
+
+    .message-block {
+      padding: 17px;
+      background: #f7f6f2;
+      border: 1px solid #ece8df;
+      margin: 12px 0;
+    }
+
+    .reply-block {
+      padding: 16px;
+      margin: 12px 0;
+      background: #f4f1e9;
+      border-left: 2px solid var(--gold);
+    }
+
+    .message-author {
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .message-text {
+      font-size: 12px;
+      line-height: 1.8;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .message-time {
+      color: #938c81;
+      font-size: 9px;
+      margin-top: 10px;
+    }
+
+    .conversation-title {
+      font-size: 15px;
+      font-weight: 500;
+      margin: 25px 0 12px;
+    }
+
+    textarea {
+      display: block;
+      width: 100%;
+      min-height: 120px;
+      padding: 13px;
+      resize: vertical;
+      border: 1px solid #d9d4cb;
+      border-radius: 0;
+      font: 13px "Jost", Arial, sans-serif;
+      line-height: 1.7;
+    }
+
+    textarea:focus {
+      outline: 2px solid #c6b18b;
+      outline-offset: 1px;
+    }
+
+    .reply-area { margin-top: 22px; }
+
+    .reply-area label {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 9px;
+    }
+
+    .reply-area button { margin-top: 12px; }
+
+    .actions {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .actions button { flex: 1; }
+
+    .notice {
+      min-height: 20px;
+      margin: 13px 0 0;
+      color: var(--red);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .notice.success { color: var(--green); }
+
+    .skeleton {
+      height: 95px;
+      margin: 12px 0;
+      background: linear-gradient(
+        90deg, #eeece7 25%, #f8f7f4 50%, #eeece7 75%
+      );
+      background-size: 200% 100%;
+      animation: shimmer 1.3s infinite;
+    }
+
+    @keyframes shimmer {
+      to { background-position: -200% 0; }
+    }
+
+    footer {
+      padding: 22px;
+      text-align: center;
+      border-top: 1px solid var(--line);
+      color: #99938a;
+      font-size: 9px;
+      letter-spacing: .2em;
+    }
+
+    @media (max-width: 500px) {
+      main { margin-top: 24px; }
+      .panel { padding: 17px; }
+      .detail-header { flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">VELFORM</div>
+  <a href="admin.html">← PRODUCT ADMIN</a>
+</header>
+
+<main>
+
+  <section id="signed-out" class="panel">
+    <h1>Admin access</h1>
+    <p class="subtitle">
+      Sign in with your authorised administrator Google account.
+    </p>
+    <button id="sign-in" type="button" class="full-button">
+      CONTINUE WITH GOOGLE
+    </button>
+    <p id="login-message" class="notice"></p>
+  </section>
+
+  <section id="denied" class="panel" hidden>
+    <h1>Access denied</h1>
+    <p class="subtitle">
+      This account is not authorised to access support administration.
+    </p>
+    <button id="denied-signout" class="secondary" type="button">
+      SIGN OUT
+    </button>
+  </section>
+
+  <div id="admin-area" hidden>
+
+    <h1>Customer support</h1>
+    <p class="subtitle">
+      Manage customer requests and communicate with your customers.
+    </p>
+
+    <section class="panel">
+      <p id="account-info" class="muted"></p>
+      <button id="sign-out" class="secondary" type="button">
+        SIGN OUT
+      </button>
+    </section>
+
+    <section id="list-section" class="panel">
+
+      <h2 style="font-size:17px;font-weight:500;margin:0 0 8px">
+        Support tickets
+      </h2>
+
+      <p class="muted">
+        Select a ticket to view its details and reply.
+      </p>
+
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-tab="all" type="button">All</button>
+        <button class="tab" data-tab="pending" type="button">Pending</button>
+        <button class="tab" data-tab="solved" type="button">Solved</button>
+      </div>
+
+      <div id="ticket-list" class="ticket-list">
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+      </div>
+
+      <p id="list-message" class="notice"></p>
+    </section>
+
+    <section id="detail-section" class="panel detail" hidden>
+
+      <button id="back-to-list" class="back-button" type="button">
+        ← BACK TO ALL TICKETS
+      </button>
+
+      <div class="detail-header">
+        <div id="detail-title" class="detail-title"></div>
+        <span id="detail-status" class="badge pending">Pending</span>
+      </div>
+
+      <div id="detail-meta" class="detail-meta"></div>
+
+      <div class="message-block">
+        <div class="message-author">Customer message</div>
+        <div id="detail-description" class="message-text"></div>
+      </div>
+
+      <h2 class="conversation-title">Conversation</h2>
+
+      <div id="reply-list">
+        <div class="skeleton"></div>
+      </div>
+
+      <div class="reply-area">
+        <label for="reply-message">Write a reply</label>
+        <textarea
+          id="reply-message"
+          maxlength="3000"
+          placeholder="Write a helpful response to the customer..."
+        ></textarea>
+
+        <button id="send-reply" class="full-button" type="button">
+          SEND REPLY
+        </button>
+      </div>
+
+      <div class="actions">
+        <button id="solve-ticket" type="button">
+          MARK AS SOLVED
+        </button>
+
+        <button id="reopen-ticket" class="secondary" type="button" hidden>
+          REOPEN TICKET
+        </button>
+      </div>
+
+      <p id="detail-message" class="notice" role="status"></p>
+
+    </section>
+  </div>
+
+</main>
+
+<footer>VELFORM · ADMINISTRATION</footer>
+
+<script type="module">
+  import { auth, db } from "./js/firebase.js";
+  import {
+    signInWithGoogle,
+    signOutUser
+  } from "./js/auth.js";
+
+  import {
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+
+  import {
+    addDoc,
+    collection,
+    doc,
+    getDocs,
+    onSnapshot,
+    orderBy,
+    query,
+    serverTimestamp,
+    updateDoc
+  } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+
+  const ADMIN_UID = "qJDZMxnCuYgf6KQahZ0sXzWYQND3";
+
+  const $ = (id) => document.getElementById(id);
+
+  const signedOut = $("signed-out");
+  const denied = $("denied");
+  const adminArea = $("admin-area");
+  const listSection = $("list-section");
+  const detailSection = $("detail-section");
+  const ticketList = $("ticket-list");
+  const replyList = $("reply-list");
+
+  let isAdmin = false;
+  let tickets = [];
+  let activeTab = "all";
+  let activeTicketId = null;
+  let unsubscribeTickets = null;
+  let unsubscribeReplies = null;
+
+  function setNotice(id, message, success = false) {
+    const element = $(id);
+    element.textContent = message;
+    element.classList.toggle("success", success);
+  }
+
+  function timestampValue(timestamp) {
+    if (!timestamp) return 0;
+    if (typeof timestamp.toMillis === "function") {
+      return timestamp.toMillis();
+    }
+    return 0;
+  }
+
+  function formatDate(timestamp) {
+    if (!timestamp) return "Just now";
+
+    const date = timestamp.toDate
+      ? timestamp.toDate()
+      : new Date(timestamp);
+
+    if (Number.isNaN(date.getTime())) return "Date unavailable";
+
+    return date.toLocaleString("en-IN", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit"
+    });
+  }
+
+  function isSolved(ticket) {
+    return ticket.status === "solved";
+  }
+
+  function updateBadge(element, ticket) {
+    element.textContent = isSolved(ticket) ? "Solved" : "Pending";
+    element.className =
+      "badge " + (isSolved(ticket) ? "solved" : "pending");
+  }
+
+  function stopTicketListener() {
+    if (unsubscribeTickets) {
+      unsubscribeTickets();
+      unsubscribeTickets = null;
+    }
+  }
+
+  function stopReplyListener() {
+    if (unsubscribeReplies) {
+      unsubscribeReplies();
+      unsubscribeReplies = null;
+    }
+  }
+
+  function closeDetail() {
+    activeTicketId = null;
+    stopReplyListener();
+    detailSection.hidden = true;
+    listSection.hidden = false;
+  }
+
+  $("back-to-list").addEventListener("click", closeDetail);
+
+  function renderTickets() {
+    ticketList.replaceChildren();
+
+    const filtered = tickets.filter((ticket) => {
+      if (activeTab === "pending") return !isSolved(ticket);
+      if (activeTab === "solved") return isSolved(ticket);
+      return true;
+    });
+
+    if (!filtered.length) {
+      const empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent =
+        activeTab === "all"
+          ? "No support tickets have been submitted yet."
+          : activeTab === "pending"
+            ? "There are no pending tickets."
+            : "There are no solved tickets yet.";
+
+      ticketList.appendChild(empty);
+      return;
+    }
+
+    filtered.forEach((ticket) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "ticket-card";
+
+      const top = document.createElement("div");
+      top.className = "ticket-top";
+
+      const left = document.createElement("div");
+
+      const subject = document.createElement("div");
+      subject.className = "ticket-subject";
+      subject.textContent = ticket.subject || "Support request";
+
+      const customer = document.createElement("div");
+      customer.className = "ticket-customer";
+      customer.textContent =
+        (ticket.customerName || "Customer") +
+        " · " + (ticket.email || "No email");
+
+      left.append(subject, customer);
+
+      const badge = document.createElement("span");
+      updateBadge(badge, ticket);
+
+      top.append(left, badge);
+
+      const date = document.createElement("div");
+      date.className = "ticket-date";
+      date.textContent =
+        "Submitted · " + formatDate(ticket.createdAt);
+
+      button.append(top, date);
+      button.addEventListener("click", () => openTicket(ticket));
+
+      ticketList.appendChild(button);
+    });
+  }
+
+  function setActiveTab(tab) {
+    activeTab = tab;
+
+    document.querySelectorAll(".tab").forEach((button) => {
+      button.classList.toggle(
+        "active",
+        button.dataset.tab === tab
+      );
+    });
+
+    renderTickets();
+  }
+
+  document.querySelectorAll(".tab").forEach((button) => {
+    button.addEventListener("click", () => {
+      closeDetail();
+      setActiveTab(button.dataset.tab);
+    });
+  });
+
+  function listenToTickets() {
+    stopTicketListener();
+
+    ticketList.innerHTML =
+      '<div class="skeleton"></div><div class="skeleton"></div>';
+
+    const ticketsQuery = query(
+      collection(db, "supportTickets"),
+      orderBy("createdAt", "desc")
+    );
+
+    unsubscribeTickets = onSnapshot(
+      ticketsQuery,
+      (snapshot) => {
+        tickets = snapshot.docs.map((item) => ({
+          id: item.id,
+          ...item.data()
+        }));
+
+        tickets.sort((a, b) =>
+          timestampValue(b.createdAt) - timestampValue(a.createdAt)
+        );
+
+        renderTickets();
+
+        if (activeTicketId) {
+          const updated = tickets.find(
