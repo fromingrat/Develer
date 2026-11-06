@@ -242,7 +242,96 @@
       height: 19px;
       flex-shrink: 0;
     }
+    
+/* EMAIL AND PASSWORD AUTHENTICATION */
 
+.email-auth {
+  margin-top: 25px;
+  text-align: left;
+  animation: luxuryRise 1000ms ease both;
+  animation-delay: 1700ms;
+}
+
+.email-auth input {
+  display: block;
+  width: 100%;
+  min-height: 52px;
+  margin-bottom: 13px;
+  padding: 14px 15px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: #fff;
+  color: var(--black);
+  font-family: var(--sans);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 200ms ease;
+}
+
+.email-auth input:focus {
+  border-color: var(--gold);
+}
+
+.email-auth input::placeholder {
+  color: #99938a;
+}
+
+.email-submit {
+  width: 100%;
+  min-height: 54px;
+  margin-top: 3px;
+  border: 1px solid var(--black);
+  border-radius: 2px;
+  background: var(--black);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: background 200ms ease, transform 200ms ease;
+}
+
+.email-submit:hover:not(:disabled) {
+  background: #39352f;
+  transform: translateY(-2px);
+}
+
+.email-submit:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.auth-links {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 17px;
+  font-size: 11px;
+}
+
+.auth-links button {
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: var(--grey);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.auth-links button:hover {
+  color: var(--black);
+}
+
+.auth-mode {
+  margin: 0 0 17px;
+  color: var(--grey);
+  font-size: 11px;
+  line-height: 1.6;
+  text-align: center;
+}
+    
     /* DIVIDER AND NOTE */
 
     .login-divider {
@@ -410,7 +499,58 @@
         <span>Continue with Google</span>
 
       </button>
+      
+<div class="login-divider">
+  <span>OR CONTINUE WITH EMAIL</span>
+</div>
 
+<form class="email-auth" id="email-auth-form">
+
+  <p class="auth-mode" id="auth-mode-text">
+    Sign in to your VELFORM account.
+  </p>
+
+  <input
+    type="text"
+    id="auth-name"
+    placeholder="Your full name"
+    autocomplete="name"
+    hidden
+  >
+
+  <input
+    type="email"
+    id="auth-email"
+    placeholder="Email address"
+    autocomplete="email"
+    required
+  >
+
+  <input
+    type="password"
+    id="auth-password"
+    placeholder="Password"
+    autocomplete="current-password"
+    minlength="6"
+    required
+  >
+
+  <button class="email-submit" id="email-submit" type="submit">
+    SIGN IN
+  </button>
+
+  <div class="auth-links">
+    <button type="button" id="auth-mode-toggle">
+      Create an account
+    </button>
+
+    <button type="button" id="forgot-password">
+      Forgot password?
+    </button>
+  </div>
+
+</form>
+      
       <p
         class="message"
         id="message"
@@ -445,7 +585,12 @@
 
   <script type="module">
 
-    import { signInWithGoogle } from "./js/auth.js";
+    import {
+    signInWithGoogle,
+    signInWithEmail,
+    createEmailAccount,
+    sendPasswordReset
+    } from "./js/auth.js";
     import { auth, db } from "./js/firebase.js";
 
     import {
@@ -501,7 +646,137 @@
           "We couldn't check your profile. Please try again.";
       }
     }
+    
+// EMAIL AUTHENTICATION
 
+const emailForm = document.getElementById("email-auth-form");
+const emailInput = document.getElementById("auth-email");
+const passwordInput = document.getElementById("auth-password");
+const nameInput = document.getElementById("auth-name");
+const emailSubmit = document.getElementById("email-submit");
+const modeToggle = document.getElementById("auth-mode-toggle");
+const modeText = document.getElementById("auth-mode-text");
+const forgotPassword = document.getElementById("forgot-password");
+
+let isCreatingAccount = false;
+
+function showAuthError(error) {
+  const errors = {
+    "auth/invalid-email": "Please enter a valid email address.",
+    "auth/user-not-found": "No account found with this email.",
+    "auth/wrong-password": "Incorrect email or password.",
+    "auth/invalid-credential": "Incorrect email or password.",
+    "auth/email-already-in-use": "An account already exists with this email. Try signing in.",
+    "auth/weak-password": "Your password must contain at least 6 characters.",
+    "auth/too-many-requests": "Too many attempts. Please try again later.",
+    "auth/network-request-failed": "Network error. Please check your connection."
+  };
+
+  message.textContent =
+    errors[error.code] || "Something went wrong. Please try again.";
+}
+
+modeToggle.addEventListener("click", () => {
+  isCreatingAccount = !isCreatingAccount;
+
+  message.textContent = "";
+  passwordInput.value = "";
+
+  nameInput.hidden = !isCreatingAccount;
+  nameInput.required = isCreatingAccount;
+
+  passwordInput.autocomplete = isCreatingAccount
+    ? "new-password"
+    : "current-password";
+
+  modeText.textContent = isCreatingAccount
+    ? "Create your personal VELFORM account."
+    : "Sign in to your VELFORM account.";
+
+  emailSubmit.textContent = isCreatingAccount
+    ? "CREATE ACCOUNT"
+    : "SIGN IN";
+
+  modeToggle.textContent = isCreatingAccount
+    ? "Already have an account? Sign in"
+    : "Create an account";
+
+  forgotPassword.hidden = isCreatingAccount;
+});
+
+emailForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  message.textContent = "";
+
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+  const name = nameInput.value.trim();
+
+  if (isCreatingAccount && !name) {
+    message.textContent = "Please enter your full name.";
+    return;
+  }
+
+  emailSubmit.disabled = true;
+  emailSubmit.textContent = "PLEASE WAIT...";
+
+  try {
+    let user;
+
+    if (isCreatingAccount) {
+      user = await createEmailAccount(name, email, password);
+    } else {
+      user = await signInWithEmail(email, password);
+    }
+
+    await routeUser(user);
+
+  } catch (error) {
+    console.error("Email authentication failed:", error.code, error.message);
+
+    showAuthError(error);
+
+    emailSubmit.disabled = false;
+    emailSubmit.textContent = isCreatingAccount
+      ? "CREATE ACCOUNT"
+      : "SIGN IN";
+  }
+});
+
+// FORGOT PASSWORD
+
+forgotPassword.addEventListener("click", async () => {
+  const email = emailInput.value.trim();
+
+  if (!email) {
+    message.textContent = "Enter your email address first.";
+    emailInput.focus();
+    return;
+  }
+
+  message.textContent = "";
+
+  forgotPassword.disabled = true;
+
+  try {
+    await sendPasswordReset(email);
+
+    message.style.color = "#287a46";
+    message.textContent =
+      "Password reset email sent. Please check your inbox.";
+
+  } catch (error) {
+    console.error("Password reset failed:", error.code, error.message);
+
+    message.style.color = "#b42318";
+    showAuthError(error);
+
+  } finally {
+    forgotPassword.disabled = false;
+  }
+});
+    
     button.addEventListener("click", async () => {
 
       message.textContent = "";
