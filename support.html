@@ -22,6 +22,7 @@
       --paper: #f8f7f4;
       --white: #fff;
       --red: #b42318;
+      --green: #26734d;
     }
 
     body {
@@ -31,6 +32,8 @@
       color: var(--ink);
       font-family: "Jost", Arial, sans-serif;
     }
+
+    [hidden] { display: none !important; }
 
     .top {
       display: flex;
@@ -161,8 +164,8 @@
       line-height: 1.6;
     }
 
-    /* Skeleton loading */
-    .ticket-skeleton {
+    .ticket-skeleton,
+    .skeleton-card {
       padding: 26px 22px;
       background: white;
       border: 1px solid var(--line);
@@ -213,23 +216,15 @@
       margin-bottom: 20px;
     }
 
-    .skeleton-control.large {
-      height: 145px;
+    .skeleton-control.large { height: 145px; }
+
+    .invalid {
+      border: 1.5px solid var(--red) !important;
+      background: #fffafa !important;
     }
 
-    /* Invalid field feedback */
-    input.invalid,
-    select.invalid,
-    textarea.invalid {
-      border: 1.5px solid var(--red);
-      background: #fffafa;
-    }
-
-    input.invalid:focus,
-    select.invalid:focus,
-    textarea.invalid:focus {
-      outline: 1px solid var(--red);
-      border-color: var(--red);
+    .invalid:focus {
+      outline: 1px solid var(--red) !important;
     }
 
     .field-error {
@@ -246,11 +241,8 @@
       40%, 80% { transform: translateX(5px); }
     }
 
-    .shake {
-      animation: fieldShake .35s ease;
-    }
+    .shake { animation: fieldShake .35s ease; }
 
-    /* Sign-in prompt */
     .signed-out {
       margin-bottom: 20px;
       padding: 22px 18px;
@@ -306,10 +298,243 @@
       text-align: center;
       font-size: 12px;
       line-height: 1.6;
-      color: #a12b22;
+      color: var(--red);
     }
 
-    .status.success { color: #26734d; }
+    .status.success { color: var(--green); }
+
+    /* Ticket tabs */
+    .history {
+      margin-top: 34px;
+    }
+
+    .section-heading {
+      font-size: 19px;
+      font-weight: 500;
+      margin: 0 0 7px;
+    }
+
+    .section-description {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.7;
+      margin: 0 0 18px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 24px;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 18px;
+      scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar { display: none; }
+
+    .tab {
+      position: relative;
+      flex: 0 0 auto;
+      width: auto;
+      min-height: 42px;
+      padding: 0 2px;
+      margin: 0;
+      border: 0;
+      background: transparent;
+      color: #827d74;
+      font: 500 12px "Jost", Arial, sans-serif;
+      letter-spacing: .04em;
+    }
+
+    .tab:hover:not(:disabled) {
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .tab.active {
+      color: var(--ink);
+    }
+
+    .tab.active::after {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--ink);
+    }
+
+    .ticket-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .ticket-card {
+      display: block;
+      width: 100%;
+      min-height: auto;
+      padding: 17px;
+      text-align: left;
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--ink);
+      letter-spacing: normal;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .ticket-card:hover {
+      background: white;
+      border-color: #9b8a6d;
+      color: var(--ink);
+      transform: translateY(-2px);
+    }
+
+    .ticket-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .ticket-subject {
+      font-size: 14px;
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+
+    .ticket-category {
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 5px;
+    }
+
+    .ticket-date {
+      color: #99938a;
+      font-size: 10px;
+      margin-top: 14px;
+    }
+
+    .ticket-status {
+      flex: 0 0 auto;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 9px;
+      letter-spacing: .04em;
+    }
+
+    .ticket-status.pending {
+      color: #8b6525;
+      background: #f5eddd;
+    }
+
+    .ticket-status.solved {
+      color: #276b49;
+      background: #e8f2eb;
+    }
+
+    .empty-state {
+      padding: 30px 18px;
+      text-align: center;
+      background: white;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    /* Ticket detail */
+    .detail {
+      margin-top: 25px;
+      padding: 22px;
+      background: white;
+      border: 1px solid var(--line);
+      animation: reveal .3s ease both;
+    }
+
+    .detail-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .detail-title {
+      font-size: 18px;
+      font-weight: 500;
+      overflow-wrap: anywhere;
+    }
+
+    .back-button {
+      width: auto;
+      min-height: auto;
+      padding: 8px 0;
+      margin-bottom: 14px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: .04em;
+      text-align: left;
+    }
+
+    .back-button:hover {
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .detail-meta {
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.8;
+      margin-bottom: 17px;
+    }
+
+    .message-block {
+      padding: 16px;
+      background: #f7f6f2;
+      border: 1px solid #ece8df;
+      margin: 12px 0;
+    }
+
+    .message-author {
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .message-text {
+      font-size: 12px;
+      line-height: 1.8;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .message-time {
+      color: #938c81;
+      font-size: 9px;
+      margin-top: 10px;
+    }
+
+    .reply-block {
+      padding: 16px;
+      margin: 12px 0;
+      background: #f4f1e9;
+      border-left: 2px solid var(--gold);
+    }
+
+    .replies-heading {
+      font-size: 13px;
+      font-weight: 600;
+      margin: 25px 0 12px;
+    }
+
+    .reply-loading {
+      color: var(--muted);
+      font-size: 11px;
+      padding: 15px 0;
+    }
 
     footer {
       text-align: center;
@@ -320,15 +545,10 @@
       letter-spacing: .2em;
     }
 
-    [hidden] { display: none !important; }
-
     @media (max-width: 480px) {
-      .panel,
-      .ticket-skeleton {
-        padding: 22px 17px;
-      }
-
+      .panel, .ticket-skeleton { padding: 22px 17px; }
       main { margin-top: 20px; }
+      .detail { padding: 17px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -358,12 +578,7 @@
       account details to follow up about your request.
     </p>
 
-    <!-- Loading skeleton -->
-    <section
-      id="ticket-skeleton"
-      class="ticket-skeleton"
-      aria-label="Loading support form"
-    >
+    <section id="ticket-skeleton" class="ticket-skeleton">
       <div class="skeleton-line"></div>
       <div class="skeleton-label"></div>
       <div class="skeleton-control"></div>
@@ -376,7 +591,6 @@
       <div class="skeleton-control" style="height:53px;margin-bottom:0"></div>
     </section>
 
-    <!-- Sign-in prompt: appears only after a signed-out user submits -->
     <section id="signed-out" class="signed-out" hidden>
       <p>
         Please sign in before submitting your ticket.
@@ -387,7 +601,6 @@
       </a>
     </section>
 
-    <!-- Support form -->
     <form id="ticket-form" class="panel" hidden novalidate>
       <p class="signed" id="account-note" hidden></p>
 
@@ -436,10 +649,53 @@
       </div>
 
       <button id="submit-ticket" type="submit">SUBMIT TICKET</button>
-
-      <p id="ticket-status" class="status"
-        role="status" aria-live="polite"></p>
+      <p id="ticket-status" class="status" role="status" aria-live="polite"></p>
     </form>
+
+    <!-- Customer ticket history -->
+    <section id="history" class="history" hidden>
+      <h2 class="section-heading">Your support tickets</h2>
+      <p class="section-description">
+        Keep track of your requests and responses from our support team.
+      </p>
+
+      <div class="tabs" role="tablist" aria-label="Ticket status">
+        <button class="tab active" data-tab="all" type="button">All</button>
+        <button class="tab" data-tab="pending" type="button">Pending</button>
+        <button class="tab" data-tab="solved" type="button">Solved</button>
+      </div>
+
+      <div id="ticket-list" class="ticket-list">
+        <div class="skeleton-card">
+          <div class="skeleton-line"></div>
+          <div class="skeleton-control"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ticket detail -->
+    <section id="ticket-detail" class="detail" hidden>
+      <button id="close-detail" class="back-button" type="button">
+        ← Back to tickets
+      </button>
+
+      <div class="detail-header">
+        <div id="detail-title" class="detail-title"></div>
+        <span id="detail-status" class="ticket-status pending">Pending</span>
+      </div>
+
+      <div id="detail-meta" class="detail-meta"></div>
+
+      <div class="message-block">
+        <div class="message-author">Your message</div>
+        <div id="detail-description" class="message-text"></div>
+      </div>
+
+      <div class="replies-heading">Conversation with VELFORM</div>
+      <div id="reply-list">
+        <div class="reply-loading">Loading conversation...</div>
+      </div>
+    </section>
   </main>
 
   <footer>VELFORM · CUSTOMER SUPPORT</footer>
@@ -454,34 +710,49 @@
     import {
       addDoc,
       collection,
+      getDocs,
+      onSnapshot,
+      query,
+      where,
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 
-    const form = document.getElementById("ticket-form");
-    const signedOut = document.getElementById("signed-out");
-    const skeleton = document.getElementById("ticket-skeleton");
-    const accountNote = document.getElementById("account-note");
-    const submitButton = document.getElementById("submit-ticket");
-    const status = document.getElementById("ticket-status");
+    const $ = (id) => document.getElementById(id);
+
+    const form = $("ticket-form");
+    const signedOut = $("signed-out");
+    const skeleton = $("ticket-skeleton");
+    const accountNote = $("account-note");
+    const submitButton = $("submit-ticket");
+    const status = $("ticket-status");
+    const history = $("history");
+    const ticketList = $("ticket-list");
+    const detail = $("ticket-detail");
+    const replyList = $("reply-list");
 
     let currentUser = null;
+    let tickets = [];
+    let activeTab = "all";
+    let activeTicketId = null;
+    let unsubscribeTickets = null;
+    let unsubscribeReplies = null;
 
     const fields = {
       category: {
-        input: document.getElementById("category"),
-        error: document.getElementById("category-error")
+        input: $("category"),
+        error: $("category-error")
       },
       orderId: {
-        input: document.getElementById("order-id"),
-        error: document.getElementById("order-id-error")
+        input: $("order-id"),
+        error: $("order-id-error")
       },
       subject: {
-        input: document.getElementById("subject"),
-        error: document.getElementById("subject-error")
+        input: $("subject"),
+        error: $("subject-error")
       },
       description: {
-        input: document.getElementById("description"),
-        error: document.getElementById("description-error")
+        input: $("description"),
+        error: $("description-error")
       }
     };
 
@@ -490,7 +761,6 @@
 
       field.input.classList.remove("invalid", "shake");
       field.input.removeAttribute("aria-invalid");
-
       field.error.textContent = "";
       field.error.hidden = true;
     }
@@ -501,13 +771,11 @@
       field.input.classList.remove("shake");
       field.input.classList.add("invalid");
       field.input.setAttribute("aria-invalid", "true");
-
       field.error.textContent = message;
       field.error.hidden = false;
 
       void field.input.offsetWidth;
       field.input.classList.add("shake");
-
       field.input.focus();
     }
 
@@ -520,49 +788,27 @@
       const description = fields.description.input.value.trim();
 
       if (!category) {
-        setFieldError(
-          "category",
-          "Please choose the topic that best matches your request."
-        );
+        setFieldError("category", "Please choose a topic.");
         return false;
       }
 
       if (orderId.length > 80) {
-        setFieldError(
-          "orderId",
-          "Order ID must be 80 characters or fewer."
-        );
+        setFieldError("orderId", "Order ID must be 80 characters or fewer.");
         return false;
       }
 
-      if (subject.length < 3) {
+      if (subject.length < 3 || subject.length > 100) {
         setFieldError(
           "subject",
-          "Please enter a subject with at least 3 characters."
+          "Subject must contain between 3 and 100 characters."
         );
         return false;
       }
 
-      if (subject.length > 100) {
-        setFieldError(
-          "subject",
-          "Subject must be 100 characters or fewer."
-        );
-        return false;
-      }
-
-      if (description.length < 10) {
+      if (description.length < 10 || description.length > 3000) {
         setFieldError(
           "description",
-          "Please explain your issue in at least 10 characters."
-        );
-        return false;
-      }
-
-      if (description.length > 3000) {
-        setFieldError(
-          "description",
-          "Description must be 3000 characters or fewer."
+          "Description must contain between 10 and 3000 characters."
         );
         return false;
       }
@@ -570,33 +816,285 @@
       return true;
     }
 
-    // Clear errors when the user corrects a field.
-    fields.category.input.addEventListener("change", () => {
-      clearFieldError("category");
+    Object.entries(fields).forEach(([name, field]) => {
+      field.input.addEventListener("input", () => clearFieldError(name));
+      field.input.addEventListener("change", () => clearFieldError(name));
     });
 
-    fields.orderId.input.addEventListener("input", () => {
-      clearFieldError("orderId");
+    function timestampValue(timestamp) {
+      if (!timestamp) return 0;
+      if (typeof timestamp.toMillis === "function") {
+        return timestamp.toMillis();
+      }
+      return 0;
+    }
+
+    function formatDate(timestamp) {
+      if (!timestamp) return "Just now";
+
+      const date = timestamp.toDate
+        ? timestamp.toDate()
+        : new Date(timestamp);
+
+      if (Number.isNaN(date.getTime())) return "Date unavailable";
+
+      return date.toLocaleString("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      });
+    }
+
+    function isSolved(ticket) {
+      return ticket.status === "solved";
+    }
+
+    function statusLabel(ticket) {
+      return isSolved(ticket) ? "Solved" : "Pending";
+    }
+
+    function showStatus(element, ticket) {
+      element.textContent = statusLabel(ticket);
+      element.className =
+        "ticket-status " + (isSolved(ticket) ? "solved" : "pending");
+    }
+
+    function stopReplyListener() {
+      if (unsubscribeReplies) {
+        unsubscribeReplies();
+        unsubscribeReplies = null;
+      }
+    }
+
+    function closeTicketDetail() {
+      activeTicketId = null;
+      stopReplyListener();
+      detail.hidden = true;
+      history.hidden = false;
+    }
+
+    $("close-detail").addEventListener("click", closeTicketDetail);
+
+    function renderTickets() {
+      ticketList.replaceChildren();
+
+      const filtered = tickets.filter((ticket) => {
+        if (activeTab === "pending") return !isSolved(ticket);
+        if (activeTab === "solved") return isSolved(ticket);
+        return true;
+      });
+
+      if (!filtered.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty-state";
+
+        empty.textContent = activeTab === "all"
+          ? "You haven't submitted any support tickets yet."
+          : activeTab === "pending"
+            ? "You don't have any pending tickets."
+            : "You don't have any solved tickets yet.";
+
+        ticketList.appendChild(empty);
+        return;
+      }
+
+      filtered.forEach((ticket) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "ticket-card";
+
+        const top = document.createElement("div");
+        top.className = "ticket-card-top";
+
+        const left = document.createElement("div");
+
+        const subject = document.createElement("div");
+        subject.className = "ticket-subject";
+        subject.textContent = ticket.subject || "Support request";
+
+        const category = document.createElement("div");
+        category.className = "ticket-category";
+        category.textContent = ticket.category || "General";
+
+        left.append(subject, category);
+
+        const badge = document.createElement("span");
+        showStatus(badge, ticket);
+
+        const date = document.createElement("div");
+        date.className = "ticket-date";
+        date.textContent = "Submitted · " + formatDate(ticket.createdAt);
+
+        top.append(left, badge);
+        button.append(top, date);
+
+        button.addEventListener("click", () => openTicket(ticket));
+
+        ticketList.appendChild(button);
+      });
+    }
+
+    function setActiveTab(tab) {
+      activeTab = tab;
+
+      document.querySelectorAll(".tab").forEach((button) => {
+        const active = button.dataset.tab === tab;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-selected", String(active));
+      });
+
+      renderTickets();
+    }
+
+    document.querySelectorAll(".tab").forEach((button) => {
+      button.addEventListener("click", () => {
+        closeTicketDetail();
+        setActiveTab(button.dataset.tab);
+      });
     });
 
-    fields.subject.input.addEventListener("input", () => {
-      clearFieldError("subject");
-    });
+    function openTicket(ticket) {
+      activeTicketId = ticket.id;
+      history.hidden = true;
+      detail.hidden = false;
 
-    fields.description.input.addEventListener("input", () => {
-      clearFieldError("description");
-    });
+      $("detail-title").textContent = ticket.subject || "Support request";
+      $("detail-meta").textContent =
+        "Category: " + (ticket.category || "General") +
+        "\nSubmitted: " + formatDate(ticket.createdAt) +
+        (ticket.orderId ? "\nOrder ID: " + ticket.orderId : "");
 
-    // Resolve Firebase authentication.
+      $("detail-description").textContent =
+        ticket.description || "No description available.";
+
+      showStatus($("detail-status"), ticket);
+
+      detail.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      loadReplies(ticket.id);
+    }
+
+    function loadReplies(ticketId) {
+      stopReplyListener();
+
+      replyList.replaceChildren();
+
+      const loading = document.createElement("div");
+      loading.className = "reply-loading";
+      loading.textContent = "Loading conversation...";
+      replyList.appendChild(loading);
+
+      const repliesQuery = query(
+        collection(db, "supportTickets", ticketId, "replies")
+      );
+
+      unsubscribeReplies = onSnapshot(
+        repliesQuery,
+        (snapshot) => {
+          if (activeTicketId !== ticketId) return;
+
+          replyList.replaceChildren();
+
+          const replies = snapshot.docs.map((item) => ({
+            id: item.id,
+            ...item.data()
+          }));
+
+          replies.sort((a, b) =>
+            timestampValue(a.createdAt) - timestampValue(b.createdAt)
+          );
+
+          if (!replies.length) {
+            const empty = document.createElement("div");
+            empty.className = "empty-state";
+            empty.textContent =
+              "Your ticket has been received. Our support team will reply here.";
+            replyList.appendChild(empty);
+            return;
+          }
+
+          replies.forEach((reply) => {
+            const block = document.createElement("div");
+            block.className = "reply-block";
+
+            const author = document.createElement("div");
+            author.className = "message-author";
+            author.textContent = "VELFORM Support";
+
+            const message = document.createElement("div");
+            message.className = "message-text";
+            message.textContent = reply.message || "";
+
+            const time = document.createElement("div");
+            time.className = "message-time";
+            time.textContent = formatDate(reply.createdAt);
+
+            block.append(author, message, time);
+            replyList.appendChild(block);
+          });
+        },
+        (error) => {
+          console.error("Reply loading failed:", error);
+          replyList.textContent =
+            "Unable to load the conversation. Please refresh the page.";
+        }
+      );
+    }
+
+    function listenToTickets(user) {
+      if (unsubscribeTickets) {
+        unsubscribeTickets();
+        unsubscribeTickets = null;
+      }
+
+      tickets = [];
+
+      const ownTicketsQuery = query(
+        collection(db, "supportTickets"),
+        where("uid", "==", user.uid)
+      );
+
+      unsubscribeTickets = onSnapshot(
+        ownTicketsQuery,
+        (snapshot) => {
+          tickets = snapshot.docs.map((item) => ({
+            id: item.id,
+            ...item.data()
+          }));
+
+          tickets.sort((a, b) =>
+            timestampValue(b.createdAt) - timestampValue(a.createdAt)
+          );
+
+          renderTickets();
+
+          if (activeTicketId) {
+            const updated = tickets.find(
+              (ticket) => ticket.id === activeTicketId
+            );
+
+            if (updated) {
+              showStatus($("detail-status"), updated);
+            } else {
+              closeTicketDetail();
+            }
+          }
+        },
+        (error) => {
+          console.error("Ticket history failed:", error);
+          ticketList.textContent =
+            "Unable to load your tickets. Please refresh the page.";
+        }
+      );
+    }
+
+    // Firebase authentication
     onAuthStateChanged(auth, (user) => {
       currentUser = user;
-
       skeleton.hidden = true;
-
-      // Always show the form, even when signed out.
       form.hidden = false;
-
-      // Hide the sign-in prompt until submission is attempted.
       signedOut.hidden = true;
 
       if (user) {
@@ -604,20 +1102,31 @@
         accountNote.textContent =
           "Signed in as " +
           (user.displayName || user.email || "your VELFORM account");
+
+        history.hidden = false;
+        listenToTickets(user);
       } else {
         accountNote.hidden = true;
+        history.hidden = true;
+        tickets = [];
+
+        if (unsubscribeTickets) {
+          unsubscribeTickets();
+          unsubscribeTickets = null;
+        }
+
+        closeTicketDetail();
+        ticketList.replaceChildren();
       }
     });
 
-    // Submit support ticket.
+    // Submit a new ticket
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
 
       status.textContent = "";
       status.classList.remove("success");
 
-      // Ask for sign-in only after the user clicks Submit.
-      // Keep the form visible so their information is not lost.
       if (!currentUser) {
         signedOut.hidden = false;
         signedOut.scrollIntoView({
@@ -648,15 +1157,17 @@
         await addDoc(collection(db, "supportTickets"), ticket);
 
         form.reset();
-
         Object.keys(fields).forEach(clearFieldError);
 
         signedOut.hidden = true;
-
         status.textContent =
-          "Your ticket has been submitted. Thank you for contacting VELFORM.";
-
+          "Your ticket has been submitted successfully.";
         status.classList.add("success");
+
+        history.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
 
       } catch (error) {
         console.error(
@@ -667,7 +1178,7 @@
 
         status.textContent =
           error.code === "permission-denied"
-            ? "Ticket submission is not enabled yet. Please try again later."
+            ? "Ticket submission is not enabled. Please contact support."
             : "Your ticket could not be submitted. Please try again.";
 
       } finally {
