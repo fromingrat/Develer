@@ -719,4 +719,43 @@ async function loadUsers() {
       const name = document.createElement("strong");
       name.textContent = user.name || "Name not provided";
 
-   
+      
+      const email = document.createElement("p");
+      email.className = "muted";
+      email.textContent = `Email: ${user.email || "Not available"}`;
+
+      const phone = document.createElement("p");
+      phone.className = "muted";
+      phone.textContent = `Phone: ${user.phone || "Not provided"}`;
+
+      const address = document.createElement("p");
+      address.className = "muted";
+      address.textContent = `Address: ${[
+        user.address,
+        user.area,
+        user.landmark
+      ].filter(Boolean).join(", ") || "Not provided"}`;
+
+      const extra = document.createElement("p");
+      extra.className = "muted";
+      extra.textContent =
+        `Alternate phone: ${user.alternatePhone || "Not provided"} · ` +
+        `Profile complete: ${user.profileComplete ? "Yes" : "No"}`;
+
+      const registered = document.createElement("p");
+      registered.className = "muted";
+      registered.textContent = `Registered: ${dateText(user.createdAt)}`;
+
+      card.append(name, email, phone, address, extra, registered);
+      list.append(card);
+    });
+
+    message("users-message", `${users.length} registered users found.`, true);
+  } catch (error) {
+    console.error("Registered users:", error);
+    $("users-list").textContent =
+      `Could not load users: ${error.code || error.message}`;
+    message("users-message", "Could not load registered users.");
+  }
+}
+
