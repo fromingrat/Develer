@@ -1,6 +1,8 @@
 
 import {
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   onAuthStateChanged,
   signOut,
   signInWithEmailAndPassword,
@@ -11,15 +13,25 @@ import {
 
 import { auth, googleProvider } from "./firebase.js";
 
-// Google Sign-In
+// Existing Google sign-in for customer login
 export async function signInWithGoogle() {
   try {
     const result = await signInWithPopup(auth, googleProvider);
     return result.user;
   } catch (error) {
-    console.error("Google sign-in failed:", error.code);
+    console.error("Google sign-in failed:", error);
     throw error;
   }
+}
+
+// Redirect-based Google sign-in for admin pages
+export async function signInWithGoogleRedirect() {
+  await signInWithRedirect(auth, googleProvider);
+}
+
+// Read Google's response after returning to the admin page
+export async function getGoogleRedirectResult() {
+  return getRedirectResult(auth);
 }
 
 // Email and Password Sign-In
