@@ -90,7 +90,14 @@ document.addEventListener("DOMContentLoaded", () => {
   hero,
   heroInner
 });
+  // OPEN MEMBERSHIP DIRECTLY FROM PROFILE
+const requestedView = new URLSearchParams(window.location.search)
+  .get("view");
 
+if (requestedView === "membership") {
+  showMembership();
+  window.history.replaceState({}, "", window.location.pathname);
+    }
   // WISHLIST MODULE
 
   const { openWishlist } = createWishlist({
