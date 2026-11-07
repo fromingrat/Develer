@@ -101,8 +101,8 @@ document.querySelectorAll("[data-profile-action]").forEach((button) => {
     }
 
     if (action === "privacy") {
-      showError("Privacy & Security page will be connected next.");
-    }
+  window.location.href = "privacy-security.html";
+   }
   });
 });
   
