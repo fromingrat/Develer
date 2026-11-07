@@ -39,6 +39,13 @@ export function createBottomNav({
         return;
       }
 
+      if (item.label === "Profile") {
+        window.location.href = isSignedIn()
+          ? "profile.html"
+          : "login.html";
+        return;
+      }
+
       bottomNav.querySelectorAll("button").forEach((navButton) => {
         navButton.classList.toggle("active", navButton === button);
       });
@@ -69,10 +76,6 @@ export function createBottomNav({
 
       if (item.label === "Wishlist") {
         openWishlist();
-      }
-
-      if (item.label === "Profile") {
-        window.location.href = "login.html";
       }
     });
 
