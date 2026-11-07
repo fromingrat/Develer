@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f7f4">
+  <title>My Profile | VELFORM</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --bg: #f8f7f4;
+      --white: #fff;
+      --ink: #171717;
+      --muted: #858078;
+      --gold: #92794f;
+      --line: #e5e0d7;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Jost", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    [hidden] { display: none !important; }
+
+    .topbar {
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 7%;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .back-link {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 12px;
+    }
+
+    .brand {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: .2em;
+    }
+
+    .top-label {
+      color: #a19a90;
+      font-size: 9px;
+      letter-spacing: .17em;
+    }
+
+    main {
+      width: min(100% - 36px, 560px);
+      margin: 0 auto;
+      padding: 48px 0 55px;
+      animation: pageReveal .65s ease both;
+    }
+
+    @keyframes pageReveal {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .profile-intro {
+      text-align: center;
+      padding: 8px 0 32px;
+    }
+
+    .avatar-ring {
+      width: 104px;
+      height: 104px;
+      margin: 0 auto 17px;
+      padding: 4px;
+      border: 1px solid #b9a47e;
+      border-radius: 50%;
+      box-shadow: 0 5px 22px rgba(30, 25, 15, .07);
+    }
+
+    .avatar {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 50%;
+      background: #171717;
+      color: #f8f7f4;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 43px;
+      font-weight: 500;
+    }
+
+    .profile-name {
+      margin: 0;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 30px;
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    .profile-email {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      overflow-wrap: anywhere;
+    }
+
+    .section-divider {
+      width: 100%;
+      height: 1px;
+      background: var(--line);
+      margin: 0 0 27px;
+    }
+
+    .menu-heading {
+      margin: 0 0 12px;
+      color: var(--gold);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: .22em;
+    }
+
+    .account-menu {
+      border-top: 1px solid var(--line);
+    }
+
+    .menu-item {
+      width: 100%;
+      min-height: 67px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 0 5px;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      text-align: left;
+      text-decoration: none;
+      font: 400 14px "Jost", Arial, sans-serif;
+      cursor: pointer;
+      transition: padding .22s ease, background .22s ease;
+    }
+
+    .menu-item:hover {
+      padding-left: 11px;
+      background: rgba(255,255,255,.48);
+    }
+
+    .menu-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .menu-icon {
+      width: 29px;
+      height: 29px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #e9e4db;
+      border-radius: 50%;
+      color: #8c7857;
+      font-size: 14px;
+    }
+
+    .menu-label {
+      font-size: 13px;
+      letter-spacing: .015em;
+    }
+
+    .menu-arrow {
+      color: #aaa397;
+      font-size: 21px;
+      font-weight: 300;
+      transition: transform .2s ease;
+    }
+
+    .menu-item:hover .menu-arrow {
+      transform: translateX(3px);
+    }
+
+    .logout-area {
+      display: flex;
+      justify-content: center;
+      padding-top: 42px;
+    }
+
+    .logout-button {
+      min-width: 175px;
+      min-height: 47px;
+      padding: 12px 25px;
+      border: 1px solid #d8d1c5;
+      background: transparent;
+      color: #6e6253;
+      font: 500 10px "Jost", Arial, sans-serif;
+      letter-spacing: .19em;
+      cursor: pointer;
+      transition: background .2s, color .2s, border-color .2s;
+    }
+
+    .logout-button:hover {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: white;
+    }
+
+    .logout-button:disabled {
+      opacity: .5;
+      cursor: wait;
+    }
+
+    .page-message {
+      min-height: 20px;
+      margin: 14px 0 0;
+      color: #a32d2d;
+      font-size: 11px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .footer {
+      padding: 23px 15px;
+      border-top: 1px solid var(--line);
+      text-align: center;
+    }
+
+    .footer-brand {
+      margin: 0;
+      color: #918b81;
+      font-size: 9px;
+      letter-spacing: .22em;
+    }
+
+    .footer-caption {
+      margin: 7px 0 0;
+      color: #aaa49a;
+      font-size: 9px;
+      letter-spacing: .08em;
+    }
+
+    .skeleton {
+      width: 145px;
+      height: 19px;
+      margin: 8px auto;
+      border-radius: 2px;
+      background: linear-gradient(
+        90deg, #eeece7 25%, #f8f7f4 50%, #eeece7 75%
+      );
+      background-size: 200% 100%;
+      animation: shimmer 1.3s infinite;
+    }
+
+    @keyframes shimmer {
+      to { background-position: -200% 0; }
+    }
+
+    button:focus-visible, a:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 520px) {
+      .topbar { padding: 0 18px; }
+      .top-label { font-size: 8px; }
+      main { padding-top: 36px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <a class="back-link" href="index.html">← Back to store</a>
+    <div class="brand">VELFORM</div>
+    <span class="top-label">MY ACCOUNT</span>
+  </header>
+
+  <main>
+
+    <section class="profile-intro">
+      <div class="avatar-ring">
+        <div class="avatar" id="profile-avatar">V</div>
+      </div>
+
+      <div id="profile-loading">
+        <div class="skeleton"></div>
+        <div class="skeleton" style="width:110px;height:12px"></div>
+      </div>
+
+      <div id="profile-details" hidden>
+        <h1 class="profile-name" id="profile-name">Welcome</h1>
+        <p class="profile-email" id="profile-email"></p>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <section>
+      <p class="menu-heading">YOUR ACCOUNT</p>
+
+      <nav class="account-menu" aria-label="Profile options">
+
+        <a class="menu-item" href="my-info.html">
+          <span class="menu-left">
+            <span class="menu-icon">♙</span>
+            <span class="menu-label">My Info</span>
+          </span>
+          <span class="menu-arrow">›</span>
+        </a>
+
+        <button class="menu-item" type="button" data-profile-action="orders">
+          <span class="menu-left">
+            <span class="menu-icon">▤</span>
+            <span class="menu-label">My Orders</span>
+          </span>
+          <span class="menu-arrow">›</span>
+        </button>
+
+        <button class="menu-item" type="button" data-profile-action="membership">
+          <span class="menu-left">
+            <span class="menu-icon">♛</span>
+            <span class="menu-label">Membership</span>
+          </span>
+          <span class="menu-arrow">›</span>
+        </button>
+
+        <a class="menu-item" href="support.html">
+          <span class="menu-left">
+            <span class="menu-icon">✉</span>
+            <span class="menu-label">Help &amp; Support</span>
+          </span>
+          <span class="menu-arrow">›</span>
+        </a>
+
+        <button class="menu-item" type="button" data-profile-action="privacy">
+          <span class="menu-left">
+            <span class="menu-icon">◇</span>
+            <span class="menu-label">Privacy &amp; Security</span>
+          </span>
+          <span class="menu-arrow">›</span>
+        </button>
+
+      </nav>
+    </section>
+
+    <div class="logout-area">
+      <button class="logout-button" id="logout-button" type="button">
+        LOG OUT
+      </button>
+    </div>
+
+    <p class="page-message" id="profile-message" role="status" aria-live="polite"></p>
+
+  </main>
+
+  <footer class="footer">
+    <p class="footer-brand">VELFORM PREMIUM</p>
+    <p class="footer-caption">CONSIDERED STYLE. PERSONAL EXPERIENCE.</p>
+  </footer>
+
+  <script type="module" src="./js/profile.js"></script>
+</body>
+  </html>
+  
