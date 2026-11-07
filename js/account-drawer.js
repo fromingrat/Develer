@@ -169,11 +169,10 @@ export function createAccountDrawer({
       const action = item.dataset.menuItem;
 
       if (action === "orders") {
-        event.preventDefault();
-        closeAccountDrawer();
-        alert("Your Orders page will be connected in the next step.");
-      }
-
+      event.preventDefault();
+      closeAccountDrawer();
+      window.location.href = "orders.html";
+     }
       if (action === "membership") {
         event.preventDefault();
         closeAccountDrawer();
