@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f7f4">
+  <title>My Orders | VELFORM</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/orders.css">
+</head>
+
+<body>
+  <header class="orders-header">
+    <a href="index.html" class="back-link">← Back to store</a>
+    <a href="profile.html" class="brand">VELFORM</a>
+    <span class="header-label">MY ACCOUNT</span>
+  </header>
+
+  <main class="orders-main">
+
+    <section class="orders-intro">
+      <p class="eyebrow">YOUR VELFORM EXPERIENCE</p>
+      <h1>My Orders<span>.</span></h1>
+      <p>Every order, from confirmation to delivery, in one place.</p>
+    </section>
+
+    <section id="orders-loading" class="orders-loading">
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+    </section>
+
+    <section id="orders-content" hidden>
+
+      <section class="order-section">
+        <div class="section-heading">
+          <h2>Active orders</h2>
+          <span id="active-count">0</span>
+        </div>
+
+        <div id="active-orders"></div>
+
+        <div id="active-empty" class="empty-state" hidden>
+          <div class="empty-symbol">▤</div>
+          <h3>No active orders</h3>
+          <p>Your ongoing orders will appear here once you place an order.</p>
+          <a href="index.html#collection" class="text-link">
+            EXPLORE COLLECTION →
+          </a>
+        </div>
+      </section>
+
+      <section class="order-section delivered-section">
+        <div class="section-heading">
+          <h2>Delivered orders</h2>
+          <span id="delivered-count">0</span>
+        </div>
+
+        <div id="delivered-orders"></div>
+
+        <div id="delivered-empty" class="empty-state" hidden>
+          <p>Your delivered orders will appear here.</p>
+        </div>
+      </section>
+
+    </section>
+
+    <section id="orders-error" class="error-state" hidden>
+      <h2>Unable to load orders</h2>
+      <p id="orders-error-message"></p>
+      <button id="retry-orders" type="button">TRY AGAIN</button>
+    </section>
+
+    <section id="order-detail" class="order-detail" hidden>
+      <button id="back-to-orders" class="back-button" type="button">
+        ← BACK TO ORDERS
+      </button>
+
+      <div class="detail-heading">
+        <p class="eyebrow">ORDER DETAILS</p>
+        <h2 id="detail-order-number">Order</h2>
+        <span id="detail-status" class="status-badge"></span>
+        <p id="detail-date" class="detail-muted"></p>
+      </div>
+
+      <div class="detail-card">
+        <h3>Delivery progress</h3>
+        <p class="detail-muted">
+          Follow the progress of your VELFORM order.
+        </p>
+        <div id="order-timeline" class="timeline"></div>
+      </div>
+
+      <div class="detail-card">
+        <h3>Delivery information</h3>
+
+        <div class="detail-row">
+          <span>Delivery method</span>
+          <strong id="detail-delivery-type">Not confirmed yet</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Estimated delivery</span>
+          <strong id="detail-eta">Awaiting confirmation</strong>
+        </div>
+
+        <div class="detail-row">
+          <span>Delivery address</span>
+          <strong id="detail-address">Not available</strong>
+        </div>
+      </div>
+
+      <div class="detail-card">
+        <h3>Delivery partner</h3>
+        <p id="partner-name" class="partner-name">Not assigned yet</p>
+        <p id="partner-activity" class="detail-muted">
+          Your delivery partner details will appear here when assigned.
+        </p>
+        <a id="partner-call" class="call-button" href="#" hidden>
+          CALL DELIVERY PARTNER
+        </a>
+      </div>
+
+      <div class="detail-card">
+        <h3>Items in this order</h3>
+        <div id="detail-items"></div>
+
+        <div class="detail-total">
+          <span>Order total</span>
+          <strong id="detail-total">₹0</strong>
+        </div>
+      </div>
+
+      <p class="detail-footer">
+        Need help with this order?
+        <a href="support.html">Contact VELFORM support</a>
+      </p>
+    </section>
+
+  </main>
+
+  <footer class="orders-footer">
+    <p>VELFORM</p>
+    <span>FEWER PIECES. A HIGHER STANDARD.</span>
+  </footer>
+
+  <script type="module" src="js/orders.js"></script>
+</body>
+</html>
