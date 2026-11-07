@@ -93,8 +93,8 @@ document.querySelectorAll("[data-profile-action]").forEach((button) => {
     const action = button.dataset.profileAction;
 
     if (action === "orders") {
-      showError("Your Orders page will be available soon.");
-    }
+     window.location.href = "orders.html";
+     }
 
     if (action === "membership") {
       window.location.href = "index.html?view=membership";
